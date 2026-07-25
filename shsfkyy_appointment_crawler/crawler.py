@@ -218,17 +218,29 @@ class ShsfkyyAppointmentCrawler:
     ) -> list[dict[str, Any]]:
         by_id: dict[str, dict[str, Any]] = {}
         for dept in departments:
-            response = self.client.get(dept["url"])
-            if response.status_code != 200:
-                continue
-            for doctor in self._parse_doctor_cards(response.text, default_dept=dept["name"]):
-                existing = by_id.get(doctor["id"])
-                if existing is None:
-                    by_id[doctor["id"]] = doctor
+            # department homepage often shows only a few featured doctors;
+            # hospdeptexpert_* has a fuller department roster.
+            urls = [
+                dept["url"],
+                (
+                    f"{YOULAI_BASE}/yyk/hospindex/{self.hospital_id}/"
+                    f"hospdeptexpert_{dept['id']}.html"
+                ),
+            ]
+            for url in urls:
+                response = self.client.get(url)
+                if response.status_code != 200:
                     continue
-                for key in ("title", "department", "consult_fee_yuan"):
-                    if not existing.get(key) and doctor.get(key):
-                        existing[key] = doctor[key]
+                for doctor in self._parse_doctor_cards(
+                    response.text, default_dept=dept["name"]
+                ):
+                    existing = by_id.get(doctor["id"])
+                    if existing is None:
+                        by_id[doctor["id"]] = doctor
+                        continue
+                    for key in ("title", "department", "consult_fee_yuan"):
+                        if not existing.get(key) and doctor.get(key):
+                            existing[key] = doctor[key]
         return list(by_id.values())
 
     @staticmethod
@@ -250,24 +262,26 @@ class ShsfkyyAppointmentCrawler:
             {"doctor_id": int(doctor_id)},
             headers={"Referer": f"{YOULAI_BASE}/yyk/docindex/{doctor_id}/"},
         )
-        if response.status_code != 200:
-            return False, {}
-        payload = response.json()
-        if payload.get("code") != 200:
-            return False, {}
-        data = payload.get("data") or {}
-        hosp = (data.get("hospital_name") or data.get("hospital_short_name") or "").strip()
-        if hosp in OWN_HOSPITAL_NAMES or "肺科医院" in hosp:
-            return True, data
+        data: dict[str, Any] = {}
+        if response.status_code == 200:
+            payload = response.json()
+            if payload.get("code") == 200:
+                data = payload.get("data") or {}
+                hosp = (
+                    data.get("hospital_name") or data.get("hospital_short_name") or ""
+                ).strip()
+                if hosp in OWN_HOSPITAL_NAMES or "肺科医院" in hosp:
+                    return True, data
 
-        # Fallback: primary practice card on HTML
+        # Fallback: primary practice card / title on HTML doctor page
         html_resp = self.client.get(f"{YOULAI_BASE}/yyk/docindex/{doctor_id}/")
-        cards = self._extract_point_cards_from_html(html_resp.text)
+        html = html_resp.text
+        cards = self._extract_point_cards_from_html(html)
         for card in cards:
             name = (card.get("name") or "").strip()
-            if card.get("is_pub") == 1 and (
-                name in OWN_HOSPITAL_NAMES or "肺科医院" in name
-            ):
+            if (
+                card.get("is_pub") == 1 or card.get("point_type_show") == "第一执业"
+            ) and (name in OWN_HOSPITAL_NAMES or "肺科医院" in name):
                 data = {
                     **data,
                     "hospital_name": name,
@@ -275,6 +289,22 @@ class ShsfkyyAppointmentCrawler:
                     "name": data.get("name") or data.get("doctor_name"),
                 }
                 return True, data
+
+        title_match = re.search(r"<title>(.*?)</title>", html)
+        if title_match and "肺科医院" in title_match.group(1):
+            title = title_match.group(1)
+            name_match = re.match(r"^([^_]+)_", title)
+            dept_match = re.search(r"肺科医院([^_]*)_", title)
+            data = {
+                **data,
+                "hospital_name": "上海市肺科医院",
+                "name": data.get("name")
+                or data.get("doctor_name")
+                or (name_match.group(1) if name_match else None),
+                "dept_name": data.get("dept_name")
+                or ((dept_match.group(1) if dept_match else "") or None),
+            }
+            return True, data
         return False, data
 
     def filter_own_hospital_doctors(
