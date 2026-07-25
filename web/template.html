@@ -344,15 +344,40 @@ __APPOINTMENT_JSON__
       return res.json();
     }
 
+    function shanghaiParts(date = new Date()) {
+      // Avoid Date(toLocaleString(...)) which breaks in some mobile browsers.
+      const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone: "Asia/Shanghai",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      }).formatToParts(date);
+      const get = (type) => Number(parts.find((p) => p.type === type).value);
+      return {
+        year: get("year"),
+        month: get("month"),
+        day: get("day"),
+        hour: get("hour") % 24, // some engines emit 24:00
+        minute: get("minute"),
+        second: get("second"),
+      };
+    }
+
     function shanghaiNow() {
-      return new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Shanghai" }));
+      const p = shanghaiParts();
+      return new Date(p.year, p.month - 1, p.day, p.hour, p.minute, p.second);
     }
 
     function nextOccurrence(hhmm, from = shanghaiNow()) {
       const [h, m] = hhmm.split(":").map(Number);
-      const target = new Date(from);
-      target.setHours(h, m, 0, 0);
-      if (target <= from) target.setDate(target.getDate() + 1);
+      const target = new Date(from.getFullYear(), from.getMonth(), from.getDate(), h, m, 0, 0);
+      if (target.getTime() <= from.getTime()) {
+        target.setDate(target.getDate() + 1);
+      }
       return target;
     }
 
@@ -609,19 +634,26 @@ __APPOINTMENT_JSON__
       `).join("");
 
       function tick() {
-        const now = shanghaiNow();
-        let nearest = null;
-        schedules.forEach((s) => {
-          const at = nextOccurrence(s.time, now);
-          if (!nearest || at < nearest.at) nearest = { ...s, at };
-        });
-        if (!nearest) return;
-        document.getElementById("next-title").textContent = `${nearest.label} · ${nearest.time}`;
-        document.getElementById("countdown").textContent = formatRemain(nearest.at - now);
-        document.getElementById("next-when").textContent =
-          `上海时间 ${nearest.at.getMonth() + 1}/${nearest.at.getDate()} ${pad(nearest.at.getHours())}:${pad(nearest.at.getMinutes())}`;
-        document.getElementById("sticky-countdown").textContent =
-          `距放号 ${formatRemain(nearest.at - now)}`;
+        try {
+          const now = shanghaiNow();
+          let nearest = null;
+          schedules.forEach((s) => {
+            const at = nextOccurrence(s.time, now);
+            if (!nearest || at < nearest.at) nearest = { ...s, at };
+          });
+          if (!nearest) return;
+          const remain = nearest.at.getTime() - now.getTime();
+          document.getElementById("next-title").textContent = `${nearest.label} · ${nearest.time}`;
+          document.getElementById("countdown").textContent = formatRemain(remain);
+          document.getElementById("next-when").textContent =
+            `上海时间 ${nearest.at.getMonth() + 1}/${nearest.at.getDate()} ${pad(nearest.at.getHours())}:${pad(nearest.at.getMinutes())}`;
+          document.getElementById("sticky-countdown").textContent =
+            `距放号 ${formatRemain(remain)}`;
+        } catch (err) {
+          document.getElementById("countdown").textContent = "--:--:--";
+          document.getElementById("sticky-countdown").textContent = "倒计时异常，请刷新页面";
+          console.error(err);
+        }
       }
       tick();
       setInterval(tick, 1000);
