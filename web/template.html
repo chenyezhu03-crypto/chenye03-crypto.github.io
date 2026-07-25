@@ -219,19 +219,63 @@
     .list { display: grid; gap: .55rem; }
     .doc {
       display: grid;
-      grid-template-columns: 1fr auto;
-      gap: .5rem 1rem;
+      grid-template-columns: auto 1fr auto;
+      gap: .55rem .8rem;
       align-items: center;
       padding: .9rem .2rem;
       border-bottom: 1px solid var(--line);
-      text-decoration: none;
       color: inherit;
       transition: background .15s ease, padding-left .15s ease;
     }
     .doc:hover { background: var(--accent-soft); padding-left: .55rem; border-radius: 10px; }
     .doc .name { font-weight: 700; font-size: 1.05rem; }
     .doc .sub { color: var(--muted); font-size: .9rem; margin-top: .15rem; }
+    .doc a.name-link { color: inherit; text-decoration: none; }
     .fee { color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; }
+    .star-btn {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.8);
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 1.05rem;
+      line-height: 1;
+      color: var(--muted);
+    }
+    .star-btn.on {
+      color: #b7791f;
+      border-color: rgba(183,121,31,.35);
+      background: rgba(183,121,31,.12);
+    }
+    .fav-box {
+      margin-top: .9rem;
+      padding: .9rem 1rem;
+      border-radius: 14px;
+      border: 1px dashed rgba(15,122,95,.35);
+      background: rgba(15,122,95,.06);
+    }
+    .fav-box h3 { margin: 0 0 .45rem; font-size: 1rem; }
+    .fav-tags { display: flex; flex-wrap: wrap; gap: .45rem; }
+    .fav-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .35rem .65rem;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+      font-size: .88rem;
+    }
+    .fav-tag button {
+      appearance: none; border: 0; background: transparent; cursor: pointer;
+      color: var(--muted); font-size: .95rem; padding: 0;
+    }
+    .filter-fav {
+      display: inline-flex; align-items: center; gap: .4rem;
+      color: var(--muted); font-size: .92rem; margin-top: .7rem;
+    }
     .tips { margin: 0; padding-left: 1.1rem; color: var(--muted); line-height: 1.7; }
     .notice {
       margin-top: 1rem; padding: .9rem 1rem; border-left: 3px solid var(--warn);
@@ -290,7 +334,15 @@
         </label>
         <button class="btn ghost" type="button" id="ics-btn">加入日历提醒</button>
       </div>
-      <p class="footer">提醒依赖本页保持打开（或加入系统日历）。时区按上海时间计算。</p>
+      <div class="fav-box">
+        <h3>我的抢号医生</h3>
+        <div class="label" style="color:var(--muted);font-size:.9rem;margin-bottom:.55rem;">
+          在下方点 ★ 关注医生；到放号点会点名提醒（仅提醒，不自动抢号）
+        </div>
+        <div class="fav-tags" id="fav-tags"><span class="sub">还没关注医生，去下面搜索后点星号</span></div>
+        <div id="fav-next" class="label" style="margin-top:.65rem;color:var(--accent);font-weight:600;"></div>
+      </div>
+      <p class="footer">提醒依赖本页保持打开（或加入系统日历）。时区按上海时间计算。微信放号约 7:00，医联约 7:30。</p>
     </section>
 
     <section class="panel">
@@ -302,12 +354,13 @@
     </section>
 
     <section class="panel">
-      <h2>找医生</h2>
+      <h2>找医生 / 关注抢号</h2>
       <div class="toolbar">
-        <input id="q" type="search" placeholder="搜索医生姓名 / 科室" autocomplete="off" />
+        <input id="q" type="search" placeholder="搜索医生姓名，例如：谢博雄" autocomplete="off" />
         <select id="dept"><option value="">全部科室</option></select>
         <div class="count" id="count">—</div>
       </div>
+      <label class="filter-fav"><input type="checkbox" id="only-fav" /> 只看已关注</label>
       <div class="list" id="doctors"></div>
     </section>
 
@@ -327,6 +380,65 @@ __APPOINTMENT_JSON__
   <script>
     const STORAGE_KEY = "shsfkyy_remind_enabled_v1";
     const FIRED_KEY = "shsfkyy_remind_fired_v1";
+    const FAV_KEY = "shsfkyy_fav_doctors_v1";
+    let allDoctors = [];
+    let paintDoctors = () => {};
+
+    function loadFavs() {
+      try { return JSON.parse(localStorage.getItem(FAV_KEY) || "[]"); }
+      catch (_) { return []; }
+    }
+    function saveFavs(list) {
+      localStorage.setItem(FAV_KEY, JSON.stringify(list));
+    }
+    function isFav(id) {
+      return loadFavs().some((f) => f.id === String(id));
+    }
+    function toggleFav(doctor) {
+      const list = loadFavs();
+      const id = String(doctor.id);
+      const idx = list.findIndex((f) => f.id === id);
+      if (idx >= 0) list.splice(idx, 1);
+      else list.push({
+        id,
+        name: doctor.name,
+        department: doctor.department || "",
+        title: doctor.title || "",
+      });
+      saveFavs(list);
+      return list;
+    }
+    function favNamesText() {
+      const list = loadFavs();
+      if (!list.length) return "";
+      return list.map((f) => f.name).slice(0, 8).join("、") + (list.length > 8 ? " 等" : "");
+    }
+    function renderFavTags() {
+      const box = document.getElementById("fav-tags");
+      const next = document.getElementById("fav-next");
+      const list = loadFavs();
+      if (!list.length) {
+        box.innerHTML = `<span class="sub">还没关注医生，去下面搜索后点星号（如谢博雄）</span>`;
+        next.textContent = "";
+        return;
+      }
+      box.innerHTML = list.map((f) => `
+        <span class="fav-tag">
+          ★ ${f.name}${f.department ? " · " + f.department : ""}
+          <button type="button" data-unfav="${f.id}" aria-label="取消关注">×</button>
+        </span>
+      `).join("");
+      box.querySelectorAll("[data-unfav]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-unfav");
+          saveFavs(loadFavs().filter((f) => f.id !== id));
+          renderFavTags();
+          paintDoctors();
+          toast("已取消关注");
+        });
+      });
+      next.textContent = `放号时将提醒：${favNamesText()}`;
+    }
 
     function toast(msg) {
       const el = document.getElementById("toast");
@@ -413,6 +525,7 @@ __APPOINTMENT_JSON__
     }
 
     function buildIcs(schedules) {
+      const favText = favNamesText() || "（未指定医生，请提前在网页关注）";
       const lines = [
         "BEGIN:VCALENDAR",
         "VERSION:2.0",
@@ -424,15 +537,15 @@ __APPOINTMENT_JSON__
         lines.push(
           "BEGIN:VEVENT",
           `UID:shsfkyy-release-${s.id || idx}@local`,
-          `SUMMARY:肺科医院放号提醒 · ${s.label}`,
-          `DESCRIPTION:请前往官方渠道预约：微信/支付宝/医联。本日历仅提醒，不自动挂号。`,
+          `SUMMARY:肺科放号 · ${s.label} · ${favText}`,
+          `DESCRIPTION:关注医生：${favText}\\n请用微信公众号/医联预约。仅提醒，不自动抢号。`,
           `RRULE:FREQ=DAILY`,
           `DTSTART;TZID=Asia/Shanghai:20260101T${hh}${mm}00`,
           `DURATION:PT10M`,
           "BEGIN:VALARM",
           "TRIGGER:-PT15M",
           "ACTION:DISPLAY",
-          `DESCRIPTION:还有15分钟：${s.label}放号`,
+          `DESCRIPTION:还有15分钟放号：${favText}`,
           "END:VALARM",
           "END:VEVENT"
         );
@@ -497,7 +610,8 @@ __APPOINTMENT_JSON__
             return;
           }
           localStorage.setItem(STORAGE_KEY, "1");
-          toast("已开启放号提醒");
+          const names = favNamesText();
+          toast(names ? `已开启提醒：${names}` : "已开启放号提醒，建议先关注医生");
         } else {
           localStorage.setItem(STORAGE_KEY, "0");
           toast("已关闭放号提醒");
@@ -507,24 +621,30 @@ __APPOINTMENT_JSON__
       setInterval(() => {
         if (localStorage.getItem(STORAGE_KEY) !== "1") return;
         const now = shanghaiNow();
+        const names = favNamesText();
+        const who = names ? `【${names}】` : "";
         schedules.forEach((s) => {
           const next = nextOccurrence(s.time, now);
-          const mins = Math.round((next - now) / 60000);
+          const remainMs = next.getTime() - now.getTime();
+          const remainMin = remainMs / 60000;
           const dayKey = `${next.getFullYear()}-${pad(next.getMonth() + 1)}-${pad(next.getDate())}`;
           (s.remind_minutes_before || [15, 0]).forEach((before) => {
-            if (mins === before) {
-              const fireKey = `${s.id}-${dayKey}-${before}`;
-              if (wasFired(fireKey)) return;
-              markFired(fireKey);
-              if (before === 0) {
-                notify("放号开始", `${s.label} 现在放号，点击页面一键去预约`);
-              } else {
-                notify("放号倒计时", `${s.label} 还有 ${before} 分钟放号`);
-              }
+            // Fire once when we enter the target minute window.
+            const inWindow = before === 0
+              ? remainMin <= 0.2 && remainMin > -1
+              : remainMin <= before && remainMin > before - 0.35;
+            if (!inWindow) return;
+            const fireKey = `${s.id}-${dayKey}-${before}`;
+            if (wasFired(fireKey)) return;
+            markFired(fireKey);
+            if (before === 0) {
+              notify("放号开始，快去预约", `${who}${s.label} 现在放号。打开微信公众号/医联预约（不自动抢号）`);
+            } else {
+              notify("抢号倒计时", `${who}${s.label} 还有约 ${before} 分钟放号，请提前打开预约页`);
             }
           });
         });
-      }, 15000);
+      }, 5000);
     }
 
     function renderBooking(entries) {
@@ -574,8 +694,9 @@ __APPOINTMENT_JSON__
     }
 
     function renderDoctors(data) {
+      allDoctors = data.doctors || [];
       const deptSelect = document.getElementById("dept");
-      const depts = [...new Set(data.doctors.map((d) => d.department).filter(Boolean))].sort();
+      const depts = [...new Set(allDoctors.map((d) => d.department).filter(Boolean))].sort();
       depts.forEach((name) => {
         const opt = document.createElement("option");
         opt.value = name;
@@ -584,31 +705,54 @@ __APPOINTMENT_JSON__
       });
 
       const qInput = document.getElementById("q");
+      const onlyFav = document.getElementById("only-fav");
       const list = document.getElementById("doctors");
       const count = document.getElementById("count");
 
-      function paint() {
+      paintDoctors = function paint() {
         const q = qInput.value.trim().toLowerCase();
         const dept = deptSelect.value;
-        const rows = data.doctors.filter((d) => {
+        const favOnly = onlyFav.checked;
+        const rows = allDoctors.filter((d) => {
+          if (favOnly && !isFav(d.id)) return false;
           const hitDept = !dept || d.department === dept;
           const blob = `${d.name || ""} ${d.department || ""} ${d.title || ""}`.toLowerCase();
           return hitDept && (!q || blob.includes(q));
         });
-        count.textContent = `显示 ${rows.length} 位`;
+        // Keep favorites first when searching broadly
+        rows.sort((a, b) => Number(isFav(b.id)) - Number(isFav(a.id)));
+        count.textContent = `显示 ${rows.length} 位 · 已关注 ${loadFavs().length}`;
         list.innerHTML = rows.map((d) => `
-          <a class="doc" href="${d.url || "#"}" target="_blank" rel="noopener noreferrer">
+          <div class="doc">
+            <button class="star-btn ${isFav(d.id) ? "on" : ""}" type="button" data-star="${d.id}" aria-label="关注抢号提醒">★</button>
             <div>
-              <div class="name">${d.name}</div>
+              <a class="name-link" href="${d.url || "#"}" target="_blank" rel="noopener noreferrer">
+                <div class="name">${d.name}</div>
+              </a>
               <div class="sub">${[d.title, d.department].filter(Boolean).join(" · ")}</div>
             </div>
-            <div class="fee">${money(d.fee)}</div>
-          </a>
+            <div class="fee">${isFav(d.id) ? "已关注" : (money(d.fee) || "关注提醒")}</div>
+          </div>
         `).join("") || `<div class="sub">没有匹配的医生</div>`;
-      }
-      qInput.addEventListener("input", paint);
-      deptSelect.addEventListener("change", paint);
-      paint();
+
+        list.querySelectorAll("[data-star]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-star");
+            const doctor = allDoctors.find((x) => String(x.id) === id);
+            if (!doctor) return;
+            const listNow = toggleFav(doctor);
+            const on = listNow.some((f) => f.id === id);
+            renderFavTags();
+            paintDoctors();
+            toast(on ? `已关注 ${doctor.name}，放号时会提醒` : `已取消 ${doctor.name}`);
+          });
+        });
+      };
+      qInput.addEventListener("input", paintDoctors);
+      deptSelect.addEventListener("change", paintDoctors);
+      onlyFav.addEventListener("change", paintDoctors);
+      renderFavTags();
+      paintDoctors();
     }
 
     function render(data) {
@@ -659,7 +803,10 @@ __APPOINTMENT_JSON__
       setInterval(tick, 1000);
       setupReminders(schedules);
 
-      document.getElementById("ics-btn").addEventListener("click", () => downloadIcs(schedules));
+      document.getElementById("ics-btn").addEventListener("click", () => {
+        if (!loadFavs().length) toast("还未关注医生，日历里会写通用放号提醒");
+        downloadIcs(schedules);
+      });
 
       renderBooking(data.booking_entries || []);
       renderDoctors(data);
