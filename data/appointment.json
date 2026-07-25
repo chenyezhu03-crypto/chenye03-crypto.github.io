@@ -1379,7 +1379,7 @@
     {
       "id": "shdc",
       "title": "上海医联预约",
-      "subtitle": "网页一键跳转 · 每日 7:30 放号",
+      "subtitle": "网页可直达 · 每日 7:30 放号",
       "primary": true,
       "action": "open",
       "url": "https://yuyue.shdc.org.cn/",
@@ -1395,34 +1395,45 @@
       "button": "一键拨打"
     },
     {
-      "id": "wechat",
-      "title": "微信公众号",
-      "subtitle": "搜索「上海市肺科医院」· 每日 7:00 放号",
+      "id": "alipay",
+      "title": "支付宝小程序",
+      "subtitle": "一键打开支付宝并搜索「上海市肺科医院」",
+      "primary": true,
+      "action": "open",
+      "url": "https://ds.alipay.com/?scheme=alipays%3A%2F%2Fplatformapi%2Fstartapp%3FappId%3D20001003%26keyword%3D%E4%B8%8A%E6%B5%B7%E5%B8%82%E8%82%BA%E7%A7%91%E5%8C%BB%E9%99%A2%26queryWord%3D%E4%B8%8A%E6%B5%B7%E5%B8%82%E8%82%BA%E7%A7%91%E5%8C%BB%E9%99%A2%26v2%3Dtrue%26startMultApp%3DYES%26searchType%3Dunified",
+      "button": "打开支付宝搜索",
+      "hint": "若未自动跳转，请打开支付宝搜索：上海市肺科医院"
+    },
+    {
+      "id": "alipay_full",
+      "title": "支付宝（全称搜索）",
+      "subtitle": "搜索「同济大学附属上海市肺科医院」",
       "primary": false,
-      "action": "copy",
+      "action": "open",
+      "url": "https://ds.alipay.com/?scheme=alipays%3A%2F%2Fplatformapi%2Fstartapp%3FappId%3D20001003%26keyword%3D%E5%90%8C%E6%B5%8E%E5%A4%A7%E5%AD%A6%E9%99%84%E5%B1%9E%E4%B8%8A%E6%B5%B7%E5%B8%82%E8%82%BA%E7%A7%91%E5%8C%BB%E9%99%A2%26queryWord%3D%E5%90%8C%E6%B5%8E%E5%A4%A7%E5%AD%A6%E9%99%84%E5%B1%9E%E4%B8%8A%E6%B5%B7%E5%B8%82%E8%82%BA%E7%A7%91%E5%8C%BB%E9%99%A2%26v2%3Dtrue%26startMultApp%3DYES%26searchType%3Dunified",
+      "button": "打开支付宝搜索全称"
+    },
+    {
+      "id": "wechat",
+      "title": "微信公众号预约",
+      "subtitle": "医院微信端主要走公众号，非公开小程序直达链接",
+      "primary": false,
+      "action": "wechat",
       "copy_text": "上海市肺科医院",
-      "button": "复制名称去微信",
-      "hint": "已复制公众号名，请打开微信粘贴搜索"
+      "url": "weixin://",
+      "button": "复制并打开微信",
+      "hint": "已复制「上海市肺科医院」，正在打开微信，请粘贴搜索公众号"
     },
     {
       "id": "wechat_sub",
       "title": "微信订阅号",
-      "subtitle": "搜索「上海市肺科医院订阅号」· 每日 7:00 放号",
+      "subtitle": "「上海市肺科医院订阅号」",
       "primary": false,
-      "action": "copy",
+      "action": "wechat",
       "copy_text": "上海市肺科医院订阅号",
-      "button": "复制名称去微信",
-      "hint": "已复制订阅号名，请打开微信粘贴搜索"
-    },
-    {
-      "id": "alipay",
-      "title": "支付宝小程序",
-      "subtitle": "搜索「上海市肺科医院」· 每日 7:00 放号",
-      "primary": false,
-      "action": "copy",
-      "copy_text": "上海市肺科医院",
-      "button": "复制名称去支付宝",
-      "hint": "已复制小程序名，请打开支付宝搜索"
+      "url": "weixin://",
+      "button": "复制并打开微信",
+      "hint": "已复制订阅号名，正在打开微信"
     },
     {
       "id": "hospital",
@@ -1433,5 +1444,6 @@
       "url": "https://www.shsfkyy.com/",
       "button": "打开官网"
     }
-  ]
+  ],
+  "mini_program_note": "微信/支付宝「指定小程序直达」需要医院官方 AppID 与 URL Scheme。目前未公开该 AppID，因此无法从网页直接打开肺科医院小程序首页；支付宝可一键跳到搜索结果，微信可复制名称并唤起微信 App。"
 }

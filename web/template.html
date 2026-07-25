@@ -295,7 +295,9 @@
     <section class="panel">
       <h2>一键去预约</h2>
       <div class="booking-grid" id="booking-grid"></div>
-      <div class="notice">微信 / 支付宝无法从网页直接打开指定小程序时，会先复制名称，你再到 App 里粘贴搜索即可。</div>
+      <div class="notice" id="mini-program-note">
+        医院未公开小程序 AppID，网页不能直达指定小程序首页。支付宝可一键跳到搜索；微信可复制名称并唤起微信。
+      </div>
     </section>
 
     <section class="panel">
@@ -513,15 +515,30 @@ __APPOINTMENT_JSON__
         btn.addEventListener("click", async () => {
           const entry = entries.find((x) => x.id === btn.getAttribute("data-book"));
           if (!entry) return;
-          if (entry.action === "open" && entry.url) {
-            if (entry.url.startsWith("tel:")) {
-              window.location.href = entry.url;
-            } else {
-              window.open(entry.url, "_blank", "noopener,noreferrer");
+
+          if (entry.action === "wechat") {
+            if (entry.copy_text) {
+              const ok = await copyText(entry.copy_text);
+              toast(ok ? (entry.hint || "已复制，正在打开微信") : "复制失败，请手动搜索");
             }
-            toast(`正在打开：${entry.title}`);
+            // 无公开 AppID，无法直达指定小程序；只能唤起微信 App
+            setTimeout(() => {
+              window.location.href = entry.url || "weixin://";
+            }, 250);
             return;
           }
+
+          if (entry.action === "open" && entry.url) {
+            if (entry.url.startsWith("tel:") || entry.url.startsWith("weixin:") || entry.url.startsWith("alipays:")) {
+              window.location.href = entry.url;
+            } else {
+              // 支付宝 https 中转页在移动端更稳
+              window.location.href = entry.url;
+            }
+            toast(entry.hint || `正在打开：${entry.title}`);
+            return;
+          }
+
           if (entry.action === "copy" && entry.copy_text) {
             const ok = await copyText(entry.copy_text);
             toast(ok ? (entry.hint || "已复制") : "复制失败，请手动搜索");
@@ -613,6 +630,10 @@ __APPOINTMENT_JSON__
 
       renderBooking(data.booking_entries || []);
       renderDoctors(data);
+
+      if (data.mini_program_note) {
+        document.getElementById("mini-program-note").textContent = data.mini_program_note;
+      }
 
       document.getElementById("channels").innerHTML = (data.channels || []).map((c) => `
         <div class="channel"><strong>${c.channel}</strong><span>${c.detail}</span></div>

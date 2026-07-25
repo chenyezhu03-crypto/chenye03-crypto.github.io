@@ -295,7 +295,9 @@
     <section class="panel">
       <h2>一键去预约</h2>
       <div class="booking-grid" id="booking-grid"></div>
-      <div class="notice">微信 / 支付宝无法从网页直接打开指定小程序时，会先复制名称，你再到 App 里粘贴搜索即可。</div>
+      <div class="notice" id="mini-program-note">
+        医院未公开小程序 AppID，网页不能直达指定小程序首页。支付宝可一键跳到搜索；微信可复制名称并唤起微信。
+      </div>
     </section>
 
     <section class="panel">
@@ -1700,7 +1702,7 @@
     {
       "id": "shdc",
       "title": "上海医联预约",
-      "subtitle": "网页一键跳转 · 每日 7:30 放号",
+      "subtitle": "网页可直达 · 每日 7:30 放号",
       "primary": true,
       "action": "open",
       "url": "https://yuyue.shdc.org.cn/",
@@ -1716,34 +1718,45 @@
       "button": "一键拨打"
     },
     {
-      "id": "wechat",
-      "title": "微信公众号",
-      "subtitle": "搜索「上海市肺科医院」· 每日 7:00 放号",
+      "id": "alipay",
+      "title": "支付宝小程序",
+      "subtitle": "一键打开支付宝并搜索「上海市肺科医院」",
+      "primary": true,
+      "action": "open",
+      "url": "https://ds.alipay.com/?scheme=alipays%3A%2F%2Fplatformapi%2Fstartapp%3FappId%3D20001003%26keyword%3D%E4%B8%8A%E6%B5%B7%E5%B8%82%E8%82%BA%E7%A7%91%E5%8C%BB%E9%99%A2%26queryWord%3D%E4%B8%8A%E6%B5%B7%E5%B8%82%E8%82%BA%E7%A7%91%E5%8C%BB%E9%99%A2%26v2%3Dtrue%26startMultApp%3DYES%26searchType%3Dunified",
+      "button": "打开支付宝搜索",
+      "hint": "若未自动跳转，请打开支付宝搜索：上海市肺科医院"
+    },
+    {
+      "id": "alipay_full",
+      "title": "支付宝（全称搜索）",
+      "subtitle": "搜索「同济大学附属上海市肺科医院」",
       "primary": false,
-      "action": "copy",
+      "action": "open",
+      "url": "https://ds.alipay.com/?scheme=alipays%3A%2F%2Fplatformapi%2Fstartapp%3FappId%3D20001003%26keyword%3D%E5%90%8C%E6%B5%8E%E5%A4%A7%E5%AD%A6%E9%99%84%E5%B1%9E%E4%B8%8A%E6%B5%B7%E5%B8%82%E8%82%BA%E7%A7%91%E5%8C%BB%E9%99%A2%26queryWord%3D%E5%90%8C%E6%B5%8E%E5%A4%A7%E5%AD%A6%E9%99%84%E5%B1%9E%E4%B8%8A%E6%B5%B7%E5%B8%82%E8%82%BA%E7%A7%91%E5%8C%BB%E9%99%A2%26v2%3Dtrue%26startMultApp%3DYES%26searchType%3Dunified",
+      "button": "打开支付宝搜索全称"
+    },
+    {
+      "id": "wechat",
+      "title": "微信公众号预约",
+      "subtitle": "医院微信端主要走公众号，非公开小程序直达链接",
+      "primary": false,
+      "action": "wechat",
       "copy_text": "上海市肺科医院",
-      "button": "复制名称去微信",
-      "hint": "已复制公众号名，请打开微信粘贴搜索"
+      "url": "weixin://",
+      "button": "复制并打开微信",
+      "hint": "已复制「上海市肺科医院」，正在打开微信，请粘贴搜索公众号"
     },
     {
       "id": "wechat_sub",
       "title": "微信订阅号",
-      "subtitle": "搜索「上海市肺科医院订阅号」· 每日 7:00 放号",
+      "subtitle": "「上海市肺科医院订阅号」",
       "primary": false,
-      "action": "copy",
+      "action": "wechat",
       "copy_text": "上海市肺科医院订阅号",
-      "button": "复制名称去微信",
-      "hint": "已复制订阅号名，请打开微信粘贴搜索"
-    },
-    {
-      "id": "alipay",
-      "title": "支付宝小程序",
-      "subtitle": "搜索「上海市肺科医院」· 每日 7:00 放号",
-      "primary": false,
-      "action": "copy",
-      "copy_text": "上海市肺科医院",
-      "button": "复制名称去支付宝",
-      "hint": "已复制小程序名，请打开支付宝搜索"
+      "url": "weixin://",
+      "button": "复制并打开微信",
+      "hint": "已复制订阅号名，正在打开微信"
     },
     {
       "id": "hospital",
@@ -1754,7 +1767,8 @@
       "url": "https://www.shsfkyy.com/",
       "button": "打开官网"
     }
-  ]
+  ],
+  "mini_program_note": "微信/支付宝「指定小程序直达」需要医院官方 AppID 与 URL Scheme。目前未公开该 AppID，因此无法从网页直接打开肺科医院小程序首页；支付宝可一键跳到搜索结果，微信可复制名称并唤起微信 App。"
 }
   </script>
   <script>
@@ -1949,15 +1963,30 @@
         btn.addEventListener("click", async () => {
           const entry = entries.find((x) => x.id === btn.getAttribute("data-book"));
           if (!entry) return;
-          if (entry.action === "open" && entry.url) {
-            if (entry.url.startsWith("tel:")) {
-              window.location.href = entry.url;
-            } else {
-              window.open(entry.url, "_blank", "noopener,noreferrer");
+
+          if (entry.action === "wechat") {
+            if (entry.copy_text) {
+              const ok = await copyText(entry.copy_text);
+              toast(ok ? (entry.hint || "已复制，正在打开微信") : "复制失败，请手动搜索");
             }
-            toast(`正在打开：${entry.title}`);
+            // 无公开 AppID，无法直达指定小程序；只能唤起微信 App
+            setTimeout(() => {
+              window.location.href = entry.url || "weixin://";
+            }, 250);
             return;
           }
+
+          if (entry.action === "open" && entry.url) {
+            if (entry.url.startsWith("tel:") || entry.url.startsWith("weixin:") || entry.url.startsWith("alipays:")) {
+              window.location.href = entry.url;
+            } else {
+              // 支付宝 https 中转页在移动端更稳
+              window.location.href = entry.url;
+            }
+            toast(entry.hint || `正在打开：${entry.title}`);
+            return;
+          }
+
           if (entry.action === "copy" && entry.copy_text) {
             const ok = await copyText(entry.copy_text);
             toast(ok ? (entry.hint || "已复制") : "复制失败，请手动搜索");
@@ -2049,6 +2078,10 @@
 
       renderBooking(data.booking_entries || []);
       renderDoctors(data);
+
+      if (data.mini_program_note) {
+        document.getElementById("mini-program-note").textContent = data.mini_program_note;
+      }
 
       document.getElementById("channels").innerHTML = (data.channels || []).map((c) => `
         <div class="channel"><strong>${c.channel}</strong><span>${c.detail}</span></div>
