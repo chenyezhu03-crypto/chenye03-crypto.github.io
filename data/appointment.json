@@ -34,7 +34,7 @@
     },
     {
       "channel": "诊间",
-      "detail": "当日就诊结束后在医生诊室内预约下次复诊时间。 二.挂号小贴士"
+      "detail": "当日就诊结束后在医生诊室内预约下次复诊时间。"
     }
   ],
   "tips": [
@@ -1343,6 +1343,95 @@
     {
       "name": "预约电话",
       "url": "tel:4008203137"
+    }
+  ],
+  "release_schedules": [
+    {
+      "id": "wechat_alipay",
+      "label": "微信 / 支付宝 / APP",
+      "time": "07:00",
+      "timezone": "Asia/Shanghai",
+      "channels": [
+        "微信",
+        "支付宝",
+        "APP"
+      ],
+      "remind_minutes_before": [
+        15,
+        0
+      ]
+    },
+    {
+      "id": "shdc",
+      "label": "上海医联预约平台",
+      "time": "07:30",
+      "timezone": "Asia/Shanghai",
+      "channels": [
+        "网络/医联"
+      ],
+      "remind_minutes_before": [
+        15,
+        0
+      ]
+    }
+  ],
+  "booking_entries": [
+    {
+      "id": "shdc",
+      "title": "上海医联预约",
+      "subtitle": "网页一键跳转 · 每日 7:30 放号",
+      "primary": true,
+      "action": "open",
+      "url": "https://yuyue.shdc.org.cn/",
+      "button": "打开预约页"
+    },
+    {
+      "id": "phone",
+      "title": "电话预约",
+      "subtitle": "400-820-3137 · 全天",
+      "primary": true,
+      "action": "open",
+      "url": "tel:4008203137",
+      "button": "一键拨打"
+    },
+    {
+      "id": "wechat",
+      "title": "微信公众号",
+      "subtitle": "搜索「上海市肺科医院」· 每日 7:00 放号",
+      "primary": false,
+      "action": "copy",
+      "copy_text": "上海市肺科医院",
+      "button": "复制名称去微信",
+      "hint": "已复制公众号名，请打开微信粘贴搜索"
+    },
+    {
+      "id": "wechat_sub",
+      "title": "微信订阅号",
+      "subtitle": "搜索「上海市肺科医院订阅号」· 每日 7:00 放号",
+      "primary": false,
+      "action": "copy",
+      "copy_text": "上海市肺科医院订阅号",
+      "button": "复制名称去微信",
+      "hint": "已复制订阅号名，请打开微信粘贴搜索"
+    },
+    {
+      "id": "alipay",
+      "title": "支付宝小程序",
+      "subtitle": "搜索「上海市肺科医院」· 每日 7:00 放号",
+      "primary": false,
+      "action": "copy",
+      "copy_text": "上海市肺科医院",
+      "button": "复制名称去支付宝",
+      "hint": "已复制小程序名，请打开支付宝搜索"
+    },
+    {
+      "id": "hospital",
+      "title": "医院官网",
+      "subtitle": "查看医院官方信息",
+      "primary": false,
+      "action": "open",
+      "url": "https://www.shsfkyy.com/",
+      "button": "打开官网"
     }
   ]
 }
