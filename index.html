@@ -1,0 +1,1720 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>上海市肺科医院 · 公开预约信息</title>
+  <meta name="description" content="同济大学附属上海市肺科医院公开预约须知、科室与医生目录查阅页" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg0: #eef4f2;
+      --bg1: #d9ebe4;
+      --ink: #163028;
+      --muted: #4d665b;
+      --line: rgba(22, 48, 40, 0.14);
+      --accent: #0f7a5f;
+      --accent-soft: rgba(15, 122, 95, 0.12);
+      --warn: #8a4b12;
+      --surface: rgba(255, 255, 255, 0.72);
+      --shadow: 0 18px 40px rgba(22, 48, 40, 0.08);
+      --radius: 18px;
+      --font-display: "ZCOOL XiaoWei", "Noto Sans SC", serif;
+      --font-body: "Noto Sans SC", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      font-family: var(--font-body);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 600px at 10% -10%, #cfe8df 0%, transparent 55%),
+        radial-gradient(900px 500px at 100% 0%, #f3efe3 0%, transparent 50%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+    }
+
+    .wrap {
+      width: min(1080px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0 4rem;
+    }
+
+    .hero {
+      padding: 1.5rem 0 1.25rem;
+      animation: rise 0.7s ease both;
+    }
+
+    .brand {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.15;
+      margin: 0 0 0.6rem;
+      letter-spacing: 0.02em;
+    }
+
+    .lead {
+      margin: 0;
+      max-width: 38rem;
+      color: var(--muted);
+      font-size: 1.02rem;
+      line-height: 1.7;
+    }
+
+    .meta {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.7rem;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 999px;
+      backdrop-filter: blur(8px);
+    }
+
+    .panel {
+      margin-top: 1.4rem;
+      padding: 1.25rem 1.3rem;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      animation: rise 0.8s ease both;
+    }
+
+    .panel h2 {
+      margin: 0 0 0.85rem;
+      font-family: var(--font-display);
+      font-size: 1.55rem;
+      font-weight: 400;
+    }
+
+    .channels {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .channel {
+      display: grid;
+      gap: 0.2rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .channel:last-child { border-bottom: 0; padding-bottom: 0; }
+    .channel strong { color: var(--accent); font-weight: 700; }
+    .channel span { color: var(--muted); line-height: 1.6; font-size: 0.95rem; }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-top: 1rem;
+    }
+
+    .btn {
+      appearance: none;
+      border: 0;
+      text-decoration: none;
+      color: white;
+      background: var(--accent);
+      padding: 0.75rem 1.1rem;
+      border-radius: 12px;
+      font: inherit;
+      font-weight: 500;
+      transition: transform 0.18s ease, background 0.18s ease;
+    }
+    .btn:hover { transform: translateY(-1px); background: #0c6650; }
+    .btn.secondary {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr auto;
+      gap: 0.7rem;
+      margin: 1rem 0 0.8rem;
+    }
+    @media (max-width: 720px) {
+      .toolbar { grid-template-columns: 1fr; }
+    }
+
+    input, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px;
+      padding: 0.8rem 0.9rem;
+      font: inherit;
+      color: var(--ink);
+      outline: none;
+    }
+    input:focus, select:focus {
+      border-color: rgba(15, 122, 95, 0.45);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .count {
+      align-self: center;
+      color: var(--muted);
+      font-size: 0.92rem;
+      white-space: nowrap;
+    }
+
+    .list {
+      display: grid;
+      gap: 0.55rem;
+      margin-top: 0.4rem;
+    }
+
+    .doc {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.5rem 1rem;
+      align-items: center;
+      padding: 0.9rem 0.2rem;
+      border-bottom: 1px solid var(--line);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s ease, padding-left 0.15s ease;
+    }
+    .doc:hover {
+      background: var(--accent-soft);
+      padding-left: 0.55rem;
+      border-radius: 10px;
+    }
+    .doc .name {
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+    .doc .sub {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 0.15rem;
+    }
+    .fee {
+      color: var(--accent);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tips {
+      margin: 0;
+      padding-left: 1.1rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .notice {
+      margin-top: 1rem;
+      padding: 0.9rem 1rem;
+      border-left: 3px solid var(--warn);
+      background: rgba(138, 75, 18, 0.08);
+      color: var(--warn);
+      border-radius: 0 12px 12px 0;
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .footer {
+      margin-top: 1.5rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <h1 class="brand" id="brand">上海市肺科医院</h1>
+      <p class="lead">公开预约须知、科室与医生目录查阅。实际挂号请走医院官方渠道，本页不做抢号。</p>
+      <div class="meta" id="meta"></div>
+    </header>
+
+    <section class="panel">
+      <h2>怎么预约</h2>
+      <div class="channels" id="channels"></div>
+      <div class="links" id="official"></div>
+      <div class="notice" id="disclaimer"></div>
+    </section>
+
+    <section class="panel" style="animation-delay: 0.08s">
+      <h2>找医生</h2>
+      <div class="toolbar">
+        <input id="q" type="search" placeholder="搜索医生姓名 / 科室" autocomplete="off" />
+        <select id="dept">
+          <option value="">全部科室</option>
+        </select>
+        <div class="count" id="count">—</div>
+      </div>
+      <div class="list" id="doctors"></div>
+    </section>
+
+    <section class="panel" style="animation-delay: 0.12s">
+      <h2>挂号小贴士</h2>
+      <ul class="tips" id="tips"></ul>
+      <p class="footer">数据来自公开聚合信息，可能滞后；以医院微信 / 支付宝 / 医联平台实时号源为准。</p>
+    </section>
+  </main>
+
+  <script id="appointment-data" type="application/json">
+{
+  "hospital": "上海市肺科医院",
+  "short_name": "上海肺科医院",
+  "crawled_at": "2026-07-25T02:39:35.154259+00:00",
+  "disclaimer": "本工具仅采集公开的预约须知、科室与医生目录信息，不抓取官方实时号源，不提供自动挂号/抢号功能。实际预约请通过医院微信公众号、支付宝小程序或上海医联预约平台。",
+  "release_times": [
+    "每日7:00放号",
+    "每日7:30放号"
+  ],
+  "channels": [
+    {
+      "channel": "微信",
+      "detail": "（1）“上海市肺科医院”公众号，每日7:00放号，可预约28天内号源； （2）“上海市肺科医院订阅号”公众号，每日7:00放号，可预约28天内号源；"
+    },
+    {
+      "channel": "电话",
+      "detail": "拨打400-820-3137预约，全天服务；"
+    },
+    {
+      "channel": "网络/医联",
+      "detail": "上海医联预约平台（https://yuyue.shdc.org.cn/），每日7:30放号，可预约28天内号源；"
+    },
+    {
+      "channel": "支付宝",
+      "detail": "“上海市肺科医院”小程序，每日7:00放号，可预约28天内号源；"
+    },
+    {
+      "channel": "APP",
+      "detail": "下载“上海市互联网总医院”APP预约，每日7:00放号，可预约28天内号源；"
+    },
+    {
+      "channel": "现场",
+      "detail": "（1）可在医院内自助服务机预约，全天服务； （2）可在医院内服务台现场预约，服务时间为周一至周六8:00-16:00；"
+    },
+    {
+      "channel": "诊间",
+      "detail": "当日就诊结束后在医生诊室内预约下次复诊时间。 二.挂号小贴士"
+    }
+  ],
+  "tips": [
+    "1.微信公众号及支付宝小程序上，预约当天号源的时间为6:00-16:00，需至少在就诊时间段前30分钟完成预约；",
+    "2.预约施行分时段就诊，上午号源上午就诊，下午号源下午就诊，请在预约时间段内到医院就诊，超过未取号源作废，需重新挂号就诊；",
+    "3.患者如因故不能前来就诊，线上预约者请在就诊前一天按原预约路径取消预约，现场预约者请于前一工作日12:00前致电取消，电话：021-65115006转2039（总院门诊）、021-64375510（延庆路院区门诊）；",
+    "4.每人每天（24小时内）每个科别只能预约一个号源，预约成功后可以取消预约，同一人同一天同一科室号源可以取消两次，第三次取消后将不能再预约该天该科室号源；",
+    "5.180天内累计3次爽约自动纳入黑名单，取消后续180天预约资格。"
+  ],
+  "departments": [
+    {
+      "id": 5396,
+      "name": "肿瘤科",
+      "parent": "其他"
+    },
+    {
+      "id": 5402,
+      "name": "放疗科",
+      "parent": "其他"
+    },
+    {
+      "id": 5398,
+      "name": "中西医结合科",
+      "parent": "其他"
+    },
+    {
+      "id": 5407,
+      "name": "营养科",
+      "parent": "其他"
+    },
+    {
+      "id": 5400,
+      "name": "麻醉科",
+      "parent": "其他"
+    },
+    {
+      "id": 86416,
+      "name": "超声科",
+      "parent": "其他"
+    },
+    {
+      "id": 86420,
+      "name": "内镜中心",
+      "parent": "其他"
+    },
+    {
+      "id": 5403,
+      "name": "特检科",
+      "parent": "其他"
+    },
+    {
+      "id": 5393,
+      "name": "放射科",
+      "parent": "其他"
+    },
+    {
+      "id": 5405,
+      "name": "核医学科",
+      "parent": "其他"
+    },
+    {
+      "id": 126161,
+      "name": "中毒科",
+      "parent": "其他"
+    },
+    {
+      "id": 5401,
+      "name": "急诊科",
+      "parent": "其他"
+    },
+    {
+      "id": 5404,
+      "name": "体检科",
+      "parent": "其他"
+    },
+    {
+      "id": 5409,
+      "name": "病理科",
+      "parent": "其他"
+    },
+    {
+      "id": 5406,
+      "name": "药剂科",
+      "parent": "其他"
+    },
+    {
+      "id": 82057,
+      "name": "检验科",
+      "parent": "其他"
+    },
+    {
+      "id": 96168,
+      "name": "护理部",
+      "parent": "其他"
+    },
+    {
+      "id": 5395,
+      "name": "呼吸与危重症医学科",
+      "parent": "传染"
+    },
+    {
+      "id": 86414,
+      "name": "肺内科",
+      "parent": "传染"
+    },
+    {
+      "id": 5397,
+      "name": "肺循环科",
+      "parent": "传染"
+    },
+    {
+      "id": 5392,
+      "name": "胸外科",
+      "parent": "传染"
+    },
+    {
+      "id": 5394,
+      "name": "结核科",
+      "parent": "传染"
+    },
+    {
+      "id": 76949,
+      "name": "尘肺科",
+      "parent": "传染"
+    }
+  ],
+  "doctors": [
+    {
+      "id": "42062",
+      "name": "史宏彰",
+      "title": "主任医师",
+      "department": "中毒科",
+      "fee": 216,
+      "url": "https://www.youlai.cn/yyk/docindex/42062/"
+    },
+    {
+      "id": "42032",
+      "name": "孙道远",
+      "title": "主任医师",
+      "department": "中毒科",
+      "fee": 216,
+      "url": "https://www.youlai.cn/yyk/docindex/42032/"
+    },
+    {
+      "id": "42036",
+      "name": "张巡淼",
+      "title": "主任医师",
+      "department": "中毒科",
+      "fee": 216,
+      "url": "https://www.youlai.cn/yyk/docindex/42036/"
+    },
+    {
+      "id": "35453",
+      "name": "方邦江",
+      "title": "主任医师",
+      "department": "中毒科",
+      "fee": 216,
+      "url": "https://www.youlai.cn/yyk/docindex/35453/"
+    },
+    {
+      "id": "8889",
+      "name": "杨志旭",
+      "title": "主任医师",
+      "department": "中毒科",
+      "fee": 216,
+      "url": "https://www.youlai.cn/yyk/docindex/8889/"
+    },
+    {
+      "id": "22643",
+      "name": "梁腾霄",
+      "title": "主任医师",
+      "department": "中毒科",
+      "fee": 216,
+      "url": "https://www.youlai.cn/yyk/docindex/22643/"
+    },
+    {
+      "id": "41966",
+      "name": "沈莉",
+      "title": "主任医师",
+      "department": "中毒科",
+      "fee": 216,
+      "url": "https://www.youlai.cn/yyk/docindex/41966/"
+    },
+    {
+      "id": "49705",
+      "name": "王晶",
+      "title": "主任医师",
+      "department": "中毒科",
+      "fee": 216,
+      "url": "https://www.youlai.cn/yyk/docindex/49705/"
+    },
+    {
+      "id": "42039",
+      "name": "谢兰兰",
+      "title": "主任医师",
+      "department": "中毒科",
+      "fee": 216,
+      "url": "https://www.youlai.cn/yyk/docindex/42039/"
+    },
+    {
+      "id": "364409",
+      "name": "车在前",
+      "title": "主任医师",
+      "department": "中毒科",
+      "fee": 216,
+      "url": "https://www.youlai.cn/yyk/docindex/364409/"
+    },
+    {
+      "id": "46929",
+      "name": "吴克永",
+      "title": "主任医师",
+      "department": "中西医结合科",
+      "fee": 68,
+      "url": "https://www.youlai.cn/yyk/docindex/46929/"
+    },
+    {
+      "id": "46939",
+      "name": "牛惠志",
+      "title": "主任医师",
+      "department": "中西医结合科",
+      "fee": 68,
+      "url": "https://www.youlai.cn/yyk/docindex/46939/"
+    },
+    {
+      "id": "46941",
+      "name": "谢嘉文",
+      "title": "主任医师",
+      "department": "中西医结合科",
+      "fee": 68,
+      "url": "https://www.youlai.cn/yyk/docindex/46941/"
+    },
+    {
+      "id": "36269",
+      "name": "金长娟",
+      "title": "主任医师",
+      "department": "中西医结合科",
+      "fee": 68,
+      "url": "https://www.youlai.cn/yyk/docindex/36269/"
+    },
+    {
+      "id": "46952",
+      "name": "黄建华",
+      "title": "主任医师",
+      "department": "中西医结合科",
+      "fee": 68,
+      "url": "https://www.youlai.cn/yyk/docindex/46952/"
+    },
+    {
+      "id": "42077",
+      "name": "孙文灏",
+      "title": "主治医师",
+      "department": "体检科",
+      "fee": 0,
+      "url": "https://www.youlai.cn/yyk/docindex/42077/"
+    },
+    {
+      "id": "739468",
+      "name": "张霞",
+      "title": "主治医师",
+      "department": "体检科",
+      "fee": 0,
+      "url": "https://www.youlai.cn/yyk/docindex/739468/"
+    },
+    {
+      "id": "448878",
+      "name": "房洁",
+      "title": "主治医师",
+      "department": "体检科",
+      "fee": 0,
+      "url": "https://www.youlai.cn/yyk/docindex/448878/"
+    },
+    {
+      "id": "42076",
+      "name": "李霞",
+      "title": "主治医师",
+      "department": "体检科",
+      "fee": 0,
+      "url": "https://www.youlai.cn/yyk/docindex/42076/"
+    },
+    {
+      "id": "784487",
+      "name": "石慧娟",
+      "title": "主治医师",
+      "department": "体检科",
+      "fee": 0,
+      "url": "https://www.youlai.cn/yyk/docindex/784487/"
+    },
+    {
+      "id": "783786",
+      "name": "胡晨鸣",
+      "title": "主治医师",
+      "department": "体检科",
+      "fee": 0,
+      "url": "https://www.youlai.cn/yyk/docindex/783786/"
+    },
+    {
+      "id": "784488",
+      "name": "陈梅",
+      "title": "主治医师",
+      "department": "体检科",
+      "fee": 0,
+      "url": "https://www.youlai.cn/yyk/docindex/784488/"
+    },
+    {
+      "id": "787513",
+      "name": "孔程",
+      "title": "副主任医师",
+      "department": "内镜中心",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/787513/"
+    },
+    {
+      "id": "384506",
+      "name": "杨莉",
+      "title": "副主任医师",
+      "department": "内镜中心",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/384506/"
+    },
+    {
+      "id": "384523",
+      "name": "王海",
+      "title": "副主任医师",
+      "department": "内镜中心",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/384523/"
+    },
+    {
+      "id": "40672",
+      "name": "宋志芳",
+      "title": "主任医师",
+      "department": "呼吸与危重症医学科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/40672/"
+    },
+    {
+      "id": "380139",
+      "name": "崔志磊",
+      "title": "主任医师",
+      "department": "呼吸与危重症医学科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/380139/"
+    },
+    {
+      "id": "33558",
+      "name": "刘洪宝",
+      "title": "主任医师",
+      "department": "尘肺科",
+      "fee": 38,
+      "url": "https://www.youlai.cn/yyk/docindex/33558/"
+    },
+    {
+      "id": "359629",
+      "name": "周阿高",
+      "title": "主任医师",
+      "department": "尘肺科",
+      "fee": 38,
+      "url": "https://www.youlai.cn/yyk/docindex/359629/"
+    },
+    {
+      "id": "42034",
+      "name": "周韶炜",
+      "title": "主任医师",
+      "department": "尘肺科",
+      "fee": 38,
+      "url": "https://www.youlai.cn/yyk/docindex/42034/"
+    },
+    {
+      "id": "35152",
+      "name": "周龙妹",
+      "title": "主任医师",
+      "department": "尘肺科",
+      "fee": 38,
+      "url": "https://www.youlai.cn/yyk/docindex/35152/"
+    },
+    {
+      "id": "42031",
+      "name": "徐孝华",
+      "title": "主任医师",
+      "department": "尘肺科",
+      "fee": 38,
+      "url": "https://www.youlai.cn/yyk/docindex/42031/"
+    },
+    {
+      "id": "42035",
+      "name": "施瑾",
+      "title": "主任医师",
+      "department": "尘肺科",
+      "fee": 38,
+      "url": "https://www.youlai.cn/yyk/docindex/42035/"
+    },
+    {
+      "id": "783635",
+      "name": "段亚利",
+      "title": "主任医师",
+      "department": "尘肺科",
+      "fee": 38,
+      "url": "https://www.youlai.cn/yyk/docindex/783635/"
+    },
+    {
+      "id": "42033",
+      "name": "毛翎",
+      "title": "主任医师",
+      "department": "尘肺科",
+      "fee": 38,
+      "url": "https://www.youlai.cn/yyk/docindex/42033/"
+    },
+    {
+      "id": "35247",
+      "name": "葛京化",
+      "title": "主任医师",
+      "department": "尘肺科",
+      "fee": 38,
+      "url": "https://www.youlai.cn/yyk/docindex/35247/"
+    },
+    {
+      "id": "42038",
+      "name": "闻军",
+      "title": "主任医师",
+      "department": "尘肺科",
+      "fee": 38,
+      "url": "https://www.youlai.cn/yyk/docindex/42038/"
+    },
+    {
+      "id": "438422",
+      "name": "孙静",
+      "title": "主治医师",
+      "department": "护理部",
+      "fee": null,
+      "url": "https://www.youlai.cn/yyk/docindex/438422/"
+    },
+    {
+      "id": "452304",
+      "name": "李玉梅",
+      "title": "主治医师",
+      "department": "护理部",
+      "fee": null,
+      "url": "https://www.youlai.cn/yyk/docindex/452304/"
+    },
+    {
+      "id": "452316",
+      "name": "陈丹萍",
+      "title": "主治医师",
+      "department": "护理部",
+      "fee": null,
+      "url": "https://www.youlai.cn/yyk/docindex/452316/"
+    },
+    {
+      "id": "452317",
+      "name": "陈丽娟",
+      "title": "主治医师",
+      "department": "护理部",
+      "fee": null,
+      "url": "https://www.youlai.cn/yyk/docindex/452317/"
+    },
+    {
+      "id": "452303",
+      "name": "鲁敏",
+      "title": "主治医师",
+      "department": "护理部",
+      "fee": null,
+      "url": "https://www.youlai.cn/yyk/docindex/452303/"
+    },
+    {
+      "id": "452315",
+      "name": "黄瑛",
+      "title": "主治医师",
+      "department": "护理部",
+      "fee": null,
+      "url": "https://www.youlai.cn/yyk/docindex/452315/"
+    },
+    {
+      "id": "41142",
+      "name": "任刚",
+      "title": "主治医师",
+      "department": "放射科",
+      "fee": 600,
+      "url": "https://www.youlai.cn/yyk/docindex/41142/"
+    },
+    {
+      "id": "739845",
+      "name": "刘立红",
+      "title": "主治医师",
+      "department": "放射科",
+      "fee": 600,
+      "url": "https://www.youlai.cn/yyk/docindex/739845/"
+    },
+    {
+      "id": "54154",
+      "name": "郭永梅",
+      "title": "主治医师",
+      "department": "放射科",
+      "fee": 600,
+      "url": "https://www.youlai.cn/yyk/docindex/54154/"
+    },
+    {
+      "id": "373145",
+      "name": "韩芳",
+      "title": "主治医师",
+      "department": "放射科",
+      "fee": 600,
+      "url": "https://www.youlai.cn/yyk/docindex/373145/"
+    },
+    {
+      "id": "785959",
+      "name": "侯安继",
+      "title": "副主任医师",
+      "department": "放疗科",
+      "fee": 88,
+      "url": "https://www.youlai.cn/yyk/docindex/785959/"
+    },
+    {
+      "id": "415246",
+      "name": "周鑫",
+      "title": "副主任医师",
+      "department": "放疗科",
+      "fee": 88,
+      "url": "https://www.youlai.cn/yyk/docindex/415246/"
+    },
+    {
+      "id": "42071",
+      "name": "蔡勇",
+      "title": "副主任医师",
+      "department": "放疗科",
+      "fee": 88,
+      "url": "https://www.youlai.cn/yyk/docindex/42071/"
+    },
+    {
+      "id": "43991",
+      "name": "赵国旗",
+      "title": "副主任医师",
+      "department": "放疗科",
+      "fee": 88,
+      "url": "https://www.youlai.cn/yyk/docindex/43991/"
+    },
+    {
+      "id": "42079",
+      "name": "刘进军",
+      "title": "主任医师",
+      "department": "核医学科",
+      "fee": 600,
+      "url": "https://www.youlai.cn/yyk/docindex/42079/"
+    },
+    {
+      "id": "384485",
+      "name": "姜磊",
+      "title": "主任医师",
+      "department": "核医学科",
+      "fee": 600,
+      "url": "https://www.youlai.cn/yyk/docindex/384485/"
+    },
+    {
+      "id": "787239",
+      "name": "张建",
+      "title": "主任医师",
+      "department": "核医学科",
+      "fee": 600,
+      "url": "https://www.youlai.cn/yyk/docindex/787239/"
+    },
+    {
+      "id": "268433",
+      "name": "张永学",
+      "title": "主任医师",
+      "department": "核医学科",
+      "fee": 600,
+      "url": "https://www.youlai.cn/yyk/docindex/268433/"
+    },
+    {
+      "id": "268435",
+      "name": "曹卫",
+      "title": "主任医师",
+      "department": "核医学科",
+      "fee": 600,
+      "url": "https://www.youlai.cn/yyk/docindex/268435/"
+    },
+    {
+      "id": "37280",
+      "name": "李培勇",
+      "title": "主任医师",
+      "department": "核医学科",
+      "fee": 600,
+      "url": "https://www.youlai.cn/yyk/docindex/37280/"
+    },
+    {
+      "id": "384513",
+      "name": "李强",
+      "title": "主任医师",
+      "department": "核医学科",
+      "fee": 600,
+      "url": "https://www.youlai.cn/yyk/docindex/384513/"
+    },
+    {
+      "id": "42078",
+      "name": "王火强",
+      "title": "主任医师",
+      "department": "核医学科",
+      "fee": 600,
+      "url": "https://www.youlai.cn/yyk/docindex/42078/"
+    },
+    {
+      "id": "42080",
+      "name": "赵龙",
+      "title": "主任医师",
+      "department": "核医学科",
+      "fee": 600,
+      "url": "https://www.youlai.cn/yyk/docindex/42080/"
+    },
+    {
+      "id": "90197",
+      "name": "郭万华",
+      "title": "主任医师",
+      "department": "核医学科",
+      "fee": 600,
+      "url": "https://www.youlai.cn/yyk/docindex/90197/"
+    },
+    {
+      "id": "741165",
+      "name": "余方友",
+      "title": "副主任医师",
+      "department": "检验科",
+      "fee": 56,
+      "url": "https://www.youlai.cn/yyk/docindex/741165/"
+    },
+    {
+      "id": "367548",
+      "name": "师伟",
+      "title": "副主任医师",
+      "department": "检验科",
+      "fee": 56,
+      "url": "https://www.youlai.cn/yyk/docindex/367548/"
+    },
+    {
+      "id": "383173",
+      "name": "张艳芬",
+      "title": "副主任医师",
+      "department": "检验科",
+      "fee": 56,
+      "url": "https://www.youlai.cn/yyk/docindex/383173/"
+    },
+    {
+      "id": "782708",
+      "name": "徐倩",
+      "title": "副主任医师",
+      "department": "检验科",
+      "fee": 56,
+      "url": "https://www.youlai.cn/yyk/docindex/782708/"
+    },
+    {
+      "id": "42075",
+      "name": "浦江",
+      "title": "副主任医师",
+      "department": "检验科",
+      "fee": 56,
+      "url": "https://www.youlai.cn/yyk/docindex/42075/"
+    },
+    {
+      "id": "741170",
+      "name": "王洪秀",
+      "title": "副主任医师",
+      "department": "检验科",
+      "fee": 56,
+      "url": "https://www.youlai.cn/yyk/docindex/741170/"
+    },
+    {
+      "id": "451636",
+      "name": "王露",
+      "title": "副主任医师",
+      "department": "检验科",
+      "fee": 56,
+      "url": "https://www.youlai.cn/yyk/docindex/451636/"
+    },
+    {
+      "id": "367638",
+      "name": "田敬伦",
+      "title": "副主任医师",
+      "department": "检验科",
+      "fee": 56,
+      "url": "https://www.youlai.cn/yyk/docindex/367638/"
+    },
+    {
+      "id": "42074",
+      "name": "陶巨蔚",
+      "title": "副主任医师",
+      "department": "检验科",
+      "fee": 56,
+      "url": "https://www.youlai.cn/yyk/docindex/42074/"
+    },
+    {
+      "id": "740562",
+      "name": "刘志艳",
+      "title": "主任医师",
+      "department": "病理科",
+      "fee": null,
+      "url": "https://www.youlai.cn/yyk/docindex/740562/"
+    },
+    {
+      "id": "377531",
+      "name": "张冬梅",
+      "title": "主任医师",
+      "department": "病理科",
+      "fee": null,
+      "url": "https://www.youlai.cn/yyk/docindex/377531/"
+    },
+    {
+      "id": "42086",
+      "name": "张莉萍",
+      "title": "主任医师",
+      "department": "病理科",
+      "fee": null,
+      "url": "https://www.youlai.cn/yyk/docindex/42086/"
+    },
+    {
+      "id": "7961",
+      "name": "杨邵敏",
+      "title": "主任医师",
+      "department": "病理科",
+      "fee": null,
+      "url": "https://www.youlai.cn/yyk/docindex/7961/"
+    },
+    {
+      "id": "378002",
+      "name": "林军",
+      "title": "主任医师",
+      "department": "病理科",
+      "fee": null,
+      "url": "https://www.youlai.cn/yyk/docindex/378002/"
+    },
+    {
+      "id": "42085",
+      "name": "武春燕",
+      "title": "主任医师",
+      "department": "病理科",
+      "fee": null,
+      "url": "https://www.youlai.cn/yyk/docindex/42085/"
+    },
+    {
+      "id": "378538",
+      "name": "罗荣奎",
+      "title": "主任医师",
+      "department": "病理科",
+      "fee": null,
+      "url": "https://www.youlai.cn/yyk/docindex/378538/"
+    },
+    {
+      "id": "384465",
+      "name": "董正伟",
+      "title": "主任医师",
+      "department": "病理科",
+      "fee": null,
+      "url": "https://www.youlai.cn/yyk/docindex/384465/"
+    },
+    {
+      "id": "384468",
+      "name": "谢惠康",
+      "title": "主任医师",
+      "department": "病理科",
+      "fee": null,
+      "url": "https://www.youlai.cn/yyk/docindex/384468/"
+    },
+    {
+      "id": "384463",
+      "name": "谢晓枫",
+      "title": "主任医师",
+      "department": "病理科",
+      "fee": null,
+      "url": "https://www.youlai.cn/yyk/docindex/384463/"
+    },
+    {
+      "id": "274654",
+      "name": "张丽",
+      "title": "主任医师",
+      "department": "结核科",
+      "fee": 160,
+      "url": "https://www.youlai.cn/yyk/docindex/274654/"
+    },
+    {
+      "id": "29074",
+      "name": "蔡宝云",
+      "title": "主任医师",
+      "department": "结核科",
+      "fee": 160,
+      "url": "https://www.youlai.cn/yyk/docindex/29074/"
+    },
+    {
+      "id": "253413",
+      "name": "金龙",
+      "title": "主任医师",
+      "department": "结核科",
+      "fee": 160,
+      "url": "https://www.youlai.cn/yyk/docindex/253413/"
+    },
+    {
+      "id": "274659",
+      "name": "魏明",
+      "title": "主任医师",
+      "department": "结核科",
+      "fee": 160,
+      "url": "https://www.youlai.cn/yyk/docindex/274659/"
+    },
+    {
+      "id": "41981",
+      "name": "倪健",
+      "title": "主任医师",
+      "department": "肿瘤科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/41981/"
+    },
+    {
+      "id": "41979",
+      "name": "周崧雯",
+      "title": "主任医师",
+      "department": "肿瘤科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/41979/"
+    },
+    {
+      "id": "41978",
+      "name": "周彩存",
+      "title": "主任医师",
+      "department": "肿瘤科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/41978/"
+    },
+    {
+      "id": "378736",
+      "name": "宋瑞祥",
+      "title": "主任医师",
+      "department": "肿瘤科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/378736/"
+    },
+    {
+      "id": "40804",
+      "name": "康健",
+      "title": "主任医师",
+      "department": "肿瘤科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/40804/"
+    },
+    {
+      "id": "41983",
+      "name": "张洁",
+      "title": "主任医师",
+      "department": "肿瘤科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/41983/"
+    },
+    {
+      "id": "41980",
+      "name": "徐建芳",
+      "title": "主任医师",
+      "department": "肿瘤科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/41980/"
+    },
+    {
+      "id": "362245",
+      "name": "曲发军",
+      "title": "主任医师",
+      "department": "肿瘤科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/362245/"
+    },
+    {
+      "id": "42404",
+      "name": "石洁",
+      "title": "主任医师",
+      "department": "肿瘤科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/42404/"
+    },
+    {
+      "id": "41128",
+      "name": "郑磊贞",
+      "title": "主任医师",
+      "department": "肿瘤科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/41128/"
+    },
+    {
+      "id": "368756",
+      "name": "丁新宇",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/368756/"
+    },
+    {
+      "id": "41873",
+      "name": "何文新",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/41873/"
+    },
+    {
+      "id": "41899",
+      "name": "刘小刚",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/41899/"
+    },
+    {
+      "id": "41862",
+      "name": "周晓",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/41862/"
+    },
+    {
+      "id": "41860",
+      "name": "姜格宁",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/41860/"
+    },
+    {
+      "id": "41878",
+      "name": "宋楠",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/41878/"
+    },
+    {
+      "id": "42010",
+      "name": "徐清华",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/42010/"
+    },
+    {
+      "id": "41861",
+      "name": "朱余明",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/41861/"
+    },
+    {
+      "id": "384497",
+      "name": "朱巍",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/384497/"
+    },
+    {
+      "id": "384504",
+      "name": "李满会",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/384504/"
+    },
+    {
+      "id": "41949",
+      "name": "李霞",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/41949/"
+    },
+    {
+      "id": "41900",
+      "name": "杨洋",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/41900/"
+    },
+    {
+      "id": "41918",
+      "name": "梁莉",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/41918/"
+    },
+    {
+      "id": "41863",
+      "name": "汪浩",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/41863/"
+    },
+    {
+      "id": "41880",
+      "name": "谢冬",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/41880/"
+    },
+    {
+      "id": "41865",
+      "name": "费苛",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/41865/"
+    },
+    {
+      "id": "41879",
+      "name": "赵晓刚",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/41879/"
+    },
+    {
+      "id": "41864",
+      "name": "陈昶",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/41864/"
+    },
+    {
+      "id": "41897",
+      "name": "鲍熠",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/41897/"
+    },
+    {
+      "id": "384510",
+      "name": "黄冬冬",
+      "title": "主任医师",
+      "department": "胸外科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/384510/"
+    },
+    {
+      "id": "233808",
+      "name": "任耘",
+      "title": null,
+      "department": "药剂科",
+      "fee": 60,
+      "url": "https://www.youlai.cn/yyk/docindex/233808/"
+    },
+    {
+      "id": "363658",
+      "name": "曾钰",
+      "title": null,
+      "department": "药剂科",
+      "fee": 60,
+      "url": "https://www.youlai.cn/yyk/docindex/363658/"
+    },
+    {
+      "id": "42082",
+      "name": "李玉平",
+      "title": null,
+      "department": "药剂科",
+      "fee": 60,
+      "url": "https://www.youlai.cn/yyk/docindex/42082/"
+    },
+    {
+      "id": "806",
+      "name": "杨淑桂",
+      "title": null,
+      "department": "药剂科",
+      "fee": 60,
+      "url": "https://www.youlai.cn/yyk/docindex/806/"
+    },
+    {
+      "id": "22224",
+      "name": "杨莉萍",
+      "title": null,
+      "department": "药剂科",
+      "fee": 60,
+      "url": "https://www.youlai.cn/yyk/docindex/22224/"
+    },
+    {
+      "id": "361715",
+      "name": "阮君山",
+      "title": null,
+      "department": "药剂科",
+      "fee": 60,
+      "url": "https://www.youlai.cn/yyk/docindex/361715/"
+    },
+    {
+      "id": "32699",
+      "name": "冯一",
+      "title": "主任医师",
+      "department": "营养科",
+      "fee": 50,
+      "url": "https://www.youlai.cn/yyk/docindex/32699/"
+    },
+    {
+      "id": "1538",
+      "name": "夏萌",
+      "title": "主任医师",
+      "department": "营养科",
+      "fee": 50,
+      "url": "https://www.youlai.cn/yyk/docindex/1538/"
+    },
+    {
+      "id": "16984",
+      "name": "李时莲",
+      "title": "主任医师",
+      "department": "营养科",
+      "fee": 50,
+      "url": "https://www.youlai.cn/yyk/docindex/16984/"
+    },
+    {
+      "id": "288394",
+      "name": "胡小翠",
+      "title": "主任医师",
+      "department": "营养科",
+      "fee": 50,
+      "url": "https://www.youlai.cn/yyk/docindex/288394/"
+    },
+    {
+      "id": "287562",
+      "name": "陈志勇",
+      "title": "主任医师",
+      "department": "营养科",
+      "fee": 50,
+      "url": "https://www.youlai.cn/yyk/docindex/287562/"
+    },
+    {
+      "id": "42083",
+      "name": "陈薇",
+      "title": "主任医师",
+      "department": "营养科",
+      "fee": 50,
+      "url": "https://www.youlai.cn/yyk/docindex/42083/"
+    },
+    {
+      "id": "384475",
+      "name": "丛阳",
+      "title": "副主任医师",
+      "department": "超声科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/384475/"
+    },
+    {
+      "id": "419908",
+      "name": "任新平",
+      "title": "副主任医师",
+      "department": "超声科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/419908/"
+    },
+    {
+      "id": "274693",
+      "name": "余松远",
+      "title": "副主任医师",
+      "department": "超声科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/274693/"
+    },
+    {
+      "id": "757921",
+      "name": "余梦昕",
+      "title": "副主任医师",
+      "department": "超声科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/757921/"
+    },
+    {
+      "id": "527409",
+      "name": "刁雪红",
+      "title": "副主任医师",
+      "department": "超声科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/527409/"
+    },
+    {
+      "id": "384488",
+      "name": "徐黎莎",
+      "title": "副主任医师",
+      "department": "超声科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/384488/"
+    },
+    {
+      "id": "376627",
+      "name": "王玉",
+      "title": "副主任医师",
+      "department": "超声科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/376627/"
+    },
+    {
+      "id": "384479",
+      "name": "王茵",
+      "title": "副主任医师",
+      "department": "超声科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/384479/"
+    },
+    {
+      "id": "784814",
+      "name": "闫瑞玲",
+      "title": "副主任医师",
+      "department": "超声科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/784814/"
+    },
+    {
+      "id": "41965",
+      "name": "顾晔",
+      "title": "副主任医师",
+      "department": "超声科",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/41965/"
+    },
+    {
+      "id": "434427",
+      "name": "冉德伟",
+      "title": "主任医师",
+      "department": "麻醉科",
+      "fee": 160,
+      "url": "https://www.youlai.cn/yyk/docindex/434427/"
+    },
+    {
+      "id": "42050",
+      "name": "刘继",
+      "title": "主任医师",
+      "department": "麻醉科",
+      "fee": 160,
+      "url": "https://www.youlai.cn/yyk/docindex/42050/"
+    },
+    {
+      "id": "42049",
+      "name": "吕欣",
+      "title": "主任医师",
+      "department": "麻醉科",
+      "fee": 160,
+      "url": "https://www.youlai.cn/yyk/docindex/42049/"
+    },
+    {
+      "id": "42052",
+      "name": "宋炯",
+      "title": "主任医师",
+      "department": "麻醉科",
+      "fee": 160,
+      "url": "https://www.youlai.cn/yyk/docindex/42052/"
+    },
+    {
+      "id": "402954",
+      "name": "李修良",
+      "title": "主任医师",
+      "department": "麻醉科",
+      "fee": 160,
+      "url": "https://www.youlai.cn/yyk/docindex/402954/"
+    },
+    {
+      "id": "42060",
+      "name": "李华",
+      "title": "主任医师",
+      "department": "麻醉科",
+      "fee": 160,
+      "url": "https://www.youlai.cn/yyk/docindex/42060/"
+    },
+    {
+      "id": "17446",
+      "name": "李雁",
+      "title": "主任医师",
+      "department": "麻醉科",
+      "fee": 160,
+      "url": "https://www.youlai.cn/yyk/docindex/17446/"
+    },
+    {
+      "id": "69062",
+      "name": "杨承祥",
+      "title": "主任医师",
+      "department": "麻醉科",
+      "fee": 160,
+      "url": "https://www.youlai.cn/yyk/docindex/69062/"
+    },
+    {
+      "id": "42051",
+      "name": "温宗梅",
+      "title": "主任医师",
+      "department": "麻醉科",
+      "fee": 160,
+      "url": "https://www.youlai.cn/yyk/docindex/42051/"
+    },
+    {
+      "id": "35755",
+      "name": "陈志扬",
+      "title": "主任医师",
+      "department": "麻醉科",
+      "fee": 160,
+      "url": "https://www.youlai.cn/yyk/docindex/35755/"
+    }
+  ],
+  "official": [
+    {
+      "name": "医院官网",
+      "url": "https://www.shsfkyy.com/"
+    },
+    {
+      "name": "上海医联预约",
+      "url": "https://yuyue.shdc.org.cn/"
+    },
+    {
+      "name": "预约电话",
+      "url": "tel:4008203137"
+    }
+  ]
+}
+  </script>
+  <script>
+    async function loadData() {
+      const el = document.getElementById("appointment-data");
+      if (el && el.textContent.trim()) {
+        return JSON.parse(el.textContent);
+      }
+      const res = await fetch("./data/appointment.json", { cache: "no-store" });
+      if (!res.ok) throw new Error("failed to load data");
+      return res.json();
+    }
+
+    function money(fee) {
+      if (fee == null || fee === "") return "";
+      return `参考 ¥${fee}`;
+    }
+
+    function render(data) {
+      document.getElementById("brand").textContent = data.hospital || "上海市肺科医院";
+      const crawled = data.crawled_at ? new Date(data.crawled_at).toLocaleString("zh-CN") : "未知";
+      document.getElementById("meta").innerHTML = [
+        `<span class="chip">科室 ${data.departments.length}</span>`,
+        `<span class="chip">医生 ${data.doctors.length}</span>`,
+        ...(data.release_times || []).map((t) => `<span class="chip">${t}</span>`),
+        `<span class="chip">更新 ${crawled}</span>`,
+      ].join("");
+
+      document.getElementById("channels").innerHTML = (data.channels || []).map((c) => `
+        <div class="channel">
+          <strong>${c.channel}</strong>
+          <span>${c.detail}</span>
+        </div>
+      `).join("");
+
+      document.getElementById("official").innerHTML = (data.official || []).map((o) => {
+        const cls = o.url.startsWith("tel:") ? "btn secondary" : "btn";
+        return `<a class="${cls}" href="${o.url}" target="_blank" rel="noopener noreferrer">${o.name}</a>`;
+      }).join("");
+
+      document.getElementById("disclaimer").textContent = data.disclaimer || "";
+
+      const deptSelect = document.getElementById("dept");
+      const depts = [...new Set(data.doctors.map((d) => d.department).filter(Boolean))].sort();
+      depts.forEach((name) => {
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        deptSelect.appendChild(opt);
+      });
+
+      const tips = document.getElementById("tips");
+      tips.innerHTML = (data.tips || []).map((t) => `<li>${t}</li>`).join("") || "<li>暂无</li>";
+
+      const qInput = document.getElementById("q");
+      const list = document.getElementById("doctors");
+      const count = document.getElementById("count");
+
+      function paint() {
+        const q = qInput.value.trim().toLowerCase();
+        const dept = deptSelect.value;
+        const rows = data.doctors.filter((d) => {
+          const hitDept = !dept || d.department === dept;
+          const blob = `${d.name || ""} ${d.department || ""} ${d.title || ""}`.toLowerCase();
+          const hitQ = !q || blob.includes(q);
+          return hitDept && hitQ;
+        });
+        count.textContent = `显示 ${rows.length} 位`;
+        list.innerHTML = rows.map((d) => `
+          <a class="doc" href="${d.url || '#'}" target="_blank" rel="noopener noreferrer">
+            <div>
+              <div class="name">${d.name}</div>
+              <div class="sub">${[d.title, d.department].filter(Boolean).join(" · ")}</div>
+            </div>
+            <div class="fee">${money(d.fee)}</div>
+          </a>
+        `).join("") || `<div class="sub">没有匹配的医生</div>`;
+      }
+
+      qInput.addEventListener("input", paint);
+      deptSelect.addEventListener("change", paint);
+      paint();
+    }
+
+    loadData()
+      .then(render)
+      .catch((err) => {
+        document.getElementById("channels").innerHTML =
+          `<div class="notice">页面数据加载失败：${err.message}</div>`;
+      });
+  </script>
+</body>
+</html>
