@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>上海市肺科医院 · 一键预约入口</title>
+  <meta name="description" content="同济大学附属上海市肺科医院放号提醒与官方预约一键跳转" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg0: #eef4f2;
+      --bg1: #d9ebe4;
+      --ink: #163028;
+      --muted: #4d665b;
+      --line: rgba(22, 48, 40, 0.14);
+      --accent: #0f7a5f;
+      --accent-soft: rgba(15, 122, 95, 0.12);
+      --warn: #8a4b12;
+      --surface: rgba(255, 255, 255, 0.78);
+      --shadow: 0 18px 40px rgba(22, 48, 40, 0.08);
+      --radius: 18px;
+      --font-display: "ZCOOL XiaoWei", "Noto Sans SC", serif;
+      --font-body: "Noto Sans SC", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      font-family: var(--font-body);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 600px at 10% -10%, #cfe8df 0%, transparent 55%),
+        radial-gradient(900px 500px at 100% 0%, #f3efe3 0%, transparent 50%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+    }
+    .wrap { width: min(1080px, calc(100% - 2rem)); margin: 0 auto; padding: 1.5rem 0 4rem; }
+    .brand {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.15;
+      margin: 0 0 0.45rem;
+    }
+    .lead { margin: 0; max-width: 40rem; color: var(--muted); line-height: 1.7; }
+    .panel {
+      margin-top: 1.2rem;
+      padding: 1.2rem 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      animation: rise .7s ease both;
+    }
+    .panel h2 {
+      margin: 0 0 .85rem;
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 400;
+    }
+    .countdown-box {
+      display: grid;
+      gap: .9rem;
+      grid-template-columns: 1.2fr 1fr;
+    }
+    @media (max-width: 760px) { .countdown-box { grid-template-columns: 1fr; } }
+    .next-release {
+      padding: 1rem;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(15,122,95,.12), rgba(255,255,255,.4));
+      border: 1px solid var(--line);
+    }
+    .next-release .label { color: var(--muted); font-size: .92rem; }
+    .next-release .title { font-size: 1.25rem; font-weight: 700; margin: .25rem 0; }
+    .clock {
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(1.8rem, 5vw, 2.4rem);
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: .04em;
+    }
+    .schedule-list { display: grid; gap: .55rem; }
+    .schedule-item {
+      display: flex;
+      justify-content: space-between;
+      gap: .8rem;
+      padding: .7rem 0;
+      border-bottom: 1px solid var(--line);
+      font-size: .95rem;
+    }
+    .schedule-item:last-child { border-bottom: 0; }
+    .schedule-item span { color: var(--muted); }
+    .remind-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .7rem;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    .switch {
+      display: inline-flex;
+      align-items: center;
+      gap: .55rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .switch input { width: 1.1rem; height: 1.1rem; }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 1.4rem;
+      transform: translateX(-50%) translateY(120%);
+      background: var(--ink);
+      color: #fff;
+      padding: .75rem 1rem;
+      border-radius: 999px;
+      font-size: .92rem;
+      opacity: 0;
+      transition: .25s ease;
+      z-index: 20;
+      max-width: min(92vw, 28rem);
+      text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .booking-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .75rem;
+    }
+    @media (max-width: 720px) { .booking-grid { grid-template-columns: 1fr; } }
+    .book-card {
+      display: grid;
+      gap: .55rem;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255,255,255,.55);
+    }
+    .book-card.primary {
+      border-color: rgba(15,122,95,.35);
+      background: linear-gradient(160deg, rgba(15,122,95,.14), rgba(255,255,255,.65));
+    }
+    .book-card h3 { margin: 0; font-size: 1.08rem; }
+    .book-card p { margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.5; }
+    .btn {
+      appearance: none;
+      border: 0;
+      text-decoration: none;
+      color: #fff;
+      background: var(--accent);
+      padding: .78rem 1rem;
+      border-radius: 12px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: transform .18s ease, background .18s ease;
+    }
+    .btn:hover { transform: translateY(-1px); background: #0c6650; }
+    .btn.secondary {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+    .btn.ghost {
+      background: rgba(15,122,95,.1);
+      color: var(--accent);
+    }
+    .sticky-cta {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: 0 calc(50% - 50vw);
+      padding: .7rem 1rem;
+      background: rgba(238,244,242,.9);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(10px);
+    }
+    .sticky-inner {
+      width: min(1080px, calc(100% - 0rem));
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .55rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .sticky-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .sticky-actions .btn { padding: .65rem .9rem; }
+    .meta { margin-top: .9rem; display: flex; flex-wrap: wrap; gap: .55rem; }
+    .chip {
+      display: inline-flex; align-items: center;
+      padding: .32rem .68rem; border: 1px solid var(--line);
+      background: var(--surface); border-radius: 999px; color: var(--muted); font-size: .88rem;
+    }
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr auto;
+      gap: .7rem;
+      margin: 1rem 0 .8rem;
+    }
+    @media (max-width: 720px) { .toolbar { grid-template-columns: 1fr; } }
+    input, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.9);
+      border-radius: 12px;
+      padding: .8rem .9rem;
+      font: inherit;
+      color: var(--ink);
+      outline: none;
+    }
+    input:focus, select:focus {
+      border-color: rgba(15,122,95,.45);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .count { align-self: center; color: var(--muted); font-size: .92rem; white-space: nowrap; }
+    .list { display: grid; gap: .55rem; }
+    .doc {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: .55rem .8rem;
+      align-items: center;
+      padding: .9rem .2rem;
+      border-bottom: 1px solid var(--line);
+      color: inherit;
+      transition: background .15s ease, padding-left .15s ease;
+    }
+    .doc:hover { background: var(--accent-soft); padding-left: .55rem; border-radius: 10px; }
+    .doc .name { font-weight: 700; font-size: 1.05rem; }
+    .doc .sub { color: var(--muted); font-size: .9rem; margin-top: .15rem; }
+    .doc a.name-link { color: inherit; text-decoration: none; }
+    .fee { color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; }
+    .star-btn {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.8);
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 1.05rem;
+      line-height: 1;
+      color: var(--muted);
+    }
+    .star-btn.on {
+      color: #b7791f;
+      border-color: rgba(183,121,31,.35);
+      background: rgba(183,121,31,.12);
+    }
+    .fav-box {
+      margin-top: .9rem;
+      padding: .9rem 1rem;
+      border-radius: 14px;
+      border: 1px dashed rgba(15,122,95,.35);
+      background: rgba(15,122,95,.06);
+    }
+    .fav-box h3 { margin: 0 0 .45rem; font-size: 1rem; }
+    .fav-tags { display: flex; flex-wrap: wrap; gap: .45rem; }
+    .fav-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .35rem .65rem;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+      font-size: .88rem;
+    }
+    .fav-tag button {
+      appearance: none; border: 0; background: transparent; cursor: pointer;
+      color: var(--muted); font-size: .95rem; padding: 0;
+    }
+    .filter-fav {
+      display: inline-flex; align-items: center; gap: .4rem;
+      color: var(--muted); font-size: .92rem; margin-top: .7rem;
+    }
+    .tips { margin: 0; padding-left: 1.1rem; color: var(--muted); line-height: 1.7; }
+    .notice {
+      margin-top: 1rem; padding: .9rem 1rem; border-left: 3px solid var(--warn);
+      background: rgba(138,75,18,.08); color: var(--warn); border-radius: 0 12px 12px 0;
+      font-size: .92rem; line-height: 1.6;
+    }
+    .footer { margin-top: 1.2rem; color: var(--muted); font-size: .85rem; line-height: 1.6; }
+    .channels { display: grid; gap: .75rem; }
+    .channel { display: grid; gap: .2rem; padding-bottom: .75rem; border-bottom: 1px solid var(--line); }
+    .channel:last-child { border-bottom: 0; padding-bottom: 0; }
+    .channel strong { color: var(--accent); }
+    .channel span { color: var(--muted); line-height: 1.6; font-size: .95rem; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="sticky-cta">
+    <div class="sticky-inner">
+      <div>
+        <strong>一键预约</strong>
+        <span id="sticky-countdown" style="color:var(--muted);margin-left:.4rem;font-size:.9rem;"></span>
+      </div>
+      <div class="sticky-actions">
+        <button class="btn" type="button" id="sticky-wechat">微信预约</button>
+        <a class="btn secondary" id="sticky-ngari" href="https://weixin.ngarihealth.com/">纳里健康</a>
+        <a class="btn secondary" href="https://yuyue.shdc.org.cn/" target="_blank" rel="noopener noreferrer">医联</a>
+      </div>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <header>
+      <h1 class="brand" id="brand">上海市肺科医院</h1>
+      <p class="lead">关注医生后，放号点会点名提醒你去预约。本页不自动抢号，请到微信公众号 / 医联完成挂号。</p>
+      <div class="meta" id="meta"></div>
+    </header>
+
+    <section class="panel">
+      <h2>放号提醒</h2>
+      <div class="countdown-box">
+        <div class="next-release">
+          <div class="label">下一场放号</div>
+          <div class="title" id="next-title">—</div>
+          <div class="clock" id="countdown">--:--:--</div>
+          <div class="label" id="next-when" style="margin-top:.35rem;"></div>
+        </div>
+        <div class="schedule-list" id="schedules"></div>
+      </div>
+      <div class="remind-row">
+        <label class="switch">
+          <input type="checkbox" id="remind-toggle" />
+          <span>开启浏览器放号提醒（提前 15 分钟 + 正点）</span>
+        </label>
+        <button class="btn ghost" type="button" id="ics-btn">加入日历提醒</button>
+      </div>
+      <div class="fav-box">
+        <h3>我的抢号医生</h3>
+        <div class="label" style="color:var(--muted);font-size:.9rem;margin-bottom:.55rem;">
+          在下方点 ★ 关注医生；到放号点会点名提醒（仅提醒，不自动抢号）
+        </div>
+        <div class="fav-tags" id="fav-tags"><span class="sub">还没关注医生，去下面搜索后点星号</span></div>
+        <div id="fav-next" class="label" style="margin-top:.65rem;color:var(--accent);font-weight:600;"></div>
+      </div>
+      <p class="footer">提醒依赖本页保持打开（或加入系统日历）。时区按上海时间计算。微信放号约 7:00，医联约 7:30。</p>
+    </section>
+
+    <section class="panel">
+      <h2>一键去预约</h2>
+      <div class="booking-grid" id="booking-grid"></div>
+      <div class="notice" id="mini-program-note">
+        医院未公开小程序 AppID，网页不能直达指定小程序首页。支付宝可一键跳到搜索；微信可复制名称并唤起微信。
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>找医生 / 关注抢号</h2>
+      <div class="toolbar">
+        <input id="q" type="search" placeholder="搜索医生姓名，例如：谢博雄" autocomplete="off" />
+        <select id="dept"><option value="">全部科室</option></select>
+        <div class="count" id="count">—</div>
+      </div>
+      <label class="filter-fav"><input type="checkbox" id="only-fav" /> 只看已关注</label>
+      <div class="list" id="doctors"></div>
+    </section>
+
+    <section class="panel">
+      <h2>预约须知</h2>
+      <div class="channels" id="channels"></div>
+      <ul class="tips" id="tips" style="margin-top:1rem;"></ul>
+      <div class="notice" id="disclaimer"></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script id="appointment-data" type="application/json">
+__APPOINTMENT_JSON__
+  </script>
+  <script>
+    const STORAGE_KEY = "shsfkyy_remind_enabled_v1";
+    const FIRED_KEY = "shsfkyy_remind_fired_v1";
+    const FAV_KEY = "shsfkyy_fav_doctors_v1";
+    let allDoctors = [];
+    let paintDoctors = () => {};
+
+    function loadFavs() {
+      try { return JSON.parse(localStorage.getItem(FAV_KEY) || "[]"); }
+      catch (_) { return []; }
+    }
+    function saveFavs(list) {
+      localStorage.setItem(FAV_KEY, JSON.stringify(list));
+    }
+    function isFav(id) {
+      return loadFavs().some((f) => f.id === String(id));
+    }
+    function toggleFav(doctor) {
+      const list = loadFavs();
+      const id = String(doctor.id);
+      const idx = list.findIndex((f) => f.id === id);
+      if (idx >= 0) list.splice(idx, 1);
+      else list.push({
+        id,
+        name: doctor.name,
+        department: doctor.department || "",
+        title: doctor.title || "",
+      });
+      saveFavs(list);
+      return list;
+    }
+    function favNamesText() {
+      const list = loadFavs();
+      if (!list.length) return "";
+      return list.map((f) => f.name).slice(0, 8).join("、") + (list.length > 8 ? " 等" : "");
+    }
+    function renderFavTags() {
+      const box = document.getElementById("fav-tags");
+      const next = document.getElementById("fav-next");
+      const list = loadFavs();
+      if (!list.length) {
+        box.innerHTML = `<span class="sub">还没关注医生，去下面搜索后点星号（如谢博雄）</span>`;
+        next.textContent = "";
+        return;
+      }
+      box.innerHTML = list.map((f) => `
+        <span class="fav-tag">
+          ★ ${f.name}${f.department ? " · " + f.department : ""}
+          <button type="button" data-unfav="${f.id}" aria-label="取消关注">×</button>
+        </span>
+      `).join("");
+      box.querySelectorAll("[data-unfav]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-unfav");
+          saveFavs(loadFavs().filter((f) => f.id !== id));
+          renderFavTags();
+          paintDoctors();
+          toast("已取消关注");
+        });
+      });
+      next.textContent = `放号时将提醒：${favNamesText()}`;
+    }
+
+    function toast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => el.classList.remove("show"), 2200);
+    }
+
+    async function loadData() {
+      const el = document.getElementById("appointment-data");
+      if (el && el.textContent.trim()) return JSON.parse(el.textContent);
+      const res = await fetch("./data/appointment.json", { cache: "no-store" });
+      if (!res.ok) throw new Error("failed to load data");
+      return res.json();
+    }
+
+    function shanghaiParts(date = new Date()) {
+      // Avoid Date(toLocaleString(...)) which breaks in some mobile browsers.
+      const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone: "Asia/Shanghai",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      }).formatToParts(date);
+      const get = (type) => Number(parts.find((p) => p.type === type).value);
+      return {
+        year: get("year"),
+        month: get("month"),
+        day: get("day"),
+        hour: get("hour") % 24, // some engines emit 24:00
+        minute: get("minute"),
+        second: get("second"),
+      };
+    }
+
+    function shanghaiNow() {
+      const p = shanghaiParts();
+      return new Date(p.year, p.month - 1, p.day, p.hour, p.minute, p.second);
+    }
+
+    function nextOccurrence(hhmm, from = shanghaiNow()) {
+      const [h, m] = hhmm.split(":").map(Number);
+      const target = new Date(from.getFullYear(), from.getMonth(), from.getDate(), h, m, 0, 0);
+      if (target.getTime() <= from.getTime()) {
+        target.setDate(target.getDate() + 1);
+      }
+      return target;
+    }
+
+    function pad(n) { return String(n).padStart(2, "0"); }
+
+    function formatRemain(ms) {
+      if (ms < 0) ms = 0;
+      const total = Math.floor(ms / 1000);
+      const h = Math.floor(total / 3600);
+      const m = Math.floor((total % 3600) / 60);
+      const s = total % 60;
+      return `${pad(h)}:${pad(m)}:${pad(s)}`;
+    }
+
+    function money(fee) {
+      if (fee == null || fee === "") return "";
+      return `参考 ¥${fee}`;
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (_) {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand("copy");
+        ta.remove();
+        return ok;
+      }
+    }
+
+    function buildIcs(schedules) {
+      const favText = favNamesText() || "（未指定医生，请提前在网页关注）";
+      const lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//shsfkyy-reminder//CN",
+        "CALSCALE:GREGORIAN",
+      ];
+      schedules.forEach((s, idx) => {
+        const [hh, mm] = s.time.split(":");
+        lines.push(
+          "BEGIN:VEVENT",
+          `UID:shsfkyy-release-${s.id || idx}@local`,
+          `SUMMARY:肺科放号 · ${s.label} · ${favText}`,
+          `DESCRIPTION:关注医生：${favText}\\n请用微信公众号/医联预约。仅提醒，不自动抢号。`,
+          `RRULE:FREQ=DAILY`,
+          `DTSTART;TZID=Asia/Shanghai:20260101T${hh}${mm}00`,
+          `DURATION:PT10M`,
+          "BEGIN:VALARM",
+          "TRIGGER:-PT15M",
+          "ACTION:DISPLAY",
+          `DESCRIPTION:还有15分钟放号：${favText}`,
+          "END:VALARM",
+          "END:VEVENT"
+        );
+      });
+      lines.push("END:VCALENDAR");
+      return lines.join("\r\n");
+    }
+
+    function downloadIcs(schedules) {
+      const blob = new Blob([buildIcs(schedules)], { type: "text/calendar;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "肺科医院放号提醒.ics";
+      a.click();
+      URL.revokeObjectURL(url);
+      toast("已生成日历文件，导入后每天提醒");
+    }
+
+    function markFired(key) {
+      const map = JSON.parse(localStorage.getItem(FIRED_KEY) || "{}");
+      map[key] = true;
+      localStorage.setItem(FIRED_KEY, JSON.stringify(map));
+    }
+    function wasFired(key) {
+      const map = JSON.parse(localStorage.getItem(FIRED_KEY) || "{}");
+      return !!map[key];
+    }
+
+    async function ensureNotifyPermission() {
+      if (!("Notification" in window)) {
+        toast("当前浏览器不支持通知");
+        return false;
+      }
+      if (Notification.permission === "granted") return true;
+      if (Notification.permission === "denied") {
+        toast("通知权限被禁用，请在浏览器设置中开启");
+        return false;
+      }
+      const result = await Notification.requestPermission();
+      return result === "granted";
+    }
+
+    function notify(title, body) {
+      if (!("Notification" in window) || Notification.permission !== "granted") return;
+      try {
+        new Notification(title, { body, tag: title });
+      } catch (_) {}
+      toast(`${title}：${body}`);
+    }
+
+    function setupReminders(schedules) {
+      const toggle = document.getElementById("remind-toggle");
+      toggle.checked = localStorage.getItem(STORAGE_KEY) === "1";
+
+      toggle.addEventListener("change", async () => {
+        if (toggle.checked) {
+          const ok = await ensureNotifyPermission();
+          if (!ok) {
+            toggle.checked = false;
+            localStorage.setItem(STORAGE_KEY, "0");
+            return;
+          }
+          localStorage.setItem(STORAGE_KEY, "1");
+          const names = favNamesText();
+          toast(names ? `已开启提醒：${names}` : "已开启放号提醒，建议先关注医生");
+        } else {
+          localStorage.setItem(STORAGE_KEY, "0");
+          toast("已关闭放号提醒");
+        }
+      });
+
+      setInterval(() => {
+        if (localStorage.getItem(STORAGE_KEY) !== "1") return;
+        const now = shanghaiNow();
+        const names = favNamesText();
+        const who = names ? `【${names}】` : "";
+        schedules.forEach((s) => {
+          const next = nextOccurrence(s.time, now);
+          const remainMs = next.getTime() - now.getTime();
+          const remainMin = remainMs / 60000;
+          const dayKey = `${next.getFullYear()}-${pad(next.getMonth() + 1)}-${pad(next.getDate())}`;
+          (s.remind_minutes_before || [15, 0]).forEach((before) => {
+            // Fire once when we enter the target minute window.
+            const inWindow = before === 0
+              ? remainMin <= 0.2 && remainMin > -1
+              : remainMin <= before && remainMin > before - 0.35;
+            if (!inWindow) return;
+            const fireKey = `${s.id}-${dayKey}-${before}`;
+            if (wasFired(fireKey)) return;
+            markFired(fireKey);
+            if (before === 0) {
+              notify("放号开始，快去预约", `${who}${s.label} 现在放号。打开微信公众号/医联预约（不自动抢号）`);
+            } else {
+              notify("抢号倒计时", `${who}${s.label} 还有约 ${before} 分钟放号，请提前打开预约页`);
+            }
+          });
+        });
+      }, 5000);
+    }
+
+    function renderBooking(entries) {
+      const grid = document.getElementById("booking-grid");
+      grid.innerHTML = entries.map((e) => `
+        <div class="book-card ${e.primary ? "primary" : ""}">
+          <h3>${e.title}</h3>
+          <p>${e.subtitle || ""}</p>
+          <button class="btn ${e.primary ? "" : "secondary"}" type="button" data-book="${e.id}">${e.button}</button>
+        </div>
+      `).join("");
+
+      grid.querySelectorAll("[data-book]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const entry = entries.find((x) => x.id === btn.getAttribute("data-book"));
+          if (!entry) return;
+
+          if (entry.action === "wechat") {
+            if (entry.copy_text) {
+              const ok = await copyText(entry.copy_text);
+              toast(ok ? (entry.hint || "已复制，正在打开微信") : "复制失败，请手动搜索");
+            }
+            // 无公开 AppID，无法直达指定小程序；只能唤起微信 App
+            setTimeout(() => {
+              window.location.href = entry.url || "weixin://";
+            }, 250);
+            return;
+          }
+
+          if (entry.action === "open" && entry.url) {
+            if (entry.url.startsWith("tel:") || entry.url.startsWith("weixin:") || entry.url.startsWith("alipays:")) {
+              window.location.href = entry.url;
+            } else {
+              // 支付宝 https 中转页在移动端更稳
+              window.location.href = entry.url;
+            }
+            toast(entry.hint || `正在打开：${entry.title}`);
+            return;
+          }
+
+          if (entry.action === "copy" && entry.copy_text) {
+            const ok = await copyText(entry.copy_text);
+            toast(ok ? (entry.hint || "已复制") : "复制失败，请手动搜索");
+          }
+        });
+      });
+    }
+
+    function renderDoctors(data) {
+      allDoctors = data.doctors || [];
+      const deptSelect = document.getElementById("dept");
+      const depts = [...new Set(allDoctors.map((d) => d.department).filter(Boolean))].sort();
+      depts.forEach((name) => {
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        deptSelect.appendChild(opt);
+      });
+
+      const qInput = document.getElementById("q");
+      const onlyFav = document.getElementById("only-fav");
+      const list = document.getElementById("doctors");
+      const count = document.getElementById("count");
+
+      paintDoctors = function paint() {
+        const q = qInput.value.trim().toLowerCase();
+        const dept = deptSelect.value;
+        const favOnly = onlyFav.checked;
+        const rows = allDoctors.filter((d) => {
+          if (favOnly && !isFav(d.id)) return false;
+          const hitDept = !dept || d.department === dept;
+          const blob = `${d.name || ""} ${d.department || ""} ${d.title || ""}`.toLowerCase();
+          return hitDept && (!q || blob.includes(q));
+        });
+        // Keep favorites first when searching broadly
+        rows.sort((a, b) => Number(isFav(b.id)) - Number(isFav(a.id)));
+        count.textContent = `显示 ${rows.length} 位 · 已关注 ${loadFavs().length}`;
+        list.innerHTML = rows.map((d) => `
+          <div class="doc">
+            <button class="star-btn ${isFav(d.id) ? "on" : ""}" type="button" data-star="${d.id}" aria-label="关注抢号提醒">★</button>
+            <div>
+              <a class="name-link" href="${d.url || "#"}" target="_blank" rel="noopener noreferrer">
+                <div class="name">${d.name}</div>
+              </a>
+              <div class="sub">${[d.title, d.department].filter(Boolean).join(" · ")}</div>
+            </div>
+            <div class="fee">${isFav(d.id) ? "已关注" : (money(d.fee) || "关注提醒")}</div>
+          </div>
+        `).join("") || `<div class="sub">没有匹配的医生</div>`;
+
+        list.querySelectorAll("[data-star]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-star");
+            const doctor = allDoctors.find((x) => String(x.id) === id);
+            if (!doctor) return;
+            const listNow = toggleFav(doctor);
+            const on = listNow.some((f) => f.id === id);
+            renderFavTags();
+            paintDoctors();
+            toast(on ? `已关注 ${doctor.name}，放号时会提醒` : `已取消 ${doctor.name}`);
+          });
+        });
+      };
+      qInput.addEventListener("input", paintDoctors);
+      deptSelect.addEventListener("change", paintDoctors);
+      onlyFav.addEventListener("change", paintDoctors);
+      renderFavTags();
+      paintDoctors();
+    }
+
+    function render(data) {
+      document.getElementById("brand").textContent = data.hospital || "上海市肺科医院";
+      const crawled = data.crawled_at ? new Date(data.crawled_at).toLocaleString("zh-CN") : "未知";
+      document.getElementById("meta").innerHTML = [
+        `<span class="chip">科室 ${data.departments.length}</span>`,
+        `<span class="chip">医生 ${data.doctors.length}</span>`,
+        ...(data.release_times || []).map((t) => `<span class="chip">${t}</span>`),
+        `<span class="chip">更新 ${crawled}</span>`,
+      ].join("");
+
+      const schedules = data.release_schedules || [
+        { id: "wechat_alipay", label: "微信 / 支付宝", time: "07:00", remind_minutes_before: [15, 0] },
+        { id: "shdc", label: "医联平台", time: "07:30", remind_minutes_before: [15, 0] },
+      ];
+
+      document.getElementById("schedules").innerHTML = schedules.map((s) => `
+        <div class="schedule-item">
+          <strong>${s.label}</strong>
+          <span>每天 ${s.time}</span>
+        </div>
+      `).join("");
+
+      function tick() {
+        try {
+          const now = shanghaiNow();
+          let nearest = null;
+          schedules.forEach((s) => {
+            const at = nextOccurrence(s.time, now);
+            if (!nearest || at < nearest.at) nearest = { ...s, at };
+          });
+          if (!nearest) return;
+          const remain = nearest.at.getTime() - now.getTime();
+          document.getElementById("next-title").textContent = `${nearest.label} · ${nearest.time}`;
+          document.getElementById("countdown").textContent = formatRemain(remain);
+          document.getElementById("next-when").textContent =
+            `上海时间 ${nearest.at.getMonth() + 1}/${nearest.at.getDate()} ${pad(nearest.at.getHours())}:${pad(nearest.at.getMinutes())}`;
+          document.getElementById("sticky-countdown").textContent =
+            `距放号 ${formatRemain(remain)}`;
+        } catch (err) {
+          document.getElementById("countdown").textContent = "--:--:--";
+          document.getElementById("sticky-countdown").textContent = "倒计时异常，请刷新页面";
+          console.error(err);
+        }
+      }
+      tick();
+      setInterval(tick, 1000);
+      setupReminders(schedules);
+
+      document.getElementById("ics-btn").addEventListener("click", () => {
+        if (!loadFavs().length) toast("还未关注医生，日历里会写通用放号提醒");
+        downloadIcs(schedules);
+      });
+
+      renderBooking(data.booking_entries || []);
+      renderDoctors(data);
+
+      const wechatEntry = (data.booking_entries || []).find((e) => e.id === "wechat_ngari");
+      const stickyWechat = document.getElementById("sticky-wechat");
+      if (wechatEntry && stickyWechat) {
+        stickyWechat.addEventListener("click", async () => {
+          if (wechatEntry.copy_text) {
+            const ok = await copyText(wechatEntry.copy_text);
+            toast(ok ? (wechatEntry.hint || "已复制") : "复制失败");
+          }
+          setTimeout(() => { window.location.href = wechatEntry.url || "weixin://"; }, 250);
+        });
+      }
+
+      if (data.mini_program_note) {
+        document.getElementById("mini-program-note").textContent = data.mini_program_note;
+      }
+
+      document.getElementById("channels").innerHTML = (data.channels || []).map((c) => `
+        <div class="channel"><strong>${c.channel}</strong><span>${c.detail}</span></div>
+      `).join("");
+      document.getElementById("tips").innerHTML = (data.tips || []).map((t) => `<li>${t}</li>`).join("") || "<li>暂无</li>";
+      document.getElementById("disclaimer").textContent = data.disclaimer || "";
+    }
+
+    loadData().then(render).catch((err) => {
+      document.getElementById("booking-grid").innerHTML =
+        `<div class="notice">页面数据加载失败：${err.message}</div>`;
+    });
+  </script>
+</body>
+</html>
