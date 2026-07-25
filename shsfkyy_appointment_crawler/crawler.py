@@ -32,6 +32,14 @@ YOULAI_BASE = "https://www.youlai.cn"
 OFFICIAL_SITES = {
     "hospital_website": "https://www.shsfkyy.com/",
     "shdc_appointment": "https://yuyue.shdc.org.cn/",
+    "weixin_ngari": "https://weixin.ngarihealth.com/",
+}
+
+OWN_HOSPITAL_NAMES = {
+    "上海市肺科医院",
+    "上海肺科医院",
+    "同济大学附属上海市肺科医院",
+    "上海市职业病医院",
 }
 
 
@@ -234,6 +242,62 @@ class ShsfkyyAppointmentCrawler:
         except json.JSONDecodeError:
             return []
 
+    def _belongs_to_own_hospital(self, doctor_id: str) -> tuple[bool, dict[str, Any]]:
+        """Return whether doctor primary practice is Shanghai Pulmonary Hospital."""
+        url = f"{YOULAI_BASE}/p-h5/tencent/doctor/pointcardlist"
+        response = self.client.post_json(
+            url,
+            {"doctor_id": int(doctor_id)},
+            headers={"Referer": f"{YOULAI_BASE}/yyk/docindex/{doctor_id}/"},
+        )
+        if response.status_code != 200:
+            return False, {}
+        payload = response.json()
+        if payload.get("code") != 200:
+            return False, {}
+        data = payload.get("data") or {}
+        hosp = (data.get("hospital_name") or data.get("hospital_short_name") or "").strip()
+        if hosp in OWN_HOSPITAL_NAMES or "肺科医院" in hosp:
+            return True, data
+
+        # Fallback: primary practice card on HTML
+        html_resp = self.client.get(f"{YOULAI_BASE}/yyk/docindex/{doctor_id}/")
+        cards = self._extract_point_cards_from_html(html_resp.text)
+        for card in cards:
+            name = (card.get("name") or "").strip()
+            if card.get("is_pub") == 1 and (
+                name in OWN_HOSPITAL_NAMES or "肺科医院" in name
+            ):
+                data = {
+                    **data,
+                    "hospital_name": name,
+                    "dept_name": card.get("dept") or data.get("dept_name"),
+                    "name": data.get("name") or data.get("doctor_name"),
+                }
+                return True, data
+        return False, data
+
+    def filter_own_hospital_doctors(
+        self, doctors: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
+        """Drop aggregator-mixed doctors from other hospitals."""
+        kept: list[dict[str, Any]] = []
+        for doctor in doctors:
+            ok, detail = self._belongs_to_own_hospital(doctor["id"])
+            if not ok:
+                continue
+            if detail.get("name") or detail.get("doctor_name"):
+                doctor["name"] = detail.get("name") or detail.get("doctor_name")
+            if detail.get("medical_title"):
+                doctor["title"] = detail.get("medical_title")
+            if detail.get("dept_name") or detail.get("cnk_dept2_name"):
+                doctor["department"] = detail.get("dept_name") or detail.get(
+                    "cnk_dept2_name"
+                )
+            doctor["hospital"] = detail.get("hospital_name") or "上海市肺科医院"
+            kept.append(doctor)
+        return kept
+
     def fetch_doctor_schedule_note(self, doctor_id: str) -> dict[str, Any]:
         """Fetch outpatient / booking notes from aggregator doctor page."""
         url = f"{YOULAI_BASE}/p-h5/tencent/doctor/pointcardlist"
@@ -331,6 +395,12 @@ class ShsfkyyAppointmentCrawler:
             doctors_map.values(),
             key=lambda item: (item.get("department") or "", item.get("name") or ""),
         )
+        # Aggregator pages often mix in other hospitals; keep only own hospital.
+        doctors = self.filter_own_hospital_doctors(doctors)
+        doctors = sorted(
+            doctors,
+            key=lambda item: (item.get("department") or "", item.get("name") or ""),
+        )
 
         schedule_notes: list[dict[str, Any]] = []
         if with_schedule:
@@ -342,10 +412,13 @@ class ShsfkyyAppointmentCrawler:
                 "hospital": HOSPITAL_NAME,
                 "crawled_at": datetime.now(timezone.utc).isoformat(),
                 "source": "youlai.cn public pages/APIs",
+                "doctor_filter": "仅保留第一执业为上海市肺科医院的医生",
+                "weixin_booking": "https://weixin.ngarihealth.com/（需微信内通过公众号菜单进入）",
                 "disclaimer": (
                     "本工具仅采集公开的预约须知、科室与医生目录信息，"
                     "不抓取官方实时号源，不提供自动挂号/抢号功能。"
-                    "实际预约请通过医院微信公众号、支付宝小程序或上海医联预约平台。"
+                    "微信预约后台为纳里健康，请通过「上海市肺科医院」公众号进入；"
+                    "也可使用支付宝或上海医联预约平台。"
                 ),
             },
             "hospital": hospital,

@@ -258,8 +258,9 @@
         <span id="sticky-countdown" style="color:var(--muted);margin-left:.4rem;font-size:.9rem;"></span>
       </div>
       <div class="sticky-actions">
-        <a class="btn" href="https://yuyue.shdc.org.cn/" target="_blank" rel="noopener noreferrer">打开医联预约</a>
-        <a class="btn secondary" href="tel:4008203137">拨打电话</a>
+        <button class="btn" type="button" id="sticky-wechat">微信预约</button>
+        <a class="btn secondary" id="sticky-ngari" href="https://weixin.ngarihealth.com/">纳里健康</a>
+        <a class="btn secondary" href="https://yuyue.shdc.org.cn/" target="_blank" rel="noopener noreferrer">医联</a>
       </div>
     </div>
   </div>
@@ -630,6 +631,18 @@ __APPOINTMENT_JSON__
 
       renderBooking(data.booking_entries || []);
       renderDoctors(data);
+
+      const wechatEntry = (data.booking_entries || []).find((e) => e.id === "wechat_ngari");
+      const stickyWechat = document.getElementById("sticky-wechat");
+      if (wechatEntry && stickyWechat) {
+        stickyWechat.addEventListener("click", async () => {
+          if (wechatEntry.copy_text) {
+            const ok = await copyText(wechatEntry.copy_text);
+            toast(ok ? (wechatEntry.hint || "已复制") : "复制失败");
+          }
+          setTimeout(() => { window.location.href = wechatEntry.url || "weixin://"; }, 250);
+        });
+      }
 
       if (data.mini_program_note) {
         document.getElementById("mini-program-note").textContent = data.mini_program_note;

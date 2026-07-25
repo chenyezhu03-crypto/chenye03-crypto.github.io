@@ -2,7 +2,7 @@
   "hospital": "上海市肺科医院",
   "short_name": "上海肺科医院",
   "crawled_at": "2026-07-25T02:39:35.154259+00:00",
-  "disclaimer": "本工具仅采集公开的预约须知、科室与医生目录信息，不抓取官方实时号源，不提供自动挂号/抢号功能。实际预约请通过医院微信公众号、支付宝小程序或上海医联预约平台。",
+  "disclaimer": "本页医生仅含第一执业医院为上海市肺科医院的医生，已剔除聚合站混入的外院医生。微信预约后台为纳里健康（weixin.ngarihealth.com），请通过公众号「上海市肺科医院」菜单进入。不提供自动挂号/抢号。",
   "release_times": [
     "每日7:00放号",
     "每日7:30放号"
@@ -163,124 +163,31 @@
   ],
   "doctors": [
     {
-      "id": "42062",
-      "name": "史宏彰",
-      "title": "主任医师",
-      "department": "中毒科",
-      "fee": 216,
-      "url": "https://www.youlai.cn/yyk/docindex/42062/"
-    },
-    {
       "id": "42032",
       "name": "孙道远",
       "title": "主任医师",
       "department": "中毒科",
       "fee": 216,
-      "url": "https://www.youlai.cn/yyk/docindex/42032/"
+      "url": "https://www.youlai.cn/yyk/docindex/42032/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42036",
       "name": "张巡淼",
-      "title": "主任医师",
+      "title": "副主任医师",
       "department": "中毒科",
       "fee": 216,
-      "url": "https://www.youlai.cn/yyk/docindex/42036/"
-    },
-    {
-      "id": "35453",
-      "name": "方邦江",
-      "title": "主任医师",
-      "department": "中毒科",
-      "fee": 216,
-      "url": "https://www.youlai.cn/yyk/docindex/35453/"
-    },
-    {
-      "id": "8889",
-      "name": "杨志旭",
-      "title": "主任医师",
-      "department": "中毒科",
-      "fee": 216,
-      "url": "https://www.youlai.cn/yyk/docindex/8889/"
-    },
-    {
-      "id": "22643",
-      "name": "梁腾霄",
-      "title": "主任医师",
-      "department": "中毒科",
-      "fee": 216,
-      "url": "https://www.youlai.cn/yyk/docindex/22643/"
-    },
-    {
-      "id": "41966",
-      "name": "沈莉",
-      "title": "主任医师",
-      "department": "中毒科",
-      "fee": 216,
-      "url": "https://www.youlai.cn/yyk/docindex/41966/"
-    },
-    {
-      "id": "49705",
-      "name": "王晶",
-      "title": "主任医师",
-      "department": "中毒科",
-      "fee": 216,
-      "url": "https://www.youlai.cn/yyk/docindex/49705/"
+      "url": "https://www.youlai.cn/yyk/docindex/42036/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42039",
       "name": "谢兰兰",
-      "title": "主任医师",
+      "title": "副主任医师",
       "department": "中毒科",
       "fee": 216,
-      "url": "https://www.youlai.cn/yyk/docindex/42039/"
-    },
-    {
-      "id": "364409",
-      "name": "车在前",
-      "title": "主任医师",
-      "department": "中毒科",
-      "fee": 216,
-      "url": "https://www.youlai.cn/yyk/docindex/364409/"
-    },
-    {
-      "id": "46929",
-      "name": "吴克永",
-      "title": "主任医师",
-      "department": "中西医结合科",
-      "fee": 68,
-      "url": "https://www.youlai.cn/yyk/docindex/46929/"
-    },
-    {
-      "id": "46939",
-      "name": "牛惠志",
-      "title": "主任医师",
-      "department": "中西医结合科",
-      "fee": 68,
-      "url": "https://www.youlai.cn/yyk/docindex/46939/"
-    },
-    {
-      "id": "46941",
-      "name": "谢嘉文",
-      "title": "主任医师",
-      "department": "中西医结合科",
-      "fee": 68,
-      "url": "https://www.youlai.cn/yyk/docindex/46941/"
-    },
-    {
-      "id": "36269",
-      "name": "金长娟",
-      "title": "主任医师",
-      "department": "中西医结合科",
-      "fee": 68,
-      "url": "https://www.youlai.cn/yyk/docindex/36269/"
-    },
-    {
-      "id": "46952",
-      "name": "黄建华",
-      "title": "主任医师",
-      "department": "中西医结合科",
-      "fee": 68,
-      "url": "https://www.youlai.cn/yyk/docindex/46952/"
+      "url": "https://www.youlai.cn/yyk/docindex/42039/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42077",
@@ -288,23 +195,8 @@
       "title": "主治医师",
       "department": "体检科",
       "fee": 0,
-      "url": "https://www.youlai.cn/yyk/docindex/42077/"
-    },
-    {
-      "id": "739468",
-      "name": "张霞",
-      "title": "主治医师",
-      "department": "体检科",
-      "fee": 0,
-      "url": "https://www.youlai.cn/yyk/docindex/739468/"
-    },
-    {
-      "id": "448878",
-      "name": "房洁",
-      "title": "主治医师",
-      "department": "体检科",
-      "fee": 0,
-      "url": "https://www.youlai.cn/yyk/docindex/448878/"
+      "url": "https://www.youlai.cn/yyk/docindex/42077/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42076",
@@ -312,39 +204,8 @@
       "title": "主治医师",
       "department": "体检科",
       "fee": 0,
-      "url": "https://www.youlai.cn/yyk/docindex/42076/"
-    },
-    {
-      "id": "784487",
-      "name": "石慧娟",
-      "title": "主治医师",
-      "department": "体检科",
-      "fee": 0,
-      "url": "https://www.youlai.cn/yyk/docindex/784487/"
-    },
-    {
-      "id": "783786",
-      "name": "胡晨鸣",
-      "title": "主治医师",
-      "department": "体检科",
-      "fee": 0,
-      "url": "https://www.youlai.cn/yyk/docindex/783786/"
-    },
-    {
-      "id": "784488",
-      "name": "陈梅",
-      "title": "主治医师",
-      "department": "体检科",
-      "fee": 0,
-      "url": "https://www.youlai.cn/yyk/docindex/784488/"
-    },
-    {
-      "id": "787513",
-      "name": "孔程",
-      "title": "副主任医师",
-      "department": "内镜中心",
-      "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/787513/"
+      "url": "https://www.youlai.cn/yyk/docindex/42076/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "384506",
@@ -352,63 +213,62 @@
       "title": "副主任医师",
       "department": "内镜中心",
       "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/384506/"
+      "url": "https://www.youlai.cn/yyk/docindex/384506/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "384523",
       "name": "王海",
+      "title": "主治医师",
+      "department": "内镜中心",
+      "fee": 1200,
+      "url": "https://www.youlai.cn/yyk/docindex/384523/",
+      "hospital": "上海市肺科医院"
+    },
+    {
+      "id": "41965",
+      "name": "顾晔",
       "title": "副主任医师",
       "department": "内镜中心",
       "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/384523/"
+      "url": "https://www.youlai.cn/yyk/docindex/41965/",
+      "hospital": "上海市肺科医院"
     },
     {
-      "id": "40672",
-      "name": "宋志芳",
+      "id": "384504",
+      "name": "李满会",
+      "title": "主治医师",
+      "department": "呼吸与危重症医学科",
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/384504/",
+      "hospital": "上海市肺科医院"
+    },
+    {
+      "id": "41949",
+      "name": "李霞",
       "title": "主任医师",
       "department": "呼吸与危重症医学科",
-      "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/40672/"
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/41949/",
+      "hospital": "上海市肺科医院"
     },
     {
-      "id": "380139",
-      "name": "崔志磊",
-      "title": "主任医师",
+      "id": "384510",
+      "name": "黄冬冬",
+      "title": "主治医师",
       "department": "呼吸与危重症医学科",
-      "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/380139/"
-    },
-    {
-      "id": "33558",
-      "name": "刘洪宝",
-      "title": "主任医师",
-      "department": "尘肺科",
-      "fee": 38,
-      "url": "https://www.youlai.cn/yyk/docindex/33558/"
-    },
-    {
-      "id": "359629",
-      "name": "周阿高",
-      "title": "主任医师",
-      "department": "尘肺科",
-      "fee": 38,
-      "url": "https://www.youlai.cn/yyk/docindex/359629/"
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/384510/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42034",
       "name": "周韶炜",
-      "title": "主任医师",
+      "title": "副主任医师",
       "department": "尘肺科",
       "fee": 38,
-      "url": "https://www.youlai.cn/yyk/docindex/42034/"
-    },
-    {
-      "id": "35152",
-      "name": "周龙妹",
-      "title": "主任医师",
-      "department": "尘肺科",
-      "fee": 38,
-      "url": "https://www.youlai.cn/yyk/docindex/35152/"
+      "url": "https://www.youlai.cn/yyk/docindex/42034/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42031",
@@ -416,23 +276,17 @@
       "title": "主任医师",
       "department": "尘肺科",
       "fee": 38,
-      "url": "https://www.youlai.cn/yyk/docindex/42031/"
+      "url": "https://www.youlai.cn/yyk/docindex/42031/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42035",
       "name": "施瑾",
-      "title": "主任医师",
+      "title": "副主任医师",
       "department": "尘肺科",
       "fee": 38,
-      "url": "https://www.youlai.cn/yyk/docindex/42035/"
-    },
-    {
-      "id": "783635",
-      "name": "段亚利",
-      "title": "主任医师",
-      "department": "尘肺科",
-      "fee": 38,
-      "url": "https://www.youlai.cn/yyk/docindex/783635/"
+      "url": "https://www.youlai.cn/yyk/docindex/42035/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42033",
@@ -440,191 +294,125 @@
       "title": "主任医师",
       "department": "尘肺科",
       "fee": 38,
-      "url": "https://www.youlai.cn/yyk/docindex/42033/"
-    },
-    {
-      "id": "35247",
-      "name": "葛京化",
-      "title": "主任医师",
-      "department": "尘肺科",
-      "fee": 38,
-      "url": "https://www.youlai.cn/yyk/docindex/35247/"
+      "url": "https://www.youlai.cn/yyk/docindex/42033/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42038",
       "name": "闻军",
-      "title": "主任医师",
+      "title": "副主任医师",
       "department": "尘肺科",
       "fee": 38,
-      "url": "https://www.youlai.cn/yyk/docindex/42038/"
+      "url": "https://www.youlai.cn/yyk/docindex/42038/",
+      "hospital": "上海市肺科医院"
     },
     {
-      "id": "438422",
-      "name": "孙静",
+      "id": "42062",
+      "name": "史宏彰",
+      "title": "副主任医师",
+      "department": "急诊科",
+      "fee": 216,
+      "url": "https://www.youlai.cn/yyk/docindex/42062/",
+      "hospital": "上海市肺科医院"
+    },
+    {
+      "id": "41966",
+      "name": "沈莉",
       "title": "主治医师",
-      "department": "护理部",
-      "fee": null,
-      "url": "https://www.youlai.cn/yyk/docindex/438422/"
+      "department": "急诊科",
+      "fee": 216,
+      "url": "https://www.youlai.cn/yyk/docindex/41966/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "452304",
       "name": "李玉梅",
-      "title": "主治医师",
+      "title": "副主任护师",
       "department": "护理部",
       "fee": null,
-      "url": "https://www.youlai.cn/yyk/docindex/452304/"
+      "url": "https://www.youlai.cn/yyk/docindex/452304/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "452316",
       "name": "陈丹萍",
-      "title": "主治医师",
+      "title": "主管护师",
       "department": "护理部",
       "fee": null,
-      "url": "https://www.youlai.cn/yyk/docindex/452316/"
+      "url": "https://www.youlai.cn/yyk/docindex/452316/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "452317",
       "name": "陈丽娟",
-      "title": "主治医师",
+      "title": "主管护师",
       "department": "护理部",
       "fee": null,
-      "url": "https://www.youlai.cn/yyk/docindex/452317/"
+      "url": "https://www.youlai.cn/yyk/docindex/452317/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "452303",
       "name": "鲁敏",
-      "title": "主治医师",
+      "title": "副主任护师",
       "department": "护理部",
       "fee": null,
-      "url": "https://www.youlai.cn/yyk/docindex/452303/"
+      "url": "https://www.youlai.cn/yyk/docindex/452303/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "452315",
       "name": "黄瑛",
-      "title": "主治医师",
+      "title": "主管护师",
       "department": "护理部",
       "fee": null,
-      "url": "https://www.youlai.cn/yyk/docindex/452315/"
+      "url": "https://www.youlai.cn/yyk/docindex/452315/",
+      "hospital": "上海市肺科医院"
     },
     {
-      "id": "41142",
-      "name": "任刚",
+      "id": "384497",
+      "name": "朱巍",
       "title": "主治医师",
       "department": "放射科",
-      "fee": 600,
-      "url": "https://www.youlai.cn/yyk/docindex/41142/"
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/384497/",
+      "hospital": "上海市肺科医院"
     },
     {
-      "id": "739845",
-      "name": "刘立红",
-      "title": "主治医师",
-      "department": "放射科",
-      "fee": 600,
-      "url": "https://www.youlai.cn/yyk/docindex/739845/"
-    },
-    {
-      "id": "54154",
-      "name": "郭永梅",
-      "title": "主治医师",
-      "department": "放射科",
-      "fee": 600,
-      "url": "https://www.youlai.cn/yyk/docindex/54154/"
-    },
-    {
-      "id": "373145",
-      "name": "韩芳",
-      "title": "主治医师",
-      "department": "放射科",
-      "fee": 600,
-      "url": "https://www.youlai.cn/yyk/docindex/373145/"
-    },
-    {
-      "id": "785959",
-      "name": "侯安继",
+      "id": "42010",
+      "name": "徐清华",
       "title": "副主任医师",
       "department": "放疗科",
-      "fee": 88,
-      "url": "https://www.youlai.cn/yyk/docindex/785959/"
-    },
-    {
-      "id": "415246",
-      "name": "周鑫",
-      "title": "副主任医师",
-      "department": "放疗科",
-      "fee": 88,
-      "url": "https://www.youlai.cn/yyk/docindex/415246/"
-    },
-    {
-      "id": "42071",
-      "name": "蔡勇",
-      "title": "副主任医师",
-      "department": "放疗科",
-      "fee": 88,
-      "url": "https://www.youlai.cn/yyk/docindex/42071/"
-    },
-    {
-      "id": "43991",
-      "name": "赵国旗",
-      "title": "副主任医师",
-      "department": "放疗科",
-      "fee": 88,
-      "url": "https://www.youlai.cn/yyk/docindex/43991/"
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/42010/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42079",
       "name": "刘进军",
-      "title": "主任医师",
+      "title": "主治医师",
       "department": "核医学科",
       "fee": 600,
-      "url": "https://www.youlai.cn/yyk/docindex/42079/"
+      "url": "https://www.youlai.cn/yyk/docindex/42079/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "384485",
       "name": "姜磊",
-      "title": "主任医师",
+      "title": "副主任医师",
       "department": "核医学科",
       "fee": 600,
-      "url": "https://www.youlai.cn/yyk/docindex/384485/"
-    },
-    {
-      "id": "787239",
-      "name": "张建",
-      "title": "主任医师",
-      "department": "核医学科",
-      "fee": 600,
-      "url": "https://www.youlai.cn/yyk/docindex/787239/"
-    },
-    {
-      "id": "268433",
-      "name": "张永学",
-      "title": "主任医师",
-      "department": "核医学科",
-      "fee": 600,
-      "url": "https://www.youlai.cn/yyk/docindex/268433/"
-    },
-    {
-      "id": "268435",
-      "name": "曹卫",
-      "title": "主任医师",
-      "department": "核医学科",
-      "fee": 600,
-      "url": "https://www.youlai.cn/yyk/docindex/268435/"
-    },
-    {
-      "id": "37280",
-      "name": "李培勇",
-      "title": "主任医师",
-      "department": "核医学科",
-      "fee": 600,
-      "url": "https://www.youlai.cn/yyk/docindex/37280/"
+      "url": "https://www.youlai.cn/yyk/docindex/384485/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "384513",
       "name": "李强",
-      "title": "主任医师",
+      "title": "主治医师",
       "department": "核医学科",
       "fee": 600,
-      "url": "https://www.youlai.cn/yyk/docindex/384513/"
+      "url": "https://www.youlai.cn/yyk/docindex/384513/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42078",
@@ -632,111 +420,53 @@
       "title": "主任医师",
       "department": "核医学科",
       "fee": 600,
-      "url": "https://www.youlai.cn/yyk/docindex/42078/"
+      "url": "https://www.youlai.cn/yyk/docindex/42078/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42080",
       "name": "赵龙",
-      "title": "主任医师",
+      "title": "主治医师",
       "department": "核医学科",
       "fee": 600,
-      "url": "https://www.youlai.cn/yyk/docindex/42080/"
-    },
-    {
-      "id": "90197",
-      "name": "郭万华",
-      "title": "主任医师",
-      "department": "核医学科",
-      "fee": 600,
-      "url": "https://www.youlai.cn/yyk/docindex/90197/"
+      "url": "https://www.youlai.cn/yyk/docindex/42080/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "741165",
       "name": "余方友",
-      "title": "副主任医师",
+      "title": "主任技师",
       "department": "检验科",
       "fee": 56,
-      "url": "https://www.youlai.cn/yyk/docindex/741165/"
-    },
-    {
-      "id": "367548",
-      "name": "师伟",
-      "title": "副主任医师",
-      "department": "检验科",
-      "fee": 56,
-      "url": "https://www.youlai.cn/yyk/docindex/367548/"
-    },
-    {
-      "id": "383173",
-      "name": "张艳芬",
-      "title": "副主任医师",
-      "department": "检验科",
-      "fee": 56,
-      "url": "https://www.youlai.cn/yyk/docindex/383173/"
-    },
-    {
-      "id": "782708",
-      "name": "徐倩",
-      "title": "副主任医师",
-      "department": "检验科",
-      "fee": 56,
-      "url": "https://www.youlai.cn/yyk/docindex/782708/"
-    },
-    {
-      "id": "42075",
-      "name": "浦江",
-      "title": "副主任医师",
-      "department": "检验科",
-      "fee": 56,
-      "url": "https://www.youlai.cn/yyk/docindex/42075/"
+      "url": "https://www.youlai.cn/yyk/docindex/741165/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "741170",
       "name": "王洪秀",
-      "title": "副主任医师",
+      "title": "副主任技师",
       "department": "检验科",
       "fee": 56,
-      "url": "https://www.youlai.cn/yyk/docindex/741170/"
+      "url": "https://www.youlai.cn/yyk/docindex/741170/",
+      "hospital": "上海市肺科医院"
     },
     {
-      "id": "451636",
-      "name": "王露",
-      "title": "副主任医师",
-      "department": "检验科",
+      "id": "42075",
+      "name": "浦江",
+      "title": "",
+      "department": "特检科",
       "fee": 56,
-      "url": "https://www.youlai.cn/yyk/docindex/451636/"
-    },
-    {
-      "id": "367638",
-      "name": "田敬伦",
-      "title": "副主任医师",
-      "department": "检验科",
-      "fee": 56,
-      "url": "https://www.youlai.cn/yyk/docindex/367638/"
+      "url": "https://www.youlai.cn/yyk/docindex/42075/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42074",
       "name": "陶巨蔚",
       "title": "副主任医师",
-      "department": "检验科",
+      "department": "特检科",
       "fee": 56,
-      "url": "https://www.youlai.cn/yyk/docindex/42074/"
-    },
-    {
-      "id": "740562",
-      "name": "刘志艳",
-      "title": "主任医师",
-      "department": "病理科",
-      "fee": null,
-      "url": "https://www.youlai.cn/yyk/docindex/740562/"
-    },
-    {
-      "id": "377531",
-      "name": "张冬梅",
-      "title": "主任医师",
-      "department": "病理科",
-      "fee": null,
-      "url": "https://www.youlai.cn/yyk/docindex/377531/"
+      "url": "https://www.youlai.cn/yyk/docindex/42074/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42086",
@@ -744,23 +474,8 @@
       "title": "主任医师",
       "department": "病理科",
       "fee": null,
-      "url": "https://www.youlai.cn/yyk/docindex/42086/"
-    },
-    {
-      "id": "7961",
-      "name": "杨邵敏",
-      "title": "主任医师",
-      "department": "病理科",
-      "fee": null,
-      "url": "https://www.youlai.cn/yyk/docindex/7961/"
-    },
-    {
-      "id": "378002",
-      "name": "林军",
-      "title": "主任医师",
-      "department": "病理科",
-      "fee": null,
-      "url": "https://www.youlai.cn/yyk/docindex/378002/"
+      "url": "https://www.youlai.cn/yyk/docindex/42086/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42085",
@@ -768,71 +483,44 @@
       "title": "主任医师",
       "department": "病理科",
       "fee": null,
-      "url": "https://www.youlai.cn/yyk/docindex/42085/"
-    },
-    {
-      "id": "378538",
-      "name": "罗荣奎",
-      "title": "主任医师",
-      "department": "病理科",
-      "fee": null,
-      "url": "https://www.youlai.cn/yyk/docindex/378538/"
+      "url": "https://www.youlai.cn/yyk/docindex/42085/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "384465",
       "name": "董正伟",
-      "title": "主任医师",
+      "title": "副主任医师",
       "department": "病理科",
       "fee": null,
-      "url": "https://www.youlai.cn/yyk/docindex/384465/"
+      "url": "https://www.youlai.cn/yyk/docindex/384465/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "384468",
       "name": "谢惠康",
-      "title": "主任医师",
+      "title": "副主任医师",
       "department": "病理科",
       "fee": null,
-      "url": "https://www.youlai.cn/yyk/docindex/384468/"
+      "url": "https://www.youlai.cn/yyk/docindex/384468/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "384463",
       "name": "谢晓枫",
-      "title": "主任医师",
+      "title": "主治医师",
       "department": "病理科",
       "fee": null,
-      "url": "https://www.youlai.cn/yyk/docindex/384463/"
+      "url": "https://www.youlai.cn/yyk/docindex/384463/",
+      "hospital": "上海市肺科医院"
     },
     {
-      "id": "274654",
-      "name": "张丽",
+      "id": "41918",
+      "name": "梁莉",
       "title": "主任医师",
       "department": "结核科",
-      "fee": 160,
-      "url": "https://www.youlai.cn/yyk/docindex/274654/"
-    },
-    {
-      "id": "29074",
-      "name": "蔡宝云",
-      "title": "主任医师",
-      "department": "结核科",
-      "fee": 160,
-      "url": "https://www.youlai.cn/yyk/docindex/29074/"
-    },
-    {
-      "id": "253413",
-      "name": "金龙",
-      "title": "主任医师",
-      "department": "结核科",
-      "fee": 160,
-      "url": "https://www.youlai.cn/yyk/docindex/253413/"
-    },
-    {
-      "id": "274659",
-      "name": "魏明",
-      "title": "主任医师",
-      "department": "结核科",
-      "fee": 160,
-      "url": "https://www.youlai.cn/yyk/docindex/274659/"
+      "fee": 1500,
+      "url": "https://www.youlai.cn/yyk/docindex/41918/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "41981",
@@ -840,7 +528,8 @@
       "title": "主任医师",
       "department": "肿瘤科",
       "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/41981/"
+      "url": "https://www.youlai.cn/yyk/docindex/41981/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "41979",
@@ -848,7 +537,8 @@
       "title": "主任医师",
       "department": "肿瘤科",
       "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/41979/"
+      "url": "https://www.youlai.cn/yyk/docindex/41979/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "41978",
@@ -856,23 +546,8 @@
       "title": "主任医师",
       "department": "肿瘤科",
       "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/41978/"
-    },
-    {
-      "id": "378736",
-      "name": "宋瑞祥",
-      "title": "主任医师",
-      "department": "肿瘤科",
-      "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/378736/"
-    },
-    {
-      "id": "40804",
-      "name": "康健",
-      "title": "主任医师",
-      "department": "肿瘤科",
-      "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/40804/"
+      "url": "https://www.youlai.cn/yyk/docindex/41978/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "41983",
@@ -880,7 +555,8 @@
       "title": "主任医师",
       "department": "肿瘤科",
       "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/41983/"
+      "url": "https://www.youlai.cn/yyk/docindex/41983/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "41980",
@@ -888,39 +564,17 @@
       "title": "主任医师",
       "department": "肿瘤科",
       "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/41980/"
-    },
-    {
-      "id": "362245",
-      "name": "曲发军",
-      "title": "主任医师",
-      "department": "肿瘤科",
-      "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/362245/"
-    },
-    {
-      "id": "42404",
-      "name": "石洁",
-      "title": "主任医师",
-      "department": "肿瘤科",
-      "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/42404/"
-    },
-    {
-      "id": "41128",
-      "name": "郑磊贞",
-      "title": "主任医师",
-      "department": "肿瘤科",
-      "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/41128/"
+      "url": "https://www.youlai.cn/yyk/docindex/41980/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "368756",
       "name": "丁新宇",
-      "title": "主任医师",
+      "title": "主治医师",
       "department": "胸外科",
       "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/368756/"
+      "url": "https://www.youlai.cn/yyk/docindex/368756/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "41873",
@@ -928,15 +582,17 @@
       "title": "主任医师",
       "department": "胸外科",
       "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/41873/"
+      "url": "https://www.youlai.cn/yyk/docindex/41873/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "41899",
       "name": "刘小刚",
-      "title": "主任医师",
+      "title": "副主任医师",
       "department": "胸外科",
       "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/41899/"
+      "url": "https://www.youlai.cn/yyk/docindex/41899/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "41862",
@@ -944,7 +600,8 @@
       "title": "主任医师",
       "department": "胸外科",
       "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/41862/"
+      "url": "https://www.youlai.cn/yyk/docindex/41862/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "41860",
@@ -952,23 +609,17 @@
       "title": "主任医师",
       "department": "胸外科",
       "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/41860/"
+      "url": "https://www.youlai.cn/yyk/docindex/41860/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "41878",
       "name": "宋楠",
-      "title": "主任医师",
+      "title": "副主任医师",
       "department": "胸外科",
       "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/41878/"
-    },
-    {
-      "id": "42010",
-      "name": "徐清华",
-      "title": "主任医师",
-      "department": "胸外科",
-      "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/42010/"
+      "url": "https://www.youlai.cn/yyk/docindex/41878/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "41861",
@@ -976,31 +627,8 @@
       "title": "主任医师",
       "department": "胸外科",
       "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/41861/"
-    },
-    {
-      "id": "384497",
-      "name": "朱巍",
-      "title": "主任医师",
-      "department": "胸外科",
-      "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/384497/"
-    },
-    {
-      "id": "384504",
-      "name": "李满会",
-      "title": "主任医师",
-      "department": "胸外科",
-      "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/384504/"
-    },
-    {
-      "id": "41949",
-      "name": "李霞",
-      "title": "主任医师",
-      "department": "胸外科",
-      "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/41949/"
+      "url": "https://www.youlai.cn/yyk/docindex/41861/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "41900",
@@ -1008,15 +636,8 @@
       "title": "主任医师",
       "department": "胸外科",
       "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/41900/"
-    },
-    {
-      "id": "41918",
-      "name": "梁莉",
-      "title": "主任医师",
-      "department": "胸外科",
-      "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/41918/"
+      "url": "https://www.youlai.cn/yyk/docindex/41900/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "41863",
@@ -1024,7 +645,8 @@
       "title": "主任医师",
       "department": "胸外科",
       "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/41863/"
+      "url": "https://www.youlai.cn/yyk/docindex/41863/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "41880",
@@ -1032,7 +654,8 @@
       "title": "主任医师",
       "department": "胸外科",
       "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/41880/"
+      "url": "https://www.youlai.cn/yyk/docindex/41880/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "41865",
@@ -1040,7 +663,8 @@
       "title": "主任医师",
       "department": "胸外科",
       "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/41865/"
+      "url": "https://www.youlai.cn/yyk/docindex/41865/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "41879",
@@ -1048,7 +672,8 @@
       "title": "主任医师",
       "department": "胸外科",
       "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/41879/"
+      "url": "https://www.youlai.cn/yyk/docindex/41879/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "41864",
@@ -1056,175 +681,62 @@
       "title": "主任医师",
       "department": "胸外科",
       "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/41864/"
+      "url": "https://www.youlai.cn/yyk/docindex/41864/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "41897",
       "name": "鲍熠",
-      "title": "主任医师",
+      "title": "副主任医师",
       "department": "胸外科",
       "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/41897/"
-    },
-    {
-      "id": "384510",
-      "name": "黄冬冬",
-      "title": "主任医师",
-      "department": "胸外科",
-      "fee": 1500,
-      "url": "https://www.youlai.cn/yyk/docindex/384510/"
-    },
-    {
-      "id": "233808",
-      "name": "任耘",
-      "title": null,
-      "department": "药剂科",
-      "fee": 60,
-      "url": "https://www.youlai.cn/yyk/docindex/233808/"
-    },
-    {
-      "id": "363658",
-      "name": "曾钰",
-      "title": null,
-      "department": "药剂科",
-      "fee": 60,
-      "url": "https://www.youlai.cn/yyk/docindex/363658/"
+      "url": "https://www.youlai.cn/yyk/docindex/41897/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42082",
       "name": "李玉平",
-      "title": null,
+      "title": "主任药师",
       "department": "药剂科",
       "fee": 60,
-      "url": "https://www.youlai.cn/yyk/docindex/42082/"
-    },
-    {
-      "id": "806",
-      "name": "杨淑桂",
-      "title": null,
-      "department": "药剂科",
-      "fee": 60,
-      "url": "https://www.youlai.cn/yyk/docindex/806/"
-    },
-    {
-      "id": "22224",
-      "name": "杨莉萍",
-      "title": null,
-      "department": "药剂科",
-      "fee": 60,
-      "url": "https://www.youlai.cn/yyk/docindex/22224/"
-    },
-    {
-      "id": "361715",
-      "name": "阮君山",
-      "title": null,
-      "department": "药剂科",
-      "fee": 60,
-      "url": "https://www.youlai.cn/yyk/docindex/361715/"
-    },
-    {
-      "id": "32699",
-      "name": "冯一",
-      "title": "主任医师",
-      "department": "营养科",
-      "fee": 50,
-      "url": "https://www.youlai.cn/yyk/docindex/32699/"
-    },
-    {
-      "id": "1538",
-      "name": "夏萌",
-      "title": "主任医师",
-      "department": "营养科",
-      "fee": 50,
-      "url": "https://www.youlai.cn/yyk/docindex/1538/"
-    },
-    {
-      "id": "16984",
-      "name": "李时莲",
-      "title": "主任医师",
-      "department": "营养科",
-      "fee": 50,
-      "url": "https://www.youlai.cn/yyk/docindex/16984/"
-    },
-    {
-      "id": "288394",
-      "name": "胡小翠",
-      "title": "主任医师",
-      "department": "营养科",
-      "fee": 50,
-      "url": "https://www.youlai.cn/yyk/docindex/288394/"
-    },
-    {
-      "id": "287562",
-      "name": "陈志勇",
-      "title": "主任医师",
-      "department": "营养科",
-      "fee": 50,
-      "url": "https://www.youlai.cn/yyk/docindex/287562/"
+      "url": "https://www.youlai.cn/yyk/docindex/42082/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42083",
       "name": "陈薇",
-      "title": "主任医师",
+      "title": "主管营养师",
       "department": "营养科",
       "fee": 50,
-      "url": "https://www.youlai.cn/yyk/docindex/42083/"
+      "url": "https://www.youlai.cn/yyk/docindex/42083/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "384475",
       "name": "丛阳",
-      "title": "副主任医师",
+      "title": "主治医师",
       "department": "超声科",
       "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/384475/"
-    },
-    {
-      "id": "419908",
-      "name": "任新平",
-      "title": "副主任医师",
-      "department": "超声科",
-      "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/419908/"
-    },
-    {
-      "id": "274693",
-      "name": "余松远",
-      "title": "副主任医师",
-      "department": "超声科",
-      "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/274693/"
+      "url": "https://www.youlai.cn/yyk/docindex/384475/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "757921",
       "name": "余梦昕",
-      "title": "副主任医师",
+      "title": "住院医师",
       "department": "超声科",
       "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/757921/"
-    },
-    {
-      "id": "527409",
-      "name": "刁雪红",
-      "title": "副主任医师",
-      "department": "超声科",
-      "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/527409/"
+      "url": "https://www.youlai.cn/yyk/docindex/757921/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "384488",
       "name": "徐黎莎",
-      "title": "副主任医师",
+      "title": "主治医师",
       "department": "超声科",
       "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/384488/"
-    },
-    {
-      "id": "376627",
-      "name": "王玉",
-      "title": "副主任医师",
-      "department": "超声科",
-      "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/376627/"
+      "url": "https://www.youlai.cn/yyk/docindex/384488/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "384479",
@@ -1232,31 +744,8 @@
       "title": "副主任医师",
       "department": "超声科",
       "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/384479/"
-    },
-    {
-      "id": "784814",
-      "name": "闫瑞玲",
-      "title": "副主任医师",
-      "department": "超声科",
-      "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/784814/"
-    },
-    {
-      "id": "41965",
-      "name": "顾晔",
-      "title": "副主任医师",
-      "department": "超声科",
-      "fee": 1200,
-      "url": "https://www.youlai.cn/yyk/docindex/41965/"
-    },
-    {
-      "id": "434427",
-      "name": "冉德伟",
-      "title": "主任医师",
-      "department": "麻醉科",
-      "fee": 160,
-      "url": "https://www.youlai.cn/yyk/docindex/434427/"
+      "url": "https://www.youlai.cn/yyk/docindex/384479/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42050",
@@ -1264,7 +753,8 @@
       "title": "主任医师",
       "department": "麻醉科",
       "fee": 160,
-      "url": "https://www.youlai.cn/yyk/docindex/42050/"
+      "url": "https://www.youlai.cn/yyk/docindex/42050/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42049",
@@ -1272,7 +762,8 @@
       "title": "主任医师",
       "department": "麻醉科",
       "fee": 160,
-      "url": "https://www.youlai.cn/yyk/docindex/42049/"
+      "url": "https://www.youlai.cn/yyk/docindex/42049/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42052",
@@ -1280,55 +771,26 @@
       "title": "主任医师",
       "department": "麻醉科",
       "fee": 160,
-      "url": "https://www.youlai.cn/yyk/docindex/42052/"
-    },
-    {
-      "id": "402954",
-      "name": "李修良",
-      "title": "主任医师",
-      "department": "麻醉科",
-      "fee": 160,
-      "url": "https://www.youlai.cn/yyk/docindex/402954/"
+      "url": "https://www.youlai.cn/yyk/docindex/42052/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42060",
       "name": "李华",
-      "title": "主任医师",
+      "title": "副主任医师",
       "department": "麻醉科",
       "fee": 160,
-      "url": "https://www.youlai.cn/yyk/docindex/42060/"
-    },
-    {
-      "id": "17446",
-      "name": "李雁",
-      "title": "主任医师",
-      "department": "麻醉科",
-      "fee": 160,
-      "url": "https://www.youlai.cn/yyk/docindex/17446/"
-    },
-    {
-      "id": "69062",
-      "name": "杨承祥",
-      "title": "主任医师",
-      "department": "麻醉科",
-      "fee": 160,
-      "url": "https://www.youlai.cn/yyk/docindex/69062/"
+      "url": "https://www.youlai.cn/yyk/docindex/42060/",
+      "hospital": "上海市肺科医院"
     },
     {
       "id": "42051",
       "name": "温宗梅",
-      "title": "主任医师",
+      "title": "副主任医师",
       "department": "麻醉科",
       "fee": 160,
-      "url": "https://www.youlai.cn/yyk/docindex/42051/"
-    },
-    {
-      "id": "35755",
-      "name": "陈志扬",
-      "title": "主任医师",
-      "department": "麻醉科",
-      "fee": 160,
-      "url": "https://www.youlai.cn/yyk/docindex/35755/"
+      "url": "https://www.youlai.cn/yyk/docindex/42051/",
+      "hospital": "上海市肺科医院"
     }
   ],
   "official": [
@@ -1377,10 +839,31 @@
   ],
   "booking_entries": [
     {
+      "id": "wechat_ngari",
+      "title": "微信预约（纳里健康）",
+      "subtitle": "本院通道：公众号「上海市肺科医院」→ 就医服务 → 预约挂号（weixin.ngarihealth.com）",
+      "primary": true,
+      "action": "wechat",
+      "copy_text": "上海市肺科医院",
+      "url": "weixin://",
+      "button": "复制并打开微信",
+      "hint": "已复制公众号名。请打开公众号菜单「就医服务-预约挂号」（纳里健康）"
+    },
+    {
+      "id": "ngari_portal",
+      "title": "纳里健康微信端",
+      "subtitle": "请用微信打开；浏览器通常无法直接进入医院号源页",
+      "primary": true,
+      "action": "open",
+      "url": "https://weixin.ngarihealth.com/",
+      "button": "打开 ngarihealth",
+      "hint": "若打不开，请改走微信公众号菜单进入"
+    },
+    {
       "id": "shdc",
       "title": "上海医联预约",
       "subtitle": "网页可直达 · 每日 7:30 放号",
-      "primary": true,
+      "primary": false,
       "action": "open",
       "url": "https://yuyue.shdc.org.cn/",
       "button": "打开预约页"
@@ -1389,61 +872,27 @@
       "id": "phone",
       "title": "电话预约",
       "subtitle": "400-820-3137 · 全天",
-      "primary": true,
+      "primary": false,
       "action": "open",
       "url": "tel:4008203137",
       "button": "一键拨打"
     },
     {
       "id": "alipay",
-      "title": "支付宝小程序",
-      "subtitle": "一键打开支付宝并搜索「上海市肺科医院」",
-      "primary": true,
+      "title": "支付宝搜索",
+      "subtitle": "搜索「上海市肺科医院」",
+      "primary": false,
       "action": "open",
       "url": "https://ds.alipay.com/?scheme=alipays%3A%2F%2Fplatformapi%2Fstartapp%3FappId%3D20001003%26keyword%3D%E4%B8%8A%E6%B5%B7%E5%B8%82%E8%82%BA%E7%A7%91%E5%8C%BB%E9%99%A2%26queryWord%3D%E4%B8%8A%E6%B5%B7%E5%B8%82%E8%82%BA%E7%A7%91%E5%8C%BB%E9%99%A2%26v2%3Dtrue%26startMultApp%3DYES%26searchType%3Dunified",
-      "button": "打开支付宝搜索",
-      "hint": "若未自动跳转，请打开支付宝搜索：上海市肺科医院"
-    },
-    {
-      "id": "alipay_full",
-      "title": "支付宝（全称搜索）",
-      "subtitle": "搜索「同济大学附属上海市肺科医院」",
-      "primary": false,
-      "action": "open",
-      "url": "https://ds.alipay.com/?scheme=alipays%3A%2F%2Fplatformapi%2Fstartapp%3FappId%3D20001003%26keyword%3D%E5%90%8C%E6%B5%8E%E5%A4%A7%E5%AD%A6%E9%99%84%E5%B1%9E%E4%B8%8A%E6%B5%B7%E5%B8%82%E8%82%BA%E7%A7%91%E5%8C%BB%E9%99%A2%26queryWord%3D%E5%90%8C%E6%B5%8E%E5%A4%A7%E5%AD%A6%E9%99%84%E5%B1%9E%E4%B8%8A%E6%B5%B7%E5%B8%82%E8%82%BA%E7%A7%91%E5%8C%BB%E9%99%A2%26v2%3Dtrue%26startMultApp%3DYES%26searchType%3Dunified",
-      "button": "打开支付宝搜索全称"
-    },
-    {
-      "id": "wechat",
-      "title": "微信公众号预约",
-      "subtitle": "医院微信端主要走公众号，非公开小程序直达链接",
-      "primary": false,
-      "action": "wechat",
-      "copy_text": "上海市肺科医院",
-      "url": "weixin://",
-      "button": "复制并打开微信",
-      "hint": "已复制「上海市肺科医院」，正在打开微信，请粘贴搜索公众号"
-    },
-    {
-      "id": "wechat_sub",
-      "title": "微信订阅号",
-      "subtitle": "「上海市肺科医院订阅号」",
-      "primary": false,
-      "action": "wechat",
-      "copy_text": "上海市肺科医院订阅号",
-      "url": "weixin://",
-      "button": "复制并打开微信",
-      "hint": "已复制订阅号名，正在打开微信"
-    },
-    {
-      "id": "hospital",
-      "title": "医院官网",
-      "subtitle": "查看医院官方信息",
-      "primary": false,
-      "action": "open",
-      "url": "https://www.shsfkyy.com/",
-      "button": "打开官网"
+      "button": "打开支付宝搜索"
     }
   ],
-  "mini_program_note": "微信/支付宝「指定小程序直达」需要医院官方 AppID 与 URL Scheme。目前未公开该 AppID，因此无法从网页直接打开肺科医院小程序首页；支付宝可一键跳到搜索结果，微信可复制名称并唤起微信 App。"
+  "mini_program_note": "本院微信预约后台为纳里健康（weixin.ngarihealth.com），需在微信内通过「上海市肺科医院」公众号菜单进入。浏览器外链通常无法直接打开号源。本页医生列表已过滤为第一执业医院=上海市肺科医院，已剔除其他医院混入数据。",
+  "doctor_filter": "仅保留第一执业医院为上海市肺科医院的医生；已剔除聚合站混入的外院医生。",
+  "ngari": {
+    "portal": "https://weixin.ngarihealth.com/",
+    "note": "纳里健康微信端需在微信内打开；直达预约页依赖医院 organId/公众号菜单链接。",
+    "booking_hint": "请在微信打开「上海市肺科医院」公众号 → 就医服务 → 预约挂号（后台为 ngarihealth）。"
+  },
+  "meta_note_doctors": "本院医生 70 位（已剔除外院混入）"
 }
