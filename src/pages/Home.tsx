@@ -26,6 +26,9 @@ export function Home() {
             <Link className="btn btn-ghost" to="/profile">
               完善求职画像
             </Link>
+            <Link className="btn btn-ghost" to="/pick">
+              公考选岗助手（轻量版）
+            </Link>
           </div>
         </div>
       </section>
