@@ -1,8 +1,9 @@
 import { NavLink } from 'react-router-dom'
 
 const links = [
-  { to: '/jobs', label: '岗位' },
-  { to: '/apply', label: '投递' },
+  { to: '/jobs', label: '岗位雷达' },
+  { to: '/profile', label: '求职画像' },
+  { to: '/apply', label: '智能投递' },
   { to: '/applications', label: '我的投递' },
 ]
 

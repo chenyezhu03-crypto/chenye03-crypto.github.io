@@ -334,6 +334,131 @@ textarea {
   flex-wrap: wrap;
 }
 
+.filters-dense .field {
+  min-width: 8.5rem;
+}
+
+.meta-line {
+  margin: 0.55rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.badge.score {
+  border-color: rgba(15, 79, 72, 0.28);
+  color: var(--teal);
+  background: rgba(15, 79, 72, 0.08);
+  font-variant-numeric: tabular-nums;
+}
+
+.badge.score.warn {
+  border-color: rgba(184, 90, 47, 0.35);
+  color: var(--copper);
+  background: rgba(184, 90, 47, 0.08);
+}
+
+.badge.score.ok {
+  border-color: rgba(15, 79, 72, 0.35);
+}
+
+.match-summary {
+  margin: 0.7rem 0 0;
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.match-dims {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.match-dims li {
+  display: grid;
+  gap: 0.15rem;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.match-dims.compact li {
+  grid-template-columns: 7.5rem 1fr;
+  align-items: start;
+  gap: 0.5rem;
+}
+
+.dim-通过 strong {
+  color: var(--teal);
+}
+
+.dim-接近 strong {
+  color: #8a6a1f;
+}
+
+.dim-缺口 strong {
+  color: #9b2c2c;
+}
+
+.job-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.intel-panel {
+  padding: 1rem 0 1.1rem;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 0.65rem;
+}
+
+.intel-top {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.warn-line {
+  margin: 0;
+  color: var(--copper);
+  line-height: 1.55;
+  font-size: 0.92rem;
+}
+
+.form-ok {
+  margin: 0;
+  color: var(--teal);
+}
+
+.fine-print {
+  margin: 0.35rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.fine-print a {
+  color: var(--teal);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.check-field .check-line {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.7rem;
+  padding: 0 0.2rem;
+}
+
+.app-angle {
+  margin: 0.45rem 0 0;
+  color: var(--teal-deep);
+  line-height: 1.55;
+}
+
 .field {
   display: flex;
   flex-direction: column;
@@ -616,12 +741,26 @@ textarea {
 
 @media (max-width: 560px) {
   .site-nav {
-    padding: 0 1rem;
+    padding: 0.65rem 1rem;
+    height: auto;
+    min-height: var(--nav-h);
+    flex-wrap: wrap;
+    gap: 0.35rem 0.75rem;
+  }
+
+  .nav-links {
+    width: 100%;
+    justify-content: space-between;
   }
 
   .nav-link {
-    padding: 0.5rem 0.55rem;
-    font-size: 0.92rem;
+    padding: 0.45rem 0.35rem;
+    font-size: 0.86rem;
+  }
+
+  .nav-link::after {
+    left: 0.35rem;
+    right: 0.35rem;
   }
 
   .brand {
@@ -632,6 +771,10 @@ textarea {
   .page,
   .narrow {
     width: min(100% - 2rem, 1080px);
+  }
+
+  .match-dims.compact li {
+    grid-template-columns: 1fr;
   }
 }
 

@@ -14,40 +14,42 @@ export function Home() {
         <div className="hero-content">
           <p className="brand-mark animate-rise">投简</p>
           <h1 className="hero-title animate-rise delay-1">
-            一键投递，直达心仪岗位
+            先看清条件，再聪明投递
           </h1>
           <p className="hero-lead animate-rise delay-2">
-            精选机会，简洁表单，投递进度一目了然。
+            多源岗位汇聚 · 学历/专业/性别标注透视 · 按岗位自适应生成投递内容
           </p>
           <div className="hero-actions animate-rise delay-3">
             <Link className="btn btn-primary" to="/jobs">
-              浏览岗位
+              打开岗位雷达
             </Link>
-            <Link className="btn btn-ghost" to="/apply">
-              立即投递
+            <Link className="btn btn-ghost" to="/profile">
+              完善求职画像
             </Link>
           </div>
         </div>
       </section>
 
-      <section className="section how" aria-labelledby="how-title">
-        <h2 id="how-title">三步完成投递</h2>
-        <p className="section-lead">不堆砌信息，只保留求职真正需要的步骤。</p>
+      <section className="section how" aria-labelledby="diff-title">
+        <h2 id="diff-title">和海投工具不一样</h2>
+        <p className="section-lead">
+          市面常见路径是「自动打招呼 / 代填网申」。投简把重点放在条件可解释与投递材料自适应——投得少，但投得准、投得明白。
+        </p>
         <ol className="how-list">
           <li>
             <span className="how-step">01</span>
-            <strong>挑选岗位</strong>
-            <p>按城市、方向快速筛选开放职位。</p>
+            <strong>条件透视</strong>
+            <p>从 JD 原文抽取学历、专业、经验、性别标注等结构字段，不再靠肉眼扫。 </p>
           </li>
           <li>
             <span className="how-step">02</span>
-            <strong>填写简历要点</strong>
-            <p>姓名、经历与一封简短自荐信即可。</p>
+            <strong>可解释匹配</strong>
+            <p>对照你的求职画像打分，标明通过 / 接近 / 缺口，硬门槛一眼可见。</p>
           </li>
           <li>
             <span className="how-step">03</span>
-            <strong>跟踪进度</strong>
-            <p>在「我的投递」查看状态与历史记录。</p>
+            <strong>自适应投递包</strong>
+            <p>同一份档案，面对不同岗位自动调整自荐角度与强调点，而不是复制粘贴。</p>
           </li>
         </ol>
       </section>

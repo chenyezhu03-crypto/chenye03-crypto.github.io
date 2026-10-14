@@ -10,6 +10,10 @@ export type Application = {
   years: string
   resumeName: string
   coverLetter: string
+  matchScore: number
+  hardPass: boolean
+  applyAngle: string
+  sourceName: string
   status: '已投递' | '已查看' | '面试邀请'
   submittedAt: string
 }
