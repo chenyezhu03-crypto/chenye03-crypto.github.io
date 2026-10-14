@@ -81,8 +81,21 @@ function fromLocalDemo(crawledAt: string): Job[] {
   )
 }
 
-function feedLikeToJobs(list: FeedLike[], crawledAt: string): Job[] {
-  return list.map((item) => normalizeFeedItem(item, crawledAt))
+async function mapInChunks<T, R>(
+  items: T[],
+  chunkSize: number,
+  mapFn: (item: T, index: number) => R,
+): Promise<R[]> {
+  const out: R[] = []
+  for (let i = 0; i < items.length; i += chunkSize) {
+    const slice = items.slice(i, i + chunkSize)
+    for (let j = 0; j < slice.length; j++) {
+      out.push(mapFn(slice[j], i + j))
+    }
+    // 让出主线程，避免大包导入卡死 UI
+    await new Promise((r) => setTimeout(r, 0))
+  }
+  return out
 }
 
 export async function fetchCrawledBundle(crawledAt: string): Promise<Job[]> {
@@ -96,7 +109,8 @@ export async function fetchCrawledBundle(crawledAt: string): Promise<Job[]> {
     if (/remotive|arbeitnow|remoteok|jobicy|himalayas/i.test(src)) return false
     return true
   })
-  return feedLikeToJobs(cnOnly.length ? cnOnly : data.jobs, crawledAt)
+  const list = cnOnly.length ? cnOnly : data.jobs
+  return mapInChunks(list, 200, (item) => normalizeFeedItem(item, crawledAt))
 }
 
 export function parseImportedJson(raw: string, crawledAt: string): Job[] {

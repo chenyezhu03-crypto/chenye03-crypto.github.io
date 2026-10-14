@@ -1,6 +1,12 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { crawlJobs, lastCrawledAt, lastCrawlReports, loadJobs } from '../lib/crawl'
+import {
+  crawlJobs,
+  hydrateJobs,
+  lastCrawledAt,
+  lastCrawlReports,
+  lastJobCount,
+} from '../lib/crawl'
 import {
   SOURCE_CATALOG,
   loadEnabledSources,
@@ -30,8 +36,16 @@ export function Sources() {
   const [busy, setBusy] = useState(false)
   const [reports, setReports] = useState<string[]>(() => lastCrawlReports())
   const [crawledAt, setCrawledAt] = useState(() => lastCrawledAt())
-  const [count, setCount] = useState(() => loadJobs().length)
+  const [count, setCount] = useState(() => lastJobCount())
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    void hydrateJobs().then((jobs) => {
+      setCount(jobs.length)
+      setCrawledAt(lastCrawledAt())
+      setReports(lastCrawlReports())
+    })
+  }, [])
 
   const labels = useMemo(
     () => Object.fromEntries(SOURCE_CATALOG.map((s) => [s.id, s.name])),
@@ -86,7 +100,7 @@ export function Sources() {
         <div>
           <h1>数据源</h1>
           <p className="section-lead">
-            只汇聚中国岗位：腾讯官招公开接口、开源国内样本、细 JD 本地库。也可导入你自己的国内爬虫 JSON。
+            只汇聚中国岗位：腾讯/字节/美团/网易/滴滴，以及小米、蔚来、理想、小鹏等飞书官招。也可导入你自己的国内爬虫 JSON。
           </p>
           <p className="meta-line">
             库存 {count} 条 · 上次汇聚{' '}
