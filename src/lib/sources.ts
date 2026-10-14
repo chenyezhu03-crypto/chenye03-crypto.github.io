@@ -98,17 +98,26 @@ async function mapInChunks<T, R>(
   return out
 }
 
+const OVERSEAS_CITY =
+  /伦敦|新加坡|吉隆坡|法兰克福|巴黎|帕罗奥多|东京|阿姆斯特丹|瑞典|尔湾|洛杉矶|贝尔维尤|雅加达|首尔|利雅得|悉尼|圣何塞|圣保罗|胡志明|塔吉格|古尔冈|墨西哥|华沙|慕尼黑|布拉格|阿拉木图|哥本哈根|墨尔本|迪门|新界|Mexico|San Jose|USA|远程|-远程/i
+
+function isChinaJob(job: FeedLike): boolean {
+  const src = `${job.sourceId || ''} ${job.sourceName || ''}`
+  if (/remotive|arbeitnow|remoteok|jobicy|himalayas/i.test(src)) return false
+  const city = String(job.city || '')
+  if (!city || city === '中国') return true
+  if (OVERSEAS_CITY.test(city)) return false
+  // 纯拉丁城市名多半海外
+  if (/^[A-Za-z][A-Za-z\s.'()-]+$/.test(city)) return false
+  return true
+}
+
 export async function fetchCrawledBundle(crawledAt: string): Promise<Job[]> {
   const res = await fetch(`/feeds/crawled-jobs.json?t=${Date.now()}`)
   if (!res.ok) throw new Error(`爬取包 HTTP ${res.status}`)
   const data = (await res.json()) as { jobs?: FeedLike[]; region?: string }
   if (!data.jobs?.length) return []
-  // 只要中国包；若旧海外包残留，尽量用城市/来源过滤
-  const cnOnly = data.jobs.filter((j) => {
-    const src = `${j.sourceId || ''} ${j.sourceName || ''}`
-    if (/remotive|arbeitnow|remoteok|jobicy|himalayas/i.test(src)) return false
-    return true
-  })
+  const cnOnly = data.jobs.filter(isChinaJob)
   const list = cnOnly.length ? cnOnly : data.jobs
   return mapInChunks(list, 200, (item) => normalizeFeedItem(item, crawledAt))
 }

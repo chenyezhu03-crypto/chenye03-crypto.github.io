@@ -23,8 +23,10 @@ export function Jobs() {
   const [major, setMajor] = useState('全部')
   const [gender, setGender] = useState<'全部' | GenderPref | '仅不限'>('全部')
   const [onlyFit, setOnlyFit] = useState(false)
+  const [page, setPage] = useState(1)
   const [crawledAt, setCrawledAt] = useState(() => lastCrawledAt())
   const [busy, setBusy] = useState(false)
+  const pageSize = 30
 
   useEffect(() => {
     void ensureJobsLoaded().then((list) => {
@@ -82,6 +84,13 @@ export function Jobs() {
       })
       .sort((a, b) => b.match.score - a.match.score)
   }, [jobs, profile, query, city, education, major, gender, onlyFit])
+
+  useEffect(() => {
+    setPage(1)
+  }, [query, city, education, major, gender, onlyFit, jobs.length])
+
+  const totalPages = Math.max(1, Math.ceil(ranked.length / pageSize))
+  const pageJobs = ranked.slice((page - 1) * pageSize, page * pageSize)
 
   async function refreshCrawl() {
     setBusy(true)
@@ -195,8 +204,12 @@ export function Jobs() {
         </label>
       </div>
 
+      <p className="meta-line">
+        筛选后 {ranked.length} 条 · 第 {page}/{totalPages} 页
+      </p>
+
       <ul className="job-list">
-        {ranked.map((job) => {
+        {pageJobs.map((job) => {
           const applied = hasApplied(job.id)
           return (
             <li key={job.id} className="job-row">
@@ -258,6 +271,27 @@ export function Jobs() {
           )
         })}
       </ul>
+
+      {ranked.length > pageSize ? (
+        <div className="hero-actions" style={{ marginTop: '1rem' }}>
+          <button
+            type="button"
+            className="btn btn-ghost"
+            disabled={page <= 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+          >
+            上一页
+          </button>
+          <button
+            type="button"
+            className="btn btn-ghost"
+            disabled={page >= totalPages}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+          >
+            下一页
+          </button>
+        </div>
+      ) : null}
 
       {ranked.length === 0 ? (
         <p className="empty">
