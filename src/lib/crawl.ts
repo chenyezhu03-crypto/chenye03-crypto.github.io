@@ -1,6 +1,14 @@
+import { parseRequirementText } from './jdParser'
 import { mergeJobs } from './normalizeJob'
 import { collectFromSources, loadEnabledSources, type SourceId } from './sources'
 import type { Job } from './types'
+
+function refreshStructured(job: Job): Job {
+  return {
+    ...job,
+    structured: parseRequirementText(job.requirementText || job.description || ''),
+  }
+}
 
 const KEY = 'toujian-jobs-cache-v1'
 
@@ -36,7 +44,9 @@ export function loadJobs(): Job[] {
     const raw = localStorage.getItem(KEY)
     if (!raw) return []
     const parsed = JSON.parse(raw) as Cache
-    return Array.isArray(parsed.jobs) ? parsed.jobs : []
+    if (!Array.isArray(parsed.jobs)) return []
+    // 兼容旧缓存：每次加载按最新规则重解析 JD
+    return parsed.jobs.map(refreshStructured)
   } catch {
     return []
   }

@@ -139,12 +139,23 @@ export function Profile() {
               placeholder="如：计算机 / 视觉传达"
             />
           </label>
-          <label className="field full">
+          <label className="field">
             <span>学校</span>
             <input
               value={form.school}
               onChange={(e) => update('school', e.target.value)}
             />
+          </label>
+          <label className="field check-field">
+            <span>名校批次</span>
+            <label className="check-line">
+              <input
+                type="checkbox"
+                checked={form.eliteSchool}
+                onChange={(e) => update('eliteSchool', e.target.checked)}
+              />
+              985 / 211 / 双一流等
+            </label>
           </label>
           <label className="field">
             <span>工作年限</span>

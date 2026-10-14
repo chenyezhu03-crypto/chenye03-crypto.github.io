@@ -33,8 +33,12 @@ export function buildAdaptivePack(
     emphasis.push('与岗位关键词对齐的经历', '学习速度', '稳定交付')
   }
 
-  if (s.majors.length && !match.dimensions.find((d) => d.key === 'major' && d.status === '通过')) {
-    emphasis.unshift(`用项目证明与「${s.majors[0]}」相关的能力迁移`)
+  const majorNeed = [...(s.majorsRequired || []), ...(s.majorsPreferred || [])]
+  if (
+    majorNeed.length &&
+    !match.dimensions.find((d) => d.key === 'major' && d.status === '通过')
+  ) {
+    emphasis.unshift(`用项目证明与「${majorNeed[0]}」相关的能力迁移`)
   }
 
   const skillLine = skillPool.slice(0, 4).join('、') || '相关技能'

@@ -10,6 +10,7 @@ export const defaultProfile = (): UserProfile => ({
   education: '本科',
   major: '计算机',
   school: '',
+  eliteSchool: false,
   years: 2,
   isStudent: false,
   skills: ['React', 'TypeScript'],

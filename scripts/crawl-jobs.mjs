@@ -94,14 +94,57 @@ async function fetchArbeitnow() {
   }))
 }
 
-const [remotive, arbeitnow] = await Promise.all([
+async function fetchHimalayas() {
+  const res = await fetch(
+    'https://himalayas.app/jobs/api?limit=80&offset=0',
+  )
+  if (!res.ok) throw new Error(`Himalayas HTTP ${res.status}`)
+  const data = await res.json()
+  const list = data.jobs || data.data || []
+  return list.slice(0, 80).map((j, i) => {
+    const desc = stripHtml(j.description || j.excerpt || '')
+    return {
+      sourceId: 'himalayas',
+      sourceName: 'Himalayas',
+      externalId: String(j.id || j.slug || i),
+      title: j.title || 'Untitled',
+      company: j.companyName || j.company || 'Unknown',
+      city: j.location || (j.countries && j.countries[0]) || '远程',
+      type: j.employmentType || '全职',
+      salary: j.salary || '面议',
+      tags: (j.categories || j.skills || []).slice(0, 8).map(String),
+      postedAt: toDate(j.pubDate || j.publishedAt || j.created_at),
+      description: desc.slice(0, 240),
+      requirementText: [
+        desc.slice(0, 1200),
+        (j.categories || []).length
+          ? `Categories: ${j.categories.join(', ')}`
+          : '',
+        'Remote-friendly public feed',
+      ]
+        .filter(Boolean)
+        .join('\n'),
+      applyUrl: j.applicationLink || j.url || j.guid,
+    }
+  })
+}
+
+const [remotive, arbeitnow, himalayas] = await Promise.all([
   fetchRemotive(),
   fetchArbeitnow(),
+  fetchHimalayas().catch((err) => {
+    console.error('Himalayas skip:', err.message)
+    return []
+  }),
 ])
-const jobs = [...remotive, ...arbeitnow]
+const jobs = [...remotive, ...arbeitnow, ...himalayas]
 const payload = {
   crawledAt: new Date().toISOString(),
-  sources: { remotive: remotive.length, arbeitnow: arbeitnow.length },
+  sources: {
+    remotive: remotive.length,
+    arbeitnow: arbeitnow.length,
+    himalayas: himalayas.length,
+  },
   jobs,
 }
 

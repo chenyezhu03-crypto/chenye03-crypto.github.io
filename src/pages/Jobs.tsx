@@ -8,6 +8,7 @@ import {
 } from '../lib/crawl'
 import { matchJob } from '../lib/match'
 import { loadProfile } from '../lib/profile'
+import { RequirementPanel } from '../components/RequirementPanel'
 import { hasApplied } from '../lib/storage'
 import type { EducationLevel, GenderPref, Job, MatchResult } from '../lib/types'
 
@@ -38,7 +39,12 @@ export function Jobs() {
   }, [jobs])
 
   const majors = useMemo(() => {
-    const set = new Set(jobs.flatMap((j) => j.structured.majors))
+    const set = new Set(
+      jobs.flatMap((j) => [
+        ...(j.structured.majorsRequired || []),
+        ...(j.structured.majorsPreferred || []),
+      ]),
+    )
     return ['全部', ...Array.from(set)]
   }, [jobs])
 
@@ -53,7 +59,9 @@ export function Jobs() {
           job.structured.educationMin === education ||
           job.structured.educationPrefer === education
         const matchMajor =
-          major === '全部' || job.structured.majors.includes(major)
+          major === '全部' ||
+          (job.structured.majorsRequired || []).includes(major) ||
+          (job.structured.majorsPreferred || []).includes(major)
         const matchGender =
           gender === '全部' ||
           (gender === '仅不限'
@@ -208,13 +216,14 @@ export function Jobs() {
                 <p className="job-salary">{job.salary}</p>
                 <p className="job-desc">{job.description}</p>
                 <ul className="tag-list">
-                  {job.structured.highlights.map((tag) => (
+                  {job.structured.highlights.slice(0, 6).map((tag) => (
                     <li key={tag}>{tag}</li>
                   ))}
                   {job.tags.map((tag) => (
                     <li key={tag}>{tag}</li>
                   ))}
                 </ul>
+                <RequirementPanel job={job} />
                 <p className="match-summary">{job.match.summary}</p>
                 <ul className="match-dims">
                   {job.match.dimensions

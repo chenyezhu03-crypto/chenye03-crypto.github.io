@@ -593,9 +593,57 @@ textarea {
   border-color: rgba(155, 44, 44, 0.35);
 }
 
+.req-panel {
+  margin-top: 0.9rem;
+  padding: 0.85rem 0 0.2rem;
+  border-top: 1px dashed var(--line);
+}
+
+.req-title {
+  margin: 0 0 0.55rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--teal-deep);
+}
+
+.req-grid {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem 1rem;
+}
+
+.req-item {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.req-item dt {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+
+.req-item dd {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.req-signals {
+  margin: 0.55rem 0 0;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
 @media (max-width: 800px) {
   .resume-row {
     flex-direction: column;
+  }
+
+  .req-grid {
+    grid-template-columns: 1fr;
   }
 }
 
