@@ -2,7 +2,7 @@ import { RAW_FEEDS } from '../data/rawFeeds'
 import { parseRequirementText } from './jdParser'
 import type { Job } from './types'
 
-const KEY = 'toujian-jobs-cache-v1'
+const KEY = 'toujian-jobs-cache-v2'
 
 function normalize(item: (typeof RAW_FEEDS)[number], crawledAt: string): Job {
   const structured = parseRequirementText(item.requirementText)

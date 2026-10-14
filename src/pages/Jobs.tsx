@@ -8,6 +8,14 @@ import type { EducationLevel, GenderPref, Job, MatchResult } from '../lib/types'
 
 type JobWithMatch = Job & { match: MatchResult }
 
+type SourceFilter = '全部' | '企业社招' | '国考' | '上海市考'
+
+function jobSourceBucket(job: Job): SourceFilter {
+  if (job.sourceId === 'guokao') return '国考'
+  if (job.sourceId === 'shanghai-gwy') return '上海市考'
+  return '企业社招'
+}
+
 export function Jobs() {
   const profile = useMemo(() => loadProfile(), [])
   const [jobs, setJobs] = useState<Job[]>(() => loadJobs())
@@ -17,6 +25,7 @@ export function Jobs() {
   const [major, setMajor] = useState('全部')
   const [gender, setGender] = useState<'全部' | GenderPref | '仅不限'>('全部')
   const [onlyFit, setOnlyFit] = useState(false)
+  const [sourceFilter, setSourceFilter] = useState<SourceFilter>('全部')
   const [crawledAt, setCrawledAt] = useState(() => lastCrawledAt())
 
   const cities = useMemo(() => {
@@ -50,17 +59,20 @@ export function Jobs() {
           `${job.title} ${job.company} ${job.tags.join(' ')} ${job.requirementText}`.toLowerCase()
         const matchQuery = !q || hay.includes(q)
         const matchFit = !onlyFit || job.match.hardPass
+        const matchSource =
+          sourceFilter === '全部' || jobSourceBucket(job) === sourceFilter
         return (
           matchCity &&
           matchEdu &&
           matchMajor &&
           matchGender &&
           matchQuery &&
-          matchFit
+          matchFit &&
+          matchSource
         )
       })
       .sort((a, b) => b.match.score - a.match.score)
-  }, [jobs, profile, query, city, education, major, gender, onlyFit])
+  }, [jobs, profile, query, city, education, major, gender, onlyFit, sourceFilter])
 
   function refreshCrawl() {
     const next = crawlJobs()
@@ -74,7 +86,7 @@ export function Jobs() {
         <div>
           <h1>岗位雷达</h1>
           <p className="section-lead">
-            多源汇聚后做条件透视。按学历 / 专业 / 性别标注筛选，并按与你画像的匹配度排序。
+            多源汇聚后做条件透视。支持企业社招与国考 / 上海市考公务员职位演示样本，按学历、专业、基层经历等筛选并排序。
           </p>
           <p className="meta-line">
             当前 {jobs.length} 条 · 上次汇聚{' '}
@@ -97,6 +109,19 @@ export function Jobs() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
+        </label>
+        <label className="field">
+          <span>来源</span>
+          <select
+            value={sourceFilter}
+            onChange={(e) => setSourceFilter(e.target.value as SourceFilter)}
+          >
+            {(['全部', '企业社招', '国考', '上海市考'] as const).map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
         </label>
         <label className="field">
           <span>城市</span>
@@ -205,7 +230,11 @@ export function Jobs() {
               </div>
               <div className="job-actions">
                 <Link className="btn btn-primary" to={`/apply?job=${job.id}`}>
-                  {applied ? '再投一次' : '智能投递'}
+                  {applied
+                    ? '再投一次'
+                    : jobSourceBucket(job) === '企业社招'
+                      ? '智能投递'
+                      : '选岗备忘'}
                 </Link>
               </div>
             </li>

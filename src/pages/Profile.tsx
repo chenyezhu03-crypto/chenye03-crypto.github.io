@@ -167,6 +167,40 @@ export function Profile() {
               我是在校生 / 应届
             </label>
           </label>
+          <label className="field">
+            <span>基层工作年限（公考）</span>
+            <input
+              type="number"
+              min={0}
+              max={30}
+              value={form.grassrootsYears}
+              onChange={(e) =>
+                update('grassrootsYears', Number(e.target.value) || 0)
+              }
+            />
+          </label>
+          <label className="field check-field">
+            <span>公考条件</span>
+            <label className="check-line">
+              <input
+                type="checkbox"
+                checked={form.hasDegree}
+                onChange={(e) => update('hasDegree', e.target.checked)}
+              />
+              已取得与最高学历相应学位
+            </label>
+          </label>
+          <label className="field check-field full">
+            <span>&nbsp;</span>
+            <label className="check-line">
+              <input
+                type="checkbox"
+                checked={form.isPartyMember}
+                onChange={(e) => update('isPartyMember', e.target.checked)}
+              />
+              中共党员（含预备党员）
+            </label>
+          </label>
           <label className="field full">
             <span>技能关键词</span>
             <input
