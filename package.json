@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build && cp dist/index.html dist/404.html",
     "lint": "oxlint",
     "preview": "vite preview",
+    "crawl": "node scripts/crawl-jobs.mjs",
     "test:e2e": "node scripts/e2e.mjs"
   },
   "dependencies": {

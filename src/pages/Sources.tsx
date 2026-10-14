@@ -48,14 +48,22 @@ export function Sources() {
     })
   }
 
-  async function runCrawl(replace: boolean) {
+  async function runCrawl(replace: boolean, override?: SourceId[]) {
     setBusy(true)
     setError('')
     try {
-      saveEnabledSources(enabled)
+      const nextEnabled = override ?? enabled
+      if (override) {
+        setEnabled(override)
+        saveEnabledSources(override)
+      } else {
+        saveEnabledSources(enabled)
+      }
       const result = await crawlJobs({
-        enabled,
-        importedJson: enabled.includes('json-import') ? jsonText : undefined,
+        enabled: nextEnabled,
+        importedJson: nextEnabled.includes('json-import')
+          ? jsonText
+          : undefined,
         replace,
       })
       setReports(result.reports)
@@ -66,6 +74,10 @@ export function Sources() {
     } finally {
       setBusy(false)
     }
+  }
+
+  async function oneClickCrawl() {
+    await runCrawl(true, ['crawled-bundle', 'local-demo', 'remotive', 'arbeitnow'])
   }
 
   return (
@@ -87,18 +99,18 @@ export function Sources() {
           <button
             type="button"
             className="btn btn-primary"
-            disabled={busy || enabled.length === 0}
-            onClick={() => runCrawl(false)}
+            disabled={busy}
+            onClick={() => void oneClickCrawl()}
           >
-            {busy ? '汇聚中…' : '增量汇聚'}
+            {busy ? '正在爬取…' : '一键爬取并导入'}
           </button>
           <button
             type="button"
             className="btn btn-ghost"
             disabled={busy || enabled.length === 0}
-            onClick={() => runCrawl(true)}
+            onClick={() => void runCrawl(false)}
           >
-            清空后全量
+            按勾选增量
           </button>
         </div>
       </header>
