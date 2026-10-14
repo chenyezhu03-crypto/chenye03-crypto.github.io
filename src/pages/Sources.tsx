@@ -77,7 +77,7 @@ export function Sources() {
   }
 
   async function oneClickCrawl() {
-    await runCrawl(true, ['crawled-bundle', 'local-demo', 'remotive', 'arbeitnow'])
+    await runCrawl(true, ['crawled-bundle', 'local-demo'])
   }
 
   return (
@@ -86,7 +86,7 @@ export function Sources() {
         <div>
           <h1>数据源</h1>
           <p className="section-lead">
-            接入开放 API、本地演示源，或导入你自己的抓取 JSON。不碰需要登录的第三方账号爬虫。
+            只汇聚中国岗位：腾讯官招公开接口、开源国内样本、细 JD 本地库。也可导入你自己的国内爬虫 JSON。
           </p>
           <p className="meta-line">
             库存 {count} 条 · 上次汇聚{' '}
