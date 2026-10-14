@@ -18,7 +18,8 @@ export const SOURCE_CATALOG: SourceMeta[] = [
     id: 'crawled-bundle',
     name: '国内已爬岗位包',
     kind: '已爬缓存',
-    description: '腾讯 / 字节 / 京东官招公开接口 + BOSS 开源样本，仅中国岗位。',
+    description:
+      '腾讯/字节/京东/美团/网易/滴滴 + 小米/蔚来/理想/小鹏/智谱等飞书官招 + BOSS 开源样本，仅中国岗位。',
     enabledByDefault: true,
   },
   {

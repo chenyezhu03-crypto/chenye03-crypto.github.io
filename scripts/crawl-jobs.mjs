@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
  * 中国岗位汇聚（大厂官招公开接口，无需登录）
- * - 腾讯官招
- * - 字节跳动官招（社招 + 校招）
- * - 京东官招（公开列表）
+ * - 腾讯 / 字节 / 京东
+ * - 飞书 ATS 租户：小米、蔚来、理想、小鹏、智谱、智元、商汤、莉莉丝
+ * - 美团 / 网易 / 滴滴
  * - BOSS 开源样本 CSV
  *
  * 用法：npm run crawl
@@ -103,7 +103,7 @@ async function fetchTencent() {
     ).json()
     posts.push(...(data.Data?.Posts || []))
     console.log(`tencent list ${page}/${pages}`)
-    await sleep(150)
+    await sleep(120)
   }
 
   const out = []
@@ -163,7 +163,14 @@ async function fetchTencent() {
   return out
 }
 
-async function fetchByteDance() {
+async function fetchFeishuTenant({
+  sourceId,
+  sourceName,
+  company,
+  host,
+  applyPath = 'experienced/position',
+  maxItems = 800,
+}) {
   const jar = new Map()
   const store = (res) => {
     for (const c of res.headers.getSetCookie?.() || []) {
@@ -175,6 +182,101 @@ async function fetchByteDance() {
   const cookie = () =>
     [...jar.entries()].map(([k, v]) => `${k}=${v}`).join('; ')
 
+  const origin = `https://${host}`
+  const H = {
+    'User-Agent':
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    Accept: 'application/json, text/plain, */*',
+    Origin: origin,
+    Referer: `${origin}/${applyPath}`,
+    'Content-Type': 'application/json',
+  }
+
+  const csrfRes = await fetch(`${origin}/api/v1/csrf/token`, {
+    method: 'POST',
+    headers: H,
+    body: JSON.stringify({ portal_entrance: 1 }),
+  })
+  store(csrfRes)
+  const token = decodeURIComponent(jar.get('atsx-csrf-token') || '')
+  if (!token) throw new Error(`${sourceId} csrf missing`)
+
+  const pageSize = 100
+  const jobs = []
+  let offset = 0
+  let total = Infinity
+  while (jobs.length < maxItems && offset < total) {
+    const res = await fetch(`${origin}/api/v1/search/job/posts`, {
+      method: 'POST',
+      headers: { ...H, Cookie: cookie(), 'x-csrf-token': token },
+      body: JSON.stringify({
+        keyword: '',
+        limit: pageSize,
+        offset,
+        portal_type: 3,
+        portal_entrance: 1,
+        language: 'zh',
+      }),
+    })
+    const data = await res.json()
+    if (data.code !== 0) {
+      throw new Error(`${sourceId} ${data.message || res.status}`)
+    }
+    total = data.data?.count ?? 0
+    const rows = data.data?.job_post_list || []
+    if (!rows.length) break
+    for (const row of rows) {
+      if (jobs.length >= maxItems) break
+      const cities = (row.city_list || []).map((c) => c.name).filter(Boolean)
+      jobs.push({
+        sourceId,
+        sourceName,
+        externalId: String(row.id),
+        title: row.title,
+        company,
+        city: cities[0] || row.city_info?.name || '中国',
+        type: row.recruit_type?.parent?.name || row.recruit_type?.name || '全职',
+        salary: '面议',
+        tags: [
+          row.job_category?.name,
+          row.job_category?.parent?.name,
+          row.recruit_type?.name,
+        ].filter(Boolean),
+        postedAt: row.publish_time
+          ? new Date(Number(row.publish_time)).toISOString().slice(0, 10)
+          : new Date().toISOString().slice(0, 10),
+        description: String(row.description || '').slice(0, 240),
+        requirementText: [
+          row.requirement || '',
+          row.description ? `岗位描述：\n${row.description}` : '',
+          cities.length ? `工作城市：${cities.join(' / ')}` : '',
+        ]
+          .filter(Boolean)
+          .join('\n\n'),
+        applyUrl: `${origin}/${applyPath}/${row.id}/detail`,
+      })
+    }
+    console.log(
+      `${sourceId} offset=${offset} +${rows.length} total=${jobs.length}/${total}`,
+    )
+    offset += pageSize
+    await sleep(160)
+  }
+  console.log(`${sourceId} jobs`, jobs.length)
+  return jobs
+}
+
+async function fetchByteDance() {
+  const jar = new Map()
+  const store = (res) => {
+    for (const c of res.headers.getSetCookie?.() || []) {
+      const [kv] = c.split(';')
+      const i = kv.indexOf('=')
+      if (i > 0) jar.set(kv.slice(0, i), kv.slice(i + 1))
+    }
+  }
+  const cookie = () =>
+    [...jar.entries()].map(([k, v]) => `${k}=${v}`).join('; ')
   const H = {
     'User-Agent':
       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -183,7 +285,6 @@ async function fetchByteDance() {
     Referer: 'https://jobs.bytedance.com/experienced/position',
     'Content-Type': 'application/json',
   }
-
   const csrfRes = await fetch('https://jobs.bytedance.com/api/v1/csrf/token', {
     method: 'POST',
     headers: H,
@@ -216,14 +317,14 @@ async function fetchByteDance() {
         },
       )
       const data = await res.json()
-      if (data.code !== 0) throw new Error(`bytedance ${data.message || res.status}`)
+      if (data.code !== 0) {
+        throw new Error(`bytedance ${data.message || res.status}`)
+      }
       total = data.data?.count ?? 0
       const rows = data.data?.job_post_list || []
       if (!rows.length) break
       for (const row of rows) {
-        const cities = (row.city_list || [])
-          .map((c) => c.name)
-          .filter(Boolean)
+        const cities = (row.city_list || []).map((c) => c.name).filter(Boolean)
         jobs.push({
           sourceId: 'bytedance',
           sourceName: '字节跳动官招',
@@ -231,7 +332,8 @@ async function fetchByteDance() {
           title: row.title,
           company: '字节跳动',
           city: cities[0] || row.city_info?.name || '中国',
-          type: row.recruit_type?.parent?.name || row.recruit_type?.name || '全职',
+          type:
+            row.recruit_type?.parent?.name || row.recruit_type?.name || '全职',
           salary: '面议',
           tags: [
             row.job_category?.name,
@@ -256,21 +358,20 @@ async function fetchByteDance() {
         `bytedance ${recruitmentIds.join('+')} offset=${offset} +${rows.length} total=${jobs.length}/${total}`,
       )
       offset += pageSize
-      await sleep(200)
+      await sleep(160)
     }
     return jobs
   }
 
-  // 社招拉取上限 2500，校招尽量拉全
-  const social = await pull(['101'], 2500)
-  const campus = await pull(['201'], 3000)
-  const all = dedupe([...social, ...campus])
+  const all = dedupe([
+    ...(await pull(['101'], 2500)),
+    ...(await pull(['201'], 3000)),
+  ])
   console.log('bytedance jobs', all.length)
   return all
 }
 
 async function fetchJD() {
-  // 公开列表目前稳定返回热门岗；保留接入，便于后续扩分页
   const res = await fetch('https://zhaopin.jd.com/web/job/job_list', {
     method: 'POST',
     headers: {
@@ -305,22 +406,348 @@ async function fetchJD() {
   }))
 }
 
+async function fetchMeituan(maxItems = 1200) {
+  const origin = 'https://zhaopin.meituan.com'
+  const headers = {
+    'Content-Type': 'application/json',
+    Origin: origin,
+    Referer: `${origin}/web/social`,
+    'User-Agent':
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36',
+    Accept: 'application/json, text/plain, */*',
+  }
+  const pageSize = 50
+  const ids = []
+  for (const jobType of ['1', '2', '3']) {
+    let page = 1
+    while (ids.length < maxItems) {
+      const body = {
+        page: { pageNo: page, pageSize },
+        jobShareType: '1',
+        keywords: '',
+        cityList: [],
+        department: [],
+        jobType: [{ code: jobType, subCode: [] }],
+      }
+      const res = await fetch(`${origin}/api/official/job/getJobList`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body),
+      })
+      const data = await res.json()
+      const rows = data?.data?.list || []
+      if (!rows.length) break
+      for (const row of rows) {
+        if (ids.length >= maxItems) break
+        ids.push({
+          jobUnionId: String(row.jobUnionId),
+          jobType: String(row.jobType || jobType),
+          name: row.name,
+          city: row.cityList?.[0]?.name || '中国',
+          family: row.jobFamily,
+          group: row.jobFamilyGroup,
+        })
+      }
+      const totalPage = data?.data?.page?.totalPage || page
+      console.log(
+        `meituan type=${jobType} page=${page}/${totalPage} collected=${ids.length}`,
+      )
+      if (page >= totalPage) break
+      page++
+      await sleep(120)
+    }
+  }
+
+  const out = []
+  let i = 0
+  async function worker() {
+    while (i < ids.length) {
+      const idx = i++
+      const item = ids[idx]
+      try {
+        const res = await fetch(`${origin}/api/official/job/getJobDetail`, {
+          method: 'POST',
+          headers: {
+            ...headers,
+            Referer: `${origin}/web/position/detail?jobUnionId=${item.jobUnionId}`,
+          },
+          body: JSON.stringify({ jobUnionId: item.jobUnionId }),
+        })
+        const data = await res.json()
+        const d = data?.data || {}
+        const highlight = item.jobType === '3' ? 'social' : 'campus'
+        out.push({
+          sourceId: 'meituan',
+          sourceName: '美团官招',
+          externalId: item.jobUnionId,
+          title: d.name || item.name,
+          company: '美团',
+          city: d.cityList?.[0]?.name || item.city,
+          type: item.jobType === '3' ? '社招' : item.jobType === '2' ? '实习' : '校招',
+          salary: '面议',
+          tags: [d.jobFamily || item.family, d.jobFamilyGroup || item.group].filter(
+            Boolean,
+          ),
+          postedAt: (d.refreshTime || d.firstPostTime || '')
+            .toString()
+            .slice(0, 10),
+          description: String(d.jobDuty || d.desc || '').slice(0, 240),
+          requirementText: [
+            d.jobRequirement || '',
+            d.jobDuty ? `岗位职责：\n${d.jobDuty}` : '',
+            d.workYear ? `经验标签：${d.workYear}` : '',
+          ]
+            .filter(Boolean)
+            .join('\n\n'),
+          applyUrl: `${origin}/web/position/detail?jobUnionId=${item.jobUnionId}&jobShareType=1&highlightType=${highlight}`,
+        })
+      } catch {
+        /* skip */
+      }
+      if ((idx + 1) % 100 === 0) console.log(`meituan details ${idx + 1}`)
+    }
+  }
+  await Promise.all(Array.from({ length: 6 }, () => worker()))
+  console.log('meituan jobs', out.length)
+  return out
+}
+
+async function fetchNetease(maxItems = 1500) {
+  const headers = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json, text/plain, */*',
+    Referer: 'https://hr.163.com/',
+    'User-Agent':
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  }
+  const jobs = []
+  for (const workType of ['0', '1']) {
+    let page = 1
+    while (jobs.length < maxItems) {
+      const res = await fetch(
+        'https://hr.163.com/api/hr163/position/queryPage',
+        {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            currentPage: page,
+            pageSize: 50,
+            workType,
+          }),
+        },
+      )
+      const data = await res.json()
+      const rows = data?.data?.list || []
+      if (!rows.length) break
+      for (const row of rows) {
+        if (jobs.length >= maxItems) break
+        const cities = row.workPlaceNameList || []
+        jobs.push({
+          sourceId: 'netease',
+          sourceName: '网易官招',
+          externalId: String(row.id),
+          title: row.name,
+          company: '网易',
+          city: cities[0] || '中国',
+          type: workType === '0' ? '社招' : '校招/实习',
+          salary: '面议',
+          tags: [row.firstPostTypeName, row.reqEducationName, row.reqWorkYearsName]
+            .filter(Boolean),
+          postedAt: (row.updateTime || '').toString().slice(0, 10),
+          description: String(row.description || '').slice(0, 240),
+          requirementText: [
+            row.requirement || '',
+            row.description ? `岗位描述：\n${row.description}` : '',
+            row.reqEducationName ? `学历标签：${row.reqEducationName}` : '',
+            row.reqWorkYearsName ? `经验标签：${row.reqWorkYearsName}` : '',
+            cities.length ? `工作城市：${cities.join(' / ')}` : '',
+          ]
+            .filter(Boolean)
+            .join('\n\n'),
+          applyUrl: `https://hr.163.com/job-detail.html?id=${row.id}`,
+        })
+      }
+      const pages = data?.data?.pages || page
+      console.log(
+        `netease workType=${workType} page=${page}/${pages} collected=${jobs.length}`,
+      )
+      if (page >= pages) break
+      page++
+      await sleep(120)
+    }
+  }
+  console.log('netease jobs', jobs.length)
+  return jobs
+}
+
+async function fetchDidi(maxItems = 1000) {
+  const headers = {
+    Accept: 'application/json, text/plain, */*',
+    Referer: 'https://talent.didiglobal.com/',
+    'User-Agent':
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  }
+  const size = 16
+  const items = []
+  let page = 1
+  let total = Infinity
+  while (items.length < maxItems && (page - 1) * size < total) {
+    const res = await fetch(
+      `https://talent.didiglobal.com/recruit-portal-service/api/job/front/list?page=${page}&size=${size}`,
+      { headers },
+    )
+    const data = await res.json()
+    if ((data.meta?.code ?? 0) !== 0) {
+      throw new Error(`didi ${data.meta?.message || res.status}`)
+    }
+    total = data.data?.total ?? 0
+    const rows = data.data?.items || []
+    if (!rows.length) break
+    items.push(...rows)
+    console.log(`didi list page=${page} collected=${items.length}/${total}`)
+    page++
+    await sleep(100)
+  }
+  const slice = items.slice(0, maxItems)
+  const out = []
+  let i = 0
+  async function worker() {
+    while (i < slice.length) {
+      const idx = i++
+      const row = slice[idx]
+      const jdId = row.jdId
+      try {
+        const res = await fetch(
+          `https://talent.didiglobal.com/recruit-portal-service/api/job/front/view/${jdId}`,
+          { headers },
+        )
+        const data = await res.json()
+        const d = data?.data || {}
+        out.push({
+          sourceId: 'didi',
+          sourceName: '滴滴官招',
+          externalId: String(jdId),
+          title: d.jobName || row.jobName,
+          company: '滴滴',
+          city: d.workArea || row.workArea || '中国',
+          type: String(row.jdNo || '').startsWith('JR') ? '校招' : '社招',
+          salary: '面议',
+          tags: [d.jobType || row.jobTypeName, d.deptName || row.deptName].filter(
+            Boolean,
+          ),
+          postedAt: (d.refreshTime || row.refreshTime || '')
+            .toString()
+            .slice(0, 10),
+          description: String(d.jobDesc || '').slice(0, 240),
+          requirementText: [
+            d.qualification || '',
+            d.jobDesc ? `岗位描述：\n${d.jobDesc}` : '',
+          ]
+            .filter(Boolean)
+            .join('\n\n'),
+          applyUrl: `https://talent.didiglobal.com/campus#/position/${jdId}/detail`,
+        })
+      } catch {
+        /* skip */
+      }
+      if ((idx + 1) % 100 === 0) console.log(`didi details ${idx + 1}`)
+    }
+  }
+  await Promise.all(Array.from({ length: 6 }, () => worker()))
+  console.log('didi jobs', out.length)
+  return out
+}
+
+const FEISHU_TENANTS = [
+  {
+    sourceId: 'xiaomi',
+    sourceName: '小米官招',
+    company: '小米',
+    host: 'xiaomi.jobs.f.mioffice.cn',
+    applyPath: 'campus/position',
+    maxItems: 900,
+  },
+  {
+    sourceId: 'nio',
+    sourceName: '蔚来官招',
+    company: '蔚来',
+    host: 'nio.jobs.feishu.cn',
+    applyPath: 'campus/position',
+    maxItems: 900,
+  },
+  {
+    sourceId: 'liauto',
+    sourceName: '理想汽车官招',
+    company: '理想汽车',
+    host: 'li.jobs.feishu.cn',
+    applyPath: 'campus/position',
+    maxItems: 800,
+  },
+  {
+    sourceId: 'xpeng',
+    sourceName: '小鹏官招',
+    company: '小鹏汽车',
+    host: 'xiaopeng.jobs.feishu.cn',
+    applyPath: 'campus/position',
+    maxItems: 800,
+  },
+  {
+    sourceId: 'zhipu',
+    sourceName: '智谱官招',
+    company: '智谱AI',
+    host: 'zhipu-ai.jobs.feishu.cn',
+    applyPath: 'campus/position',
+    maxItems: 300,
+  },
+  {
+    sourceId: 'agibot',
+    sourceName: '智元机器人官招',
+    company: '智元机器人',
+    host: 'agirobot.jobs.feishu.cn',
+    applyPath: 'campus/position',
+    maxItems: 800,
+  },
+  {
+    sourceId: 'sensetime',
+    sourceName: '商汤官招',
+    company: '商汤科技',
+    host: 'sensetime.jobs.feishu.cn',
+    applyPath: 'campus/position',
+    maxItems: 200,
+  },
+  {
+    sourceId: 'lilith',
+    sourceName: '莉莉丝官招',
+    company: '莉莉丝游戏',
+    host: 'lilithgames.jobs.feishu.cn',
+    applyPath: 'campus/position',
+    maxItems: 200,
+  },
+]
+
 console.log('CN multi-source crawl start…')
 await ensureBossCsv()
 const bossJobs = fromBossCsv(parseCsv(await readFile(BOSS_CSV, 'utf8')))
 console.log('bosszp', bossJobs.length)
 
-const settled = await Promise.allSettled([
-  fetchTencent(),
-  fetchByteDance(),
-  fetchJD(),
-])
+const tasks = [
+  ['tencent', fetchTencent],
+  ['bytedance', fetchByteDance],
+  ['jd', fetchJD],
+  ['meituan', () => fetchMeituan(1200)],
+  ['netease', () => fetchNetease(1500)],
+  ['didi', () => fetchDidi(1000)],
+  ...FEISHU_TENANTS.map((t) => [
+    t.sourceId,
+    () => fetchFeishuTenant(t),
+  ]),
+]
 
-const names = ['tencent', 'bytedance', 'jd']
+const settled = await Promise.allSettled(tasks.map(([, fn]) => fn()))
 const sources = { 'bosszp-open': bossJobs.length }
 const merged = [...bossJobs]
 settled.forEach((result, i) => {
-  const name = names[i]
+  const name = tasks[i][0]
   if (result.status === 'fulfilled') {
     sources[name] = result.value.length
     merged.push(...result.value)
@@ -351,7 +778,7 @@ console.log(
       sources,
       bytes: info.size,
       samples: jobs
-        .slice(0, 8)
+        .slice(0, 12)
         .map((j) => `${j.sourceName}: ${j.company} · ${j.title} · ${j.city}`),
     },
     null,
