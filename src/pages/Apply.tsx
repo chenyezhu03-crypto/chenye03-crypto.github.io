@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { getJobById, jobs } from '../data/jobs'
@@ -29,11 +29,23 @@ const empty: FormState = {
 export function Apply() {
   const [params] = useSearchParams()
   const navigate = useNavigate()
-  const initialJob = params.get('job') ?? jobs[0]?.id ?? ''
+  const jobFromUrl = params.get('job')
+  const initialJob =
+    (jobFromUrl && getJobById(jobFromUrl)?.id) || jobs[0]?.id || ''
 
   const [form, setForm] = useState<FormState>({ ...empty, jobId: initialJob })
   const [error, setError] = useState('')
   const [done, setDone] = useState(false)
+
+  useEffect(() => {
+    if (!jobFromUrl) return
+    const matched = getJobById(jobFromUrl)
+    if (matched) {
+      setForm((prev) =>
+        prev.jobId === matched.id ? prev : { ...prev, jobId: matched.id },
+      )
+    }
+  }, [jobFromUrl])
 
   const selected = useMemo(() => getJobById(form.jobId), [form.jobId])
 
@@ -77,7 +89,7 @@ export function Apply() {
   if (done && selected) {
     return (
       <main className="page narrow">
-        <div className="success-panel animate-rise">
+        <div className="success-panel">
           <p className="success-mark" aria-hidden>
             ✓
           </p>
