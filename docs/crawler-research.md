@@ -4,13 +4,21 @@
 
 ## 当前数据源
 
-1. **腾讯官招公开 API**（`careers.tencent.com`）
-   - 列表 + 详情 `Requirement`（含学历/专业/经验/技能原文）
-   - 脚本：`npm run crawl`
-2. **BOSS 开源样本 CSV**（[jhcoco/bosszp](https://github.com/jhcoco/bosszp)）
-   - 热门城市岗位，含学历/经验字段
-3. **国内细 JD 样本**（本地生成）
-   - 多城市多职能，专供条件透视演示
+1. **腾讯官招**（`careers.tencent.com`）列表 + 详情任职要求
+2. **字节跳动官招**（`jobs.bytedance.com`，CSRF 后公开搜索，社招+校招）
+3. **京东官招**（`zhaopin.jd.com` 公开列表）
+4. **BOSS 开源样本 CSV**（[jhcoco/bosszp](https://github.com/jhcoco/bosszp)）
+5. **国内细 JD 样本**（本地，条件透视演示）
+
+脚本：`npm run crawl`
+
+## 还能扩但暂未稳定接入
+
+| 来源 | 现状 |
+| --- | --- |
+| 美团 / 阿里 / 小米 / 快手 / 网易 | 需签名、登录或接口常变 |
+| BOSS / 智联 / 前程无忧主站 | 强反爬，需登录态，本仓库不接 |
+| 更多大厂官招 | 可按 JobHunt / job-pro 思路继续加适配器 |
 
 ## GitHub 相关参考
 
