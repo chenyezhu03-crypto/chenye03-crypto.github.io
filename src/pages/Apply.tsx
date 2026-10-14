@@ -2,10 +2,17 @@ import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { buildAdaptivePack } from '../lib/adaptiveApply'
-import { getJobById, loadJobs } from '../lib/crawl'
+import { ensureJobsLoaded, getJobById, loadJobs } from '../lib/crawl'
 import { matchJob } from '../lib/match'
 import { loadProfile } from '../lib/profile'
+import {
+  explainResumePick,
+  loadResumes,
+  pickResumeForJob,
+  type ResumeVersion,
+} from '../lib/resumes'
 import { saveApplication } from '../lib/storage'
+import type { Job } from '../lib/types'
 
 type FormState = {
   jobId: string
@@ -21,8 +28,9 @@ type FormState = {
 export function Apply() {
   const [params] = useSearchParams()
   const navigate = useNavigate()
-  const jobs = useMemo(() => loadJobs(), [])
+  const [jobs, setJobs] = useState<Job[]>(() => loadJobs())
   const profile = useMemo(() => loadProfile(), [])
+  const resumes = useMemo(() => loadResumes(), [])
   const jobFromUrl = params.get('job')
   const initialJob =
     (jobFromUrl && getJobById(jobFromUrl)?.id) || jobs[0]?.id || ''
@@ -37,9 +45,20 @@ export function Apply() {
     resumeName: '',
     coverLetter: '',
   })
+  const [resumeId, setResumeId] = useState('')
   const [error, setError] = useState('')
   const [done, setDone] = useState(false)
   const [autoFilled, setAutoFilled] = useState(false)
+
+  useEffect(() => {
+    void ensureJobsLoaded().then((list) => {
+      setJobs(list)
+      if (!form.jobId && list[0]) {
+        setForm((prev) => ({ ...prev, jobId: list[0].id }))
+      }
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const selected = useMemo(
     () => jobs.find((j) => j.id === form.jobId) ?? getJobById(form.jobId),
@@ -51,10 +70,22 @@ export function Apply() {
     [profile, selected],
   )
 
+  const autoResume = useMemo(
+    () => (selected ? pickResumeForJob(selected, resumes) : null),
+    [selected, resumes],
+  )
+
+  const activeResume: ResumeVersion | null = useMemo(() => {
+    if (!resumes.length) return null
+    return resumes.find((r) => r.id === resumeId) ?? autoResume ?? resumes[0]
+  }, [resumes, resumeId, autoResume])
+
   const pack = useMemo(
     () =>
-      selected && match ? buildAdaptivePack(profile, selected, match) : null,
-    [profile, selected, match],
+      selected && match && activeResume
+        ? buildAdaptivePack(profile, selected, match, activeResume)
+        : null,
+    [profile, selected, match, activeResume],
   )
 
   useEffect(() => {
@@ -65,11 +96,17 @@ export function Apply() {
         prev.jobId === matched.id ? prev : { ...prev, jobId: matched.id },
       )
       setAutoFilled(false)
+      setResumeId('')
     }
   }, [jobFromUrl])
 
   useEffect(() => {
-    if (!pack || autoFilled) return
+    if (!selected || !autoResume) return
+    if (!resumeId) setResumeId(autoResume.id)
+  }, [selected, autoResume, resumeId])
+
+  useEffect(() => {
+    if (!pack || !activeResume || autoFilled) return
     setForm((prev) => ({
       ...prev,
       name: prev.name || profile.name,
@@ -77,21 +114,23 @@ export function Apply() {
       phone: prev.phone || profile.phone,
       education: pack.suggestedEducationLine,
       years: pack.suggestedYearsLine,
+      resumeName: activeResume.fileName,
       coverLetter: pack.coverLetter,
     }))
     setAutoFilled(true)
-  }, [pack, autoFilled, profile])
+  }, [pack, activeResume, autoFilled, profile])
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }))
   }
 
   function regenerate() {
-    if (!pack) return
+    if (!pack || !activeResume) return
     setForm((prev) => ({
       ...prev,
       education: pack.suggestedEducationLine,
       years: pack.suggestedYearsLine,
+      resumeName: activeResume.fileName,
       coverLetter: pack.coverLetter,
     }))
   }
@@ -100,7 +139,7 @@ export function Apply() {
     e.preventDefault()
     setError('')
 
-    if (!form.jobId || !selected || !match || !pack) {
+    if (!form.jobId || !selected || !match || !pack || !activeResume) {
       setError('请选择要投递的岗位。')
       return
     }
@@ -109,7 +148,7 @@ export function Apply() {
       return
     }
     if (!form.resumeName.trim()) {
-      setError('请选择简历文件（演示环境仅记录文件名）。')
+      setError('请确认简历版本或上传文件。')
       return
     }
 
@@ -128,12 +167,15 @@ export function Apply() {
       hardPass: match.hardPass,
       applyAngle: pack.angle,
       sourceName: selected.sourceName,
+      resumeVersionId: activeResume.id,
+      resumeVersionName: activeResume.name,
+      batch: false,
     })
 
     setDone(true)
   }
 
-  if (done && selected && match) {
+  if (done && selected && match && activeResume) {
     return (
       <main className="page narrow">
         <div className="success-panel">
@@ -142,8 +184,8 @@ export function Apply() {
           </p>
           <h1>投递成功</h1>
           <p className="section-lead">
-            已向 {selected.company} 的「{selected.title}」提交自适应投递包（匹配{' '}
-            {match.score}）。可在「我的投递」回看角度与正文。
+            已向 {selected.company} 的「{selected.title}」提交（匹配 {match.score}
+            ，简历版本「{activeResume.name}」）。
           </p>
           <div className="hero-actions">
             <button
@@ -153,8 +195,8 @@ export function Apply() {
             >
               查看我的投递
             </button>
-            <Link className="btn btn-ghost" to="/jobs">
-              返回岗位雷达
+            <Link className="btn btn-ghost" to="/batch">
+              去批量队列
             </Link>
           </div>
         </div>
@@ -167,7 +209,7 @@ export function Apply() {
       <header className="page-header">
         <h1>智能投递</h1>
         <p className="section-lead">
-          根据岗位条件透视结果，自动改写自荐角度。你仍可逐字编辑后再提交。
+          自动切换简历版本并改写自荐角度。你仍可逐字编辑后再提交。
         </p>
       </header>
 
@@ -179,6 +221,7 @@ export function Apply() {
             onChange={(e) => {
               update('jobId', e.target.value)
               setAutoFilled(false)
+              setResumeId('')
             }}
             required
           >
@@ -190,7 +233,7 @@ export function Apply() {
           </select>
         </label>
 
-        {selected && match && pack ? (
+        {selected && match && pack && activeResume ? (
           <aside className="intel-panel">
             <div className="intel-top">
               <span
@@ -199,6 +242,7 @@ export function Apply() {
                 匹配 {match.score}
               </span>
               <span className="badge">{selected.sourceName}</span>
+              <span className="badge">简历·{activeResume.name}</span>
             </div>
             <p className="job-meta">
               {selected.location} · {selected.type} · {selected.salary}
@@ -206,6 +250,9 @@ export function Apply() {
             <p>
               <strong>投递角度：</strong>
               {pack.angle}
+            </p>
+            <p className="match-summary">
+              {explainResumePick(selected, activeResume)}
             </p>
             <ul className="tag-list">
               {selected.structured.highlights.map((h) => (
@@ -283,17 +330,36 @@ export function Apply() {
             />
           </label>
           <label className="field full">
-            <span>简历文件</span>
+            <span>简历版本（自动匹配，可改）</span>
+            <select
+              value={activeResume?.id ?? ''}
+              onChange={(e) => {
+                setResumeId(e.target.value)
+                setAutoFilled(false)
+              }}
+            >
+              {resumes.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.name}
+                  {r.isDefault ? '（默认）' : ''} · {r.fileName}
+                </option>
+              ))}
+            </select>
+            <em className="file-name">
+              当前文件名：{form.resumeName || activeResume?.fileName}
+              {' · '}
+              <Link to="/resumes">管理多版简历</Link>
+            </em>
+          </label>
+          <label className="field full">
+            <span>或本地上传覆盖文件名</span>
             <input
               type="file"
               accept=".pdf,.doc,.docx"
               onChange={(e) =>
-                update('resumeName', e.target.files?.[0]?.name ?? '')
+                update('resumeName', e.target.files?.[0]?.name ?? form.resumeName)
               }
             />
-            {form.resumeName ? (
-              <em className="file-name">已选择：{form.resumeName}</em>
-            ) : null}
           </label>
           <label className="field full">
             <span>自适应自荐信</span>
@@ -311,7 +377,8 @@ export function Apply() {
           确认投递
         </button>
         <p className="fine-print">
-          还没填画像？先去 <Link to="/profile">求职画像</Link>，匹配会更准。
+          还没填画像？先去 <Link to="/profile">求职画像</Link>。硬门槛批量可走{' '}
+          <Link to="/batch">批量队列</Link>。
         </p>
       </form>
     </main>

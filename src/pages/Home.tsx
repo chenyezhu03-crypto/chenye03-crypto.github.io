@@ -20,11 +20,11 @@ export function Home() {
             多源岗位汇聚 · 学历/专业/性别标注透视 · 按岗位自适应生成投递内容
           </p>
           <div className="hero-actions animate-rise delay-3">
-            <Link className="btn btn-primary" to="/jobs">
-              打开岗位雷达
+            <Link className="btn btn-primary" to="/sources">
+              接入数据源
             </Link>
-            <Link className="btn btn-ghost" to="/profile">
-              完善求职画像
+            <Link className="btn btn-ghost" to="/batch">
+              批量投递队列
             </Link>
           </div>
         </div>
@@ -38,18 +38,18 @@ export function Home() {
         <ol className="how-list">
           <li>
             <span className="how-step">01</span>
-            <strong>条件透视</strong>
-            <p>从 JD 原文抽取学历、专业、经验、性别标注等结构字段，不再靠肉眼扫。 </p>
+            <strong>真实汇聚</strong>
+            <p>开放 API（Remotive）+ 国内演示源 + 自有 JSON 导入，统一进岗位雷达。</p>
           </li>
           <li>
             <span className="how-step">02</span>
-            <strong>可解释匹配</strong>
-            <p>对照你的求职画像打分，标明通过 / 接近 / 缺口，硬门槛一眼可见。</p>
+            <strong>多版简历</strong>
+            <p>技术向 / 业务向自动切换，匹配分与投递角度跟着岗位变。</p>
           </li>
           <li>
             <span className="how-step">03</span>
-            <strong>自适应投递包</strong>
-            <p>同一份档案，面对不同岗位自动调整自荐角度与强调点，而不是复制粘贴。</p>
+            <strong>硬门槛批量</strong>
+            <p>队列只收通过项，一键投递并保留版本与匹配复盘。</p>
           </li>
         </ol>
       </section>

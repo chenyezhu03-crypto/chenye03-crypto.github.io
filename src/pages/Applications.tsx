@@ -65,7 +65,8 @@ export function Applications() {
                 </div>
                 <p className="job-meta">
                   {item.company} · {item.sourceName || '来源未知'} · {item.name}{' '}
-                  · {item.resumeName}
+                  · {item.resumeVersionName || item.resumeName}
+                  {item.batch ? ' · 批量' : ''}
                 </p>
                 {item.applyAngle ? (
                   <p className="app-angle">角度：{item.applyAngle}</p>
