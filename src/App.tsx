@@ -3,9 +3,12 @@ import { Footer } from './components/Footer'
 import { Nav } from './components/Nav'
 import { Applications } from './pages/Applications'
 import { Apply } from './pages/Apply'
+import { Batch } from './pages/Batch'
 import { Home } from './pages/Home'
 import { Jobs } from './pages/Jobs'
 import { Profile } from './pages/Profile'
+import { Resumes } from './pages/Resumes'
+import { Sources } from './pages/Sources'
 
 export default function App() {
   return (
@@ -15,6 +18,9 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/jobs" element={<Jobs />} />
+          <Route path="/sources" element={<Sources />} />
+          <Route path="/resumes" element={<Resumes />} />
+          <Route path="/batch" element={<Batch />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/apply" element={<Apply />} />
           <Route path="/applications" element={<Applications />} />

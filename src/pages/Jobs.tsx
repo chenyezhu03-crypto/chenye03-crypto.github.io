@@ -1,6 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { crawlJobs, lastCrawledAt, loadJobs } from '../lib/crawl'
+import {
+  crawlJobs,
+  ensureJobsLoaded,
+  lastCrawledAt,
+  loadJobs,
+} from '../lib/crawl'
 import { matchJob } from '../lib/match'
 import { loadProfile } from '../lib/profile'
 import { hasApplied } from '../lib/storage'
@@ -18,6 +23,14 @@ export function Jobs() {
   const [gender, setGender] = useState<'全部' | GenderPref | '仅不限'>('全部')
   const [onlyFit, setOnlyFit] = useState(false)
   const [crawledAt, setCrawledAt] = useState(() => lastCrawledAt())
+  const [busy, setBusy] = useState(false)
+
+  useEffect(() => {
+    void ensureJobsLoaded().then((list) => {
+      setJobs(list)
+      setCrawledAt(lastCrawledAt())
+    })
+  }, [])
 
   const cities = useMemo(() => {
     const set = new Set(jobs.map((j) => j.city))
@@ -62,10 +75,15 @@ export function Jobs() {
       .sort((a, b) => b.match.score - a.match.score)
   }, [jobs, profile, query, city, education, major, gender, onlyFit])
 
-  function refreshCrawl() {
-    const next = crawlJobs()
-    setJobs(next)
-    setCrawledAt(lastCrawledAt())
+  async function refreshCrawl() {
+    setBusy(true)
+    try {
+      const result = await crawlJobs({ replace: false })
+      setJobs(result.jobs)
+      setCrawledAt(result.crawledAt)
+    } finally {
+      setBusy(false)
+    }
   }
 
   return (
@@ -81,10 +99,19 @@ export function Jobs() {
             {crawledAt
               ? new Date(crawledAt).toLocaleString('zh-CN')
               : '尚未汇聚'}
+            {' · '}
+            <Link to="/sources">管理数据源</Link>
+            {' · '}
+            <Link to="/batch">批量投递</Link>
           </p>
         </div>
-        <button type="button" className="btn btn-primary" onClick={refreshCrawl}>
-          重新汇聚岗位
+        <button
+          type="button"
+          className="btn btn-primary"
+          disabled={busy}
+          onClick={() => void refreshCrawl()}
+        >
+          {busy ? '汇聚中…' : '重新汇聚岗位'}
         </button>
       </header>
 
@@ -207,6 +234,16 @@ export function Jobs() {
                 <Link className="btn btn-primary" to={`/apply?job=${job.id}`}>
                   {applied ? '再投一次' : '智能投递'}
                 </Link>
+                {job.applyUrl ? (
+                  <a
+                    className="btn btn-ghost"
+                    href={job.applyUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    原文
+                  </a>
+                ) : null}
               </div>
             </li>
           )
@@ -214,7 +251,10 @@ export function Jobs() {
       </ul>
 
       {ranked.length === 0 ? (
-        <p className="empty">没有匹配岗位。试试放宽筛选，或先完善求职画像。</p>
+        <p className="empty">
+          没有匹配岗位。试试放宽筛选，或先去{' '}
+          <Link to="/sources">数据源</Link> 汇聚。
+        </p>
       ) : null}
     </main>
   )

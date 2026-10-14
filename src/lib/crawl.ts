@@ -1,60 +1,51 @@
-import { RAW_FEEDS } from '../data/rawFeeds'
-import { parseRequirementText } from './jdParser'
+import { mergeJobs } from './normalizeJob'
+import { collectFromSources, loadEnabledSources, type SourceId } from './sources'
 import type { Job } from './types'
 
 const KEY = 'toujian-jobs-cache-v1'
 
-function normalize(item: (typeof RAW_FEEDS)[number], crawledAt: string): Job {
-  const structured = parseRequirementText(item.requirementText)
-  const location = item.district
-    ? `${item.city} · ${item.district}`
-    : item.city
-
-  return {
-    id: `${item.sourceId}-${item.externalId}`,
-    title: item.title,
-    company: item.company,
-    location,
-    city: item.city,
-    type: item.type,
-    salary: item.salary,
-    tags: item.tags,
-    postedAt: item.postedAt,
-    description: item.description,
-    requirements: item.requirementText
-      .split(/[；;。]/)
-      .map((x) => x.trim())
-      .filter((x) => x.length > 4)
-      .slice(0, 6),
-    requirementText: item.requirementText,
-    sourceId: item.sourceId,
-    sourceName: item.sourceName,
-    applyUrl: item.applyUrl,
-    structured,
-    crawledAt,
-  }
+type Cache = {
+  crawledAt: string
+  jobs: Job[]
+  reports?: string[]
 }
 
-export function crawlJobs(now = new Date().toISOString()): Job[] {
-  // 演示：模拟多源汇聚。可替换为真实抓取/开放 API。
-  const jobs = RAW_FEEDS.map((item) => normalize(item, now))
-  localStorage.setItem(
-    KEY,
-    JSON.stringify({ crawledAt: now, jobs }),
-  )
-  return jobs
+function writeCache(cache: Cache): void {
+  localStorage.setItem(KEY, JSON.stringify(cache))
+}
+
+export async function crawlJobs(options?: {
+  enabled?: SourceId[]
+  importedJson?: string
+  replace?: boolean
+}): Promise<{ jobs: Job[]; reports: string[]; crawledAt: string }> {
+  const enabled = options?.enabled ?? loadEnabledSources()
+  const crawledAt = new Date().toISOString()
+  const { jobs: incoming, reports } = await collectFromSources(enabled, {
+    importedJson: options?.importedJson,
+  })
+
+  const prev = options?.replace ? [] : loadJobs()
+  const jobs = mergeJobs(prev, incoming)
+  writeCache({ crawledAt, jobs, reports })
+  return { jobs, reports, crawledAt }
 }
 
 export function loadJobs(): Job[] {
   try {
     const raw = localStorage.getItem(KEY)
-    if (!raw) return crawlJobs()
-    const parsed = JSON.parse(raw) as { jobs?: Job[] }
-    if (!parsed.jobs?.length) return crawlJobs()
-    return parsed.jobs
+    if (!raw) return []
+    const parsed = JSON.parse(raw) as Cache
+    return Array.isArray(parsed.jobs) ? parsed.jobs : []
   } catch {
-    return crawlJobs()
+    return []
   }
+}
+
+export function replaceJobs(jobs: Job[], reports: string[] = []): Job[] {
+  const crawledAt = new Date().toISOString()
+  writeCache({ crawledAt, jobs, reports })
+  return jobs
 }
 
 export function getJobById(id: string): Job | undefined {
@@ -65,8 +56,26 @@ export function lastCrawledAt(): string | null {
   try {
     const raw = localStorage.getItem(KEY)
     if (!raw) return null
-    return (JSON.parse(raw) as { crawledAt?: string }).crawledAt ?? null
+    return (JSON.parse(raw) as Cache).crawledAt ?? null
   } catch {
     return null
   }
+}
+
+export function lastCrawlReports(): string[] {
+  try {
+    const raw = localStorage.getItem(KEY)
+    if (!raw) return []
+    return (JSON.parse(raw) as Cache).reports ?? []
+  } catch {
+    return []
+  }
+}
+
+/** 首次进入时若无缓存，自动汇聚启用源 */
+export async function ensureJobsLoaded(): Promise<Job[]> {
+  const existing = loadJobs()
+  if (existing.length) return existing
+  const { jobs } = await crawlJobs({ replace: true })
+  return jobs
 }
