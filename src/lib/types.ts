@@ -20,6 +20,21 @@ export type StructuredRequirements = {
   highlights: string[]
 }
 
+export type GuokaoJobMeta = {
+  deptCode: string
+  positionCode: string
+  bureau: string
+  orgNature: string
+  positionAttr: string
+  positionDistribution: string
+  orgLevel: string
+  headcount: string
+  interviewRatio: string
+  settleLocation: string
+  deptWebsite: string
+  phones: string[]
+}
+
 export type Job = {
   id: string
   title: string
@@ -38,6 +53,7 @@ export type Job = {
   applyUrl?: string
   structured: StructuredRequirements
   crawledAt: string
+  guokaoMeta?: GuokaoJobMeta
 }
 
 export type UserProfile = {

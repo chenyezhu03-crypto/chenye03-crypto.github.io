@@ -9,7 +9,9 @@
 - **可解释匹配**：对照求职画像输出通过 / 接近 / 缺口与匹配分
 - **自适应投递包**：同一画像面对不同岗位，自动改写自荐角度与强调点
 
-> 演示数据保存在浏览器 `localStorage`。真实抓取第三方需登录/反爬的平台不在本仓库范围内；可把 `src/data/rawFeeds.ts` / `src/lib/crawl.ts` 替换为你有权访问的数据源或开放 API。
+> 演示数据保存在浏览器 `localStorage`（**2027 国考全量职位表**约 1.9 万条在 `public/data/guokao2027-positions.json`，运行时按需加载，不写入 localStorage）。更新 Excel 后可运行 `npm run import:guokao -- /path/to/27国考岗位表.xlsx` 重新生成 JSON。
+
+> 真实抓取第三方需登录/反爬的平台不在本仓库范围内；企业社招样本在 `src/data/rawFeeds.ts`。
 
 ## 本地开发
 

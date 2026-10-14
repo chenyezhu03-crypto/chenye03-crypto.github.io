@@ -83,11 +83,25 @@ function pickYears(text: string): number | null {
   return null
 }
 
+const GRASSROOTS_CN: Record<string, number> = {
+  一年: 1,
+  二年: 2,
+  三年: 3,
+  四年: 4,
+  五年: 5,
+}
+
 function pickGrassrootsYears(text: string): number | null {
-  const m = text.match(/基层工作(?:经历)?(?:满)?(\d+)\s*年/)
+  const m = text.match(/基层工作(?:最低年限|经历)?[：:]?\s*(\d+)\s*年/)
   if (m) return Number(m[1])
-  if (/具有2年及以上基层工作经历|二年以上基层/.test(text)) return 2
-  if (/具有1年及以上基层工作经历|一年以上基层/.test(text)) return 1
+  const cn = text.match(/基层工作最低年限[：:]?\s*(一年|二年|三年|四年|五年)/)
+  if (cn) return GRASSROOTS_CN[cn[1]] ?? null
+  if (/五年以上/.test(text)) return 5
+  if (/具有2年及以上基层工作经历|二年以上基层|基层工作最低年限：二年/.test(text))
+    return 2
+  if (/具有1年及以上基层工作经历|一年以上基层|基层工作最低年限：一年/.test(text))
+    return 1
+  if (/基层工作最低年限：三年/.test(text)) return 3
   return null
 }
 
@@ -98,7 +112,11 @@ function pickPolitical(text: string): PoliticalRequirement {
 }
 
 function pickDegreeRequired(text: string): boolean {
-  return /取得相应学位|须取得.*学位|具有.*学位/.test(text)
+  return (
+    /取得相应学位|须取得.*学位|具有.*学位|与最高学历相对应的学位|与最高学历相应/.test(
+      text,
+    ) || /^学士$|^硕士$|^博士$/.test(text.trim())
+  )
 }
 
 function pickMajors(text: string): { majors: string[]; majorFlexible: boolean } {

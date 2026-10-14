@@ -5,6 +5,7 @@ import { Applications } from './pages/Applications'
 import { Apply } from './pages/Apply'
 import { Home } from './pages/Home'
 import { Jobs } from './pages/Jobs'
+import { GwyGuide } from './pages/GwyGuide'
 import { Profile } from './pages/Profile'
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/jobs" element={<Jobs />} />
+          <Route path="/gwy/guide" element={<GwyGuide />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/apply" element={<Apply />} />
           <Route path="/applications" element={<Applications />} />

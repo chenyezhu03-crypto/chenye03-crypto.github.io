@@ -18,6 +18,21 @@ export type RawFeedItem = {
   description: string
   requirementText: string
   applyUrl?: string
+  /** 2027 国考职位表原始字段（由 import 脚本写入 JSON） */
+  meta?: {
+    deptCode: string
+    positionCode: string
+    bureau: string
+    orgNature: string
+    positionAttr: string
+    positionDistribution: string
+    orgLevel: string
+    headcount: string
+    interviewRatio: string
+    settleLocation: string
+    deptWebsite: string
+    phones: string[]
+  }
 }
 
 export const RAW_FEEDS: RawFeedItem[] = [
@@ -191,59 +206,6 @@ export const RAW_FEEDS: RawFeedItem[] = [
       '参与推荐/搜索相关模型训练与上线，跟进指标复盘，与工程同学协作落地。',
     requirementText:
       '硕士及以上，计算机、人工智能、数学相关专业；扎实的机器学习基础；有论文或竞赛经历优先；2026/2027 届；男女不限。',
-  },
-  {
-    sourceId: 'guokao',
-    sourceName: '国考职位表（演示）',
-    externalId: 'gk-sh-tax-011',
-    title: '一级行政执法员（信息化管理）',
-    company: '国家税务总局上海市税务局',
-    city: '上海',
-    district: '多区派驻',
-    type: '公务员 · 国考',
-    salary: '按国家统一工资制度',
-    tags: ['行政执法类', '计算机类', '2年基层'],
-    postedAt: '2026-10-13',
-    description:
-      '从事税收信息化运维、数据分析与网络安全保障，参与智慧税务相关系统落地与日常监管支撑。',
-    requirementText:
-      '本科及以上，须取得相应学位；专业为计算机类、软件工程、电子信息类；具有2年及以上基层工作经历；政治面貌不限；男女不限；年龄18-35周岁（2026届应届硕士可放宽至40周岁）。',
-    applyUrl: 'https://example.com/guokao/positions/gk-sh-tax-011',
-  },
-  {
-    sourceId: 'guokao',
-    sourceName: '国考职位表（演示）',
-    externalId: 'gk-wjb-012',
-    title: '地区业务司英语翻译',
-    company: '外交部',
-    city: '北京',
-    district: '朝阳',
-    type: '公务员 · 国考',
-    salary: '按国家统一工资制度',
-    tags: ['外交外事类', '英语', '限应届'],
-    postedAt: '2026-10-13',
-    description:
-      '从事外交文件笔译口译、外事联络与调研材料整理，参与双边多边场合的语言保障与政策沟通支撑。',
-    requirementText:
-      '硕士及以上，须取得相应学位；英语、国际政治、外交学相关专业；仅限2026届应届高校毕业生；基层工作经历不作要求；中共党员或共青团员；男女不限。',
-    applyUrl: 'https://example.com/guokao/positions/gk-wjb-012',
-  },
-  {
-    sourceId: 'guokao',
-    sourceName: '国考职位表（演示）',
-    externalId: 'gk-mine-013',
-    title: '矿山安全监察员',
-    company: '国家矿山安全监察局某局',
-    city: '太原',
-    district: '迎泽',
-    type: '公务员 · 国考',
-    salary: '按国家统一工资制度',
-    tags: ['监管监察', '矿业工程', '限男'],
-    postedAt: '2026-10-12',
-    description:
-      '下井开展安全监察与隐患排查，参与事故调查与行政执法，需适应频繁出差与一线作业环境。',
-    requirementText:
-      '本科及以上，须取得相应学位；矿业工程、安全工程相关专业；具有2年及以上基层工作经历；限男生；政治面貌不限。',
   },
   {
     sourceId: 'shanghai-gwy',

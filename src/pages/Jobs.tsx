@@ -1,6 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { crawlJobs, lastCrawledAt, loadJobs } from '../lib/crawl'
+import {
+  clearGuokao2027Cache,
+  fetchGuokao2027Jobs,
+  guokao2027Loaded,
+} from '../lib/guokao2027'
 import { matchJob } from '../lib/match'
 import { loadProfile } from '../lib/profile'
 import { hasApplied } from '../lib/storage'
@@ -10,15 +15,25 @@ type JobWithMatch = Job & { match: MatchResult }
 
 type SourceFilter = '全部' | '企业社招' | '国考' | '上海市考'
 
+const LIST_CAP = 120
+
 function jobSourceBucket(job: Job): SourceFilter {
   if (job.sourceId === 'guokao') return '国考'
   if (job.sourceId === 'shanghai-gwy') return '上海市考'
   return '企业社招'
 }
 
+function jobSearchHaystack(job: Job): string {
+  const code = job.guokaoMeta?.positionCode ?? ''
+  return `${job.title} ${job.company} ${code} ${job.tags.join(' ')} ${job.requirementText} ${job.description}`.toLowerCase()
+}
+
 export function Jobs() {
   const profile = useMemo(() => loadProfile(), [])
-  const [jobs, setJobs] = useState<Job[]>(() => loadJobs())
+  const [socialJobs, setSocialJobs] = useState<Job[]>(() => loadJobs())
+  const [guokaoJobs, setGuokaoJobs] = useState<Job[]>([])
+  const [guokaoLoading, setGuokaoLoading] = useState(false)
+  const [guokaoError, setGuokaoError] = useState('')
   const [query, setQuery] = useState('')
   const [city, setCity] = useState('全部')
   const [education, setEducation] = useState<'全部' | EducationLevel>('全部')
@@ -28,21 +43,56 @@ export function Jobs() {
   const [sourceFilter, setSourceFilter] = useState<SourceFilter>('全部')
   const [crawledAt, setCrawledAt] = useState(() => lastCrawledAt())
 
+  const jobs = useMemo(
+    () => [...socialJobs, ...guokaoJobs],
+    [socialJobs, guokaoJobs],
+  )
+
+  useEffect(() => {
+    let cancelled = false
+    setGuokaoLoading(true)
+    setGuokaoError('')
+    fetchGuokao2027Jobs(crawledAt ?? undefined)
+      .then((rows) => {
+        if (!cancelled) setGuokaoJobs(rows)
+      })
+      .catch((err: unknown) => {
+        if (!cancelled) {
+          setGuokaoError(
+            err instanceof Error ? err.message : '2027 国考职位表加载失败',
+          )
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setGuokaoLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [crawledAt])
+
   const cities = useMemo(() => {
-    const set = new Set(jobs.map((j) => j.city))
-    return ['全部', ...Array.from(set)]
-  }, [jobs])
+    const pool =
+      sourceFilter === '国考'
+        ? guokaoJobs
+        : sourceFilter === '企业社招'
+          ? socialJobs.filter((j) => jobSourceBucket(j) === '企业社招')
+          : sourceFilter === '上海市考'
+            ? socialJobs.filter((j) => jobSourceBucket(j) === '上海市考')
+            : jobs
+    const set = new Set(pool.map((j) => j.city))
+    return ['全部', ...Array.from(set).sort((a, b) => a.localeCompare(b, 'zh'))]
+  }, [jobs, guokaoJobs, socialJobs, sourceFilter])
 
   const majors = useMemo(() => {
     const set = new Set(jobs.flatMap((j) => j.structured.majors))
-    return ['全部', ...Array.from(set)]
+    return ['全部', ...Array.from(set).sort((a, b) => a.localeCompare(b, 'zh'))]
   }, [jobs])
 
-  const ranked: JobWithMatch[] = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    return jobs
-      .map((job) => ({ ...job, match: matchJob(profile, job) }))
-      .filter((job) => {
+  const { ranked, totalMatched }: { ranked: JobWithMatch[]; totalMatched: number } =
+    useMemo(() => {
+      const q = query.trim().toLowerCase()
+      const prefiltered = jobs.filter((job) => {
         const matchCity = city === '全部' || job.city === city
         const matchEdu =
           education === '全部' ||
@@ -55,29 +105,51 @@ export function Jobs() {
           (gender === '仅不限'
             ? job.structured.genderPref === '不限'
             : job.structured.genderPref === gender)
-        const hay =
-          `${job.title} ${job.company} ${job.tags.join(' ')} ${job.requirementText}`.toLowerCase()
-        const matchQuery = !q || hay.includes(q)
-        const matchFit = !onlyFit || job.match.hardPass
+        const matchQuery = !q || jobSearchHaystack(job).includes(q)
         const matchSource =
           sourceFilter === '全部' || jobSourceBucket(job) === sourceFilter
         return (
-          matchCity &&
-          matchEdu &&
-          matchMajor &&
-          matchGender &&
-          matchQuery &&
-          matchFit &&
-          matchSource
+          matchCity && matchEdu && matchMajor && matchGender && matchQuery && matchSource
         )
       })
-      .sort((a, b) => b.match.score - a.match.score)
-  }, [jobs, profile, query, city, education, major, gender, onlyFit, sourceFilter])
+
+      const scored = prefiltered
+        .map((job) => ({ ...job, match: matchJob(profile, job) }))
+        .filter((job) => !onlyFit || job.match.hardPass)
+        .sort((a, b) => b.match.score - a.match.score)
+
+      return {
+        ranked: scored.slice(0, LIST_CAP),
+        totalMatched: scored.length,
+      }
+    }, [
+      jobs,
+      profile,
+      query,
+      city,
+      education,
+      major,
+      gender,
+      onlyFit,
+      sourceFilter,
+    ])
 
   function refreshCrawl() {
     const next = crawlJobs()
-    setJobs(next)
-    setCrawledAt(lastCrawledAt())
+    setSocialJobs(next)
+    const at = lastCrawledAt()
+    setCrawledAt(at)
+    clearGuokao2027Cache()
+    setGuokaoJobs([])
+    setGuokaoLoading(true)
+    fetchGuokao2027Jobs(at ?? undefined)
+      .then(setGuokaoJobs)
+      .catch((err: unknown) => {
+        setGuokaoError(
+          err instanceof Error ? err.message : '2027 国考职位表加载失败',
+        )
+      })
+      .finally(() => setGuokaoLoading(false))
   }
 
   return (
@@ -86,13 +158,24 @@ export function Jobs() {
         <div>
           <h1>岗位雷达</h1>
           <p className="section-lead">
-            多源汇聚后做条件透视。支持企业社招与国考 / 上海市考公务员职位演示样本，按学历、专业、基层经历等筛选并排序。
+            已接入《27国考岗位表【合并版】》共{' '}
+            {guokaoJobs.length > 0
+              ? guokaoJobs.length.toLocaleString('zh-CN')
+              : '19,327'}{' '}
+            条 2027 国考职位；企业社招与上海市考仍为演示样本。支持按职位代码、部门、专业等搜索。
           </p>
           <p className="meta-line">
-            当前 {jobs.length} 条 · 上次汇聚{' '}
+            当前展示池 {jobs.length.toLocaleString('zh-CN')} 条（社招{' '}
+            {socialJobs.length} + 国考 {guokaoJobs.length || '加载中…'}）·
+            上次汇聚{' '}
             {crawledAt
               ? new Date(crawledAt).toLocaleString('zh-CN')
               : '尚未汇聚'}
+            {guokaoLoading ? ' · 国考职位表加载中…' : null}
+            {guokaoError ? ` · ${guokaoError}` : null}
+          </p>
+          <p className="meta-line">
+            <Link to="/gwy/guide">2027 国考选岗与备考指南（摘录）</Link>
           </p>
         </div>
         <button type="button" className="btn btn-primary" onClick={refreshCrawl}>
@@ -105,7 +188,7 @@ export function Jobs() {
           <span>搜索</span>
           <input
             type="search"
-            placeholder="职位、公司、技能或 JD 关键词"
+            placeholder="职位名称、部门、职位代码、专业关键词…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -126,7 +209,7 @@ export function Jobs() {
         <label className="field">
           <span>城市</span>
           <select value={city} onChange={(e) => setCity(e.target.value)}>
-            {cities.map((c) => (
+            {cities.slice(0, 80).map((c) => (
               <option key={c} value={c}>
                 {c}
               </option>
@@ -185,6 +268,13 @@ export function Jobs() {
         </label>
       </div>
 
+      {totalMatched > LIST_CAP ? (
+        <p className="meta-line">
+          共匹配 {totalMatched.toLocaleString('zh-CN')} 条，按匹配度展示前 {LIST_CAP}{' '}
+          条。请用来源 / 城市 / 搜索进一步缩小范围。
+        </p>
+      ) : null}
+
       <ul className="job-list">
         {ranked.map((job) => {
           const applied = hasApplied(job.id)
@@ -202,6 +292,9 @@ export function Jobs() {
                 </div>
                 <p className="job-meta">
                   {job.company} · {job.location} · {job.type} · {job.sourceName}
+                  {job.guokaoMeta?.positionCode
+                    ? ` · 职位代码 ${job.guokaoMeta.positionCode}`
+                    : null}
                 </p>
                 <p className="job-salary">{job.salary}</p>
                 <p className="job-desc">{job.description}</p>
@@ -209,7 +302,7 @@ export function Jobs() {
                   {job.structured.highlights.map((tag) => (
                     <li key={tag}>{tag}</li>
                   ))}
-                  {job.tags.map((tag) => (
+                  {job.tags.slice(0, 6).map((tag) => (
                     <li key={tag}>{tag}</li>
                   ))}
                 </ul>
@@ -242,8 +335,13 @@ export function Jobs() {
         })}
       </ul>
 
-      {ranked.length === 0 ? (
-        <p className="empty">没有匹配岗位。试试放宽筛选，或先完善求职画像。</p>
+      {ranked.length === 0 && !guokaoLoading ? (
+        <p className="empty">
+          没有匹配岗位。试试放宽筛选，或先完善求职画像。
+          {sourceFilter === '国考' && !guokao2027Loaded() && guokaoError
+            ? '（国考表未加载成功，可点「重新汇聚岗位」重试）'
+            : null}
+        </p>
       ) : null}
     </main>
   )

@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { buildAdaptivePack } from '../lib/adaptiveApply'
-import { getJobById, loadJobs } from '../lib/crawl'
+import { loadJobs } from '../lib/crawl'
+import { fetchGuokao2027Jobs } from '../lib/guokao2027'
+import { getJobById } from '../lib/jobLookup'
 import { matchJob } from '../lib/match'
 import { loadProfile } from '../lib/profile'
 import { saveApplication } from '../lib/storage'
@@ -59,12 +61,22 @@ export function Apply() {
 
   useEffect(() => {
     if (!jobFromUrl) return
-    const matched = getJobById(jobFromUrl)
-    if (matched) {
-      setForm((prev) =>
-        prev.jobId === matched.id ? prev : { ...prev, jobId: matched.id },
-      )
-      setAutoFilled(false)
+    let cancelled = false
+    ;(async () => {
+      if (jobFromUrl.startsWith('guokao-')) {
+        await fetchGuokao2027Jobs()
+      }
+      if (cancelled) return
+      const matched = getJobById(jobFromUrl)
+      if (matched) {
+        setForm((prev) =>
+          prev.jobId === matched.id ? prev : { ...prev, jobId: matched.id },
+        )
+        setAutoFilled(false)
+      }
+    })()
+    return () => {
+      cancelled = true
     }
   }, [jobFromUrl])
 
