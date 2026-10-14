@@ -1,8 +1,14 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { crawlJobs, lastCrawledAt, loadJobs } from '../lib/crawl'
+import {
+  crawlJobs,
+  ensureJobsLoaded,
+  lastCrawledAt,
+  loadJobs,
+} from '../lib/crawl'
 import { matchJob } from '../lib/match'
 import { loadProfile } from '../lib/profile'
+import { RequirementPanel } from '../components/RequirementPanel'
 import { hasApplied } from '../lib/storage'
 import type { EducationLevel, GenderPref, Job, MatchResult } from '../lib/types'
 
@@ -17,7 +23,17 @@ export function Jobs() {
   const [major, setMajor] = useState('全部')
   const [gender, setGender] = useState<'全部' | GenderPref | '仅不限'>('全部')
   const [onlyFit, setOnlyFit] = useState(false)
+  const [page, setPage] = useState(1)
   const [crawledAt, setCrawledAt] = useState(() => lastCrawledAt())
+  const [busy, setBusy] = useState(false)
+  const pageSize = 30
+
+  useEffect(() => {
+    void ensureJobsLoaded().then((list) => {
+      setJobs(list)
+      setCrawledAt(lastCrawledAt())
+    })
+  }, [])
 
   const cities = useMemo(() => {
     const set = new Set(jobs.map((j) => j.city))
@@ -25,7 +41,12 @@ export function Jobs() {
   }, [jobs])
 
   const majors = useMemo(() => {
-    const set = new Set(jobs.flatMap((j) => j.structured.majors))
+    const set = new Set(
+      jobs.flatMap((j) => [
+        ...(j.structured.majorsRequired || []),
+        ...(j.structured.majorsPreferred || []),
+      ]),
+    )
     return ['全部', ...Array.from(set)]
   }, [jobs])
 
@@ -40,7 +61,9 @@ export function Jobs() {
           job.structured.educationMin === education ||
           job.structured.educationPrefer === education
         const matchMajor =
-          major === '全部' || job.structured.majors.includes(major)
+          major === '全部' ||
+          (job.structured.majorsRequired || []).includes(major) ||
+          (job.structured.majorsPreferred || []).includes(major)
         const matchGender =
           gender === '全部' ||
           (gender === '仅不限'
@@ -62,10 +85,22 @@ export function Jobs() {
       .sort((a, b) => b.match.score - a.match.score)
   }, [jobs, profile, query, city, education, major, gender, onlyFit])
 
-  function refreshCrawl() {
-    const next = crawlJobs()
-    setJobs(next)
-    setCrawledAt(lastCrawledAt())
+  useEffect(() => {
+    setPage(1)
+  }, [query, city, education, major, gender, onlyFit, jobs.length])
+
+  const totalPages = Math.max(1, Math.ceil(ranked.length / pageSize))
+  const pageJobs = ranked.slice((page - 1) * pageSize, page * pageSize)
+
+  async function refreshCrawl() {
+    setBusy(true)
+    try {
+      const result = await crawlJobs({ replace: false })
+      setJobs(result.jobs)
+      setCrawledAt(result.crawledAt)
+    } finally {
+      setBusy(false)
+    }
   }
 
   return (
@@ -81,10 +116,19 @@ export function Jobs() {
             {crawledAt
               ? new Date(crawledAt).toLocaleString('zh-CN')
               : '尚未汇聚'}
+            {' · '}
+            <Link to="/sources">管理数据源</Link>
+            {' · '}
+            <Link to="/batch">批量投递</Link>
           </p>
         </div>
-        <button type="button" className="btn btn-primary" onClick={refreshCrawl}>
-          重新汇聚岗位
+        <button
+          type="button"
+          className="btn btn-primary"
+          disabled={busy}
+          onClick={() => void refreshCrawl()}
+        >
+          {busy ? '汇聚中…' : '重新汇聚岗位'}
         </button>
       </header>
 
@@ -160,8 +204,12 @@ export function Jobs() {
         </label>
       </div>
 
+      <p className="meta-line">
+        筛选后 {ranked.length} 条 · 第 {page}/{totalPages} 页
+      </p>
+
       <ul className="job-list">
-        {ranked.map((job) => {
+        {pageJobs.map((job) => {
           const applied = hasApplied(job.id)
           return (
             <li key={job.id} className="job-row">
@@ -181,13 +229,14 @@ export function Jobs() {
                 <p className="job-salary">{job.salary}</p>
                 <p className="job-desc">{job.description}</p>
                 <ul className="tag-list">
-                  {job.structured.highlights.map((tag) => (
+                  {job.structured.highlights.slice(0, 6).map((tag) => (
                     <li key={tag}>{tag}</li>
                   ))}
                   {job.tags.map((tag) => (
                     <li key={tag}>{tag}</li>
                   ))}
                 </ul>
+                <RequirementPanel job={job} />
                 <p className="match-summary">{job.match.summary}</p>
                 <ul className="match-dims">
                   {job.match.dimensions
@@ -207,14 +256,48 @@ export function Jobs() {
                 <Link className="btn btn-primary" to={`/apply?job=${job.id}`}>
                   {applied ? '再投一次' : '智能投递'}
                 </Link>
+                {job.applyUrl ? (
+                  <a
+                    className="btn btn-ghost"
+                    href={job.applyUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    原文
+                  </a>
+                ) : null}
               </div>
             </li>
           )
         })}
       </ul>
 
+      {ranked.length > pageSize ? (
+        <div className="hero-actions" style={{ marginTop: '1rem' }}>
+          <button
+            type="button"
+            className="btn btn-ghost"
+            disabled={page <= 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+          >
+            上一页
+          </button>
+          <button
+            type="button"
+            className="btn btn-ghost"
+            disabled={page >= totalPages}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+          >
+            下一页
+          </button>
+        </div>
+      ) : null}
+
       {ranked.length === 0 ? (
-        <p className="empty">没有匹配岗位。试试放宽筛选，或先完善求职画像。</p>
+        <p className="empty">
+          没有匹配岗位。试试放宽筛选，或先去{' '}
+          <Link to="/sources">数据源</Link> 汇聚。
+        </p>
       ) : null}
     </main>
   )

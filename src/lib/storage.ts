@@ -14,6 +14,9 @@ export type Application = {
   hardPass: boolean
   applyAngle: string
   sourceName: string
+  resumeVersionId?: string
+  resumeVersionName?: string
+  batch?: boolean
   status: '已投递' | '已查看' | '面试邀请'
   submittedAt: string
 }

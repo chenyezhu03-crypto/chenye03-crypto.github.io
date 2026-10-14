@@ -1,16 +1,27 @@
 export type EducationLevel = '大专' | '本科' | '硕士' | '博士'
 export type GenderPref = '不限' | '男' | '女'
 export type Gender = '男' | '女' | '不愿透露'
+export type WorkMode = '现场' | '远程' | '混合' | '不限'
 
 export type StructuredRequirements = {
   educationMin: EducationLevel | null
   educationPrefer: EducationLevel | null
-  majors: string[]
+  eliteSchoolRequired: boolean
+  majorsRequired: string[]
+  majorsPreferred: string[]
   majorFlexible: boolean
   genderPref: GenderPref
   yearsMin: number | null
+  yearsMax: number | null
+  yearsFuzzy: boolean
   studentOnly: boolean
+  skillsRequired: string[]
+  skillsPreferred: string[]
+  softSkills: string[]
+  languages: string[]
+  workMode: WorkMode
   highlights: string[]
+  rawSignals: string[]
 }
 
 export type Job = {
@@ -41,6 +52,7 @@ export type UserProfile = {
   education: EducationLevel
   major: string
   school: string
+  eliteSchool: boolean
   years: number
   isStudent: boolean
   skills: string[]

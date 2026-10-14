@@ -7,49 +7,55 @@ const browser = await chromium.launch({
   headless: false,
   channel: 'chrome',
   args: ['--start-maximized', '--disable-infobars'],
-  slowMo: 70,
+  slowMo: 55,
 })
 
 const context = await browser.newContext({
-  viewport: { width: 1400, height: 900 },
+  viewport: { width: 1440, height: 900 },
   locale: 'zh-CN',
 })
 const page = await context.newPage()
 
-await page.goto(BASE + '/', { waitUntil: 'networkidle' })
-await sleep(1000)
-
-await page.getByRole('link', { name: '完善求职画像' }).click()
-await page.waitForURL('**/profile')
+await page.goto(BASE + '/profile', { waitUntil: 'networkidle' })
 await page.locator('input[autocomplete="name"]').fill('张三')
 await page.locator('input[autocomplete="tel"]').fill('13800138000')
 await page.locator('input[autocomplete="email"]').fill('zhangsan@example.com')
 await page.getByPlaceholder('如：计算机 / 视觉传达').fill('计算机')
-await page.locator('textarea').fill('主导过设计系统落地，熟悉中后台复杂表单与性能优化。')
+await page.locator('input[type="number"]').fill('4')
 await page.getByRole('button', { name: '保存画像' }).click()
-await sleep(700)
-
-await page.getByRole('link', { name: '去岗位雷达' }).click()
-await page.waitForURL('**/jobs')
-await page.getByRole('button', { name: '重新汇聚岗位' }).click()
-await sleep(800)
-await page.locator('.filters-dense .field').filter({ hasText: '学历门槛' }).locator('select').selectOption('本科')
 await sleep(600)
 
-await page.getByRole('link', { name: '智能投递' }).first().click()
-await page.waitForURL(/\/apply/)
-await page.waitForSelector('.intel-panel')
+await page.goto(BASE + '/sources')
+const checks = page.locator('.source-row')
+const n = await checks.count()
+for (let i = 0; i < n; i++) {
+  const row = checks.nth(i)
+  const label = await row.innerText()
+  const box = row.locator('input[type="checkbox"]')
+  const checked = await box.isChecked()
+  if (label.includes('国内演示') && !checked) await box.check()
+  if (label.includes('Remotive') && checked) await box.uncheck()
+  if (label.includes('JSON') && checked) await box.uncheck()
+}
+await page.getByRole('button', { name: '清空后全量' }).click()
+await page.waitForSelector('.report-box')
+await sleep(800)
+
+await page.goto(BASE + '/resumes')
 await sleep(900)
-await page.setInputFiles('input[type="file"]', {
-  name: 'zhangsan-resume.pdf',
-  mimeType: 'application/pdf',
-  buffer: Buffer.from('%PDF-1.4 demo resume'),
-})
-await sleep(500)
-await page.getByRole('button', { name: '确认投递' }).click()
-await page.waitForSelector('.success-panel')
+
+await page.goto(BASE + '/jobs')
+await page.waitForSelector('.job-row')
 await sleep(900)
-await page.getByRole('button', { name: '查看我的投递' }).click()
+
+await page.goto(BASE + '/batch')
+await page.waitForSelector('.queue-row')
+await sleep(700)
+await page.getByRole('button', { name: /投递选中/ }).click()
+await page.waitForSelector('.report-box', { timeout: 60000 })
+await sleep(1200)
+
+await page.goto(BASE + '/applications')
 await page.waitForSelector('.app-row')
 await sleep(1400)
 

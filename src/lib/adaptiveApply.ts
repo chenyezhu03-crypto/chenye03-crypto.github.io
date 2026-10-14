@@ -1,13 +1,17 @@
+import { pickResumeForJob, type ResumeVersion } from './resumes'
 import type { AdaptivePack, Job, MatchResult, UserProfile } from './types'
 
 export function buildAdaptivePack(
   profile: UserProfile,
   job: Job,
   match: MatchResult,
+  resume?: ResumeVersion,
 ): AdaptivePack {
   const warnings: string[] = []
   const emphasis: string[] = []
   const s = job.structured
+  const chosen = resume ?? pickResumeForJob(job)
+  const skillPool = chosen.skills.length ? chosen.skills : profile.skills
 
   if (!match.hardPass) {
     warnings.push('存在硬性条件缺口，投递信会侧重可迁移能力与证据，而不是硬碰硬复述门槛。')
@@ -17,8 +21,8 @@ export function buildAdaptivePack(
       `该岗位原文含性别标注「${s.genderPref}」。投简仅作条件透视展示，是否投递由你决定。`,
     )
   }
+  warnings.push(`已自动匹配简历版本「${chosen.name}」（${chosen.fileName}）`)
 
-  // 侧重点随岗位变化
   if (job.tags.some((t) => /React|前端|设计系统|Figma|UI/.test(t))) {
     emphasis.push('作品/组件库/体验细节', '协作与落地节奏', '性能与可访问性意识')
   } else if (job.tags.some((t) => /Java|后端|微服务|测试|算法|SQL|Python/.test(t))) {
@@ -29,25 +33,30 @@ export function buildAdaptivePack(
     emphasis.push('与岗位关键词对齐的经历', '学习速度', '稳定交付')
   }
 
-  if (s.majors.length && !match.dimensions.find((d) => d.key === 'major' && d.status === '通过')) {
-    emphasis.unshift(`用项目证明与「${s.majors[0]}」相关的能力迁移`)
+  const majorNeed = [...(s.majorsRequired || []), ...(s.majorsPreferred || [])]
+  if (
+    majorNeed.length &&
+    !match.dimensions.find((d) => d.key === 'major' && d.status === '通过')
+  ) {
+    emphasis.unshift(`用项目证明与「${majorNeed[0]}」相关的能力迁移`)
   }
 
-  const skillLine = profile.skills.slice(0, 4).join('、') || '相关技能'
+  const skillLine = skillPool.slice(0, 4).join('、') || '相关技能'
   const highlightLine =
+    chosen.summary ||
     profile.highlights.trim() ||
     `我在${profile.major || '相关'}方向积累了可验证的实践，能够快速对齐业务目标。`
 
   const angle = match.hardPass
-    ? `按「${job.title}」条件画像对齐：先过硬门槛，再突出 ${emphasis[0]}`
-    : `缺口补位策略：承认差异，用 ${emphasis[0]} 证明可迁移性`
+    ? `简历「${chosen.name}」+「${job.title}」：先过硬门槛，再突出 ${emphasis[0]}`
+    : `简历「${chosen.name}」缺口补位：用 ${emphasis[0]} 证明可迁移性`
 
   const coverLetter = [
     `尊敬的 ${job.company} 招聘团队：`,
     '',
     `我是${profile.name || '候选人'}，来自${profile.school || '相关院校'}·${profile.major || '相关专业'}（${profile.education}），希望申请「${job.title}」。`,
     '',
-    `对照贵司要求，我重点对齐三点：${emphasis.slice(0, 3).join('；')}。${highlightLine}`,
+    `本次投递使用简历版本「${chosen.name}」。对照贵司要求，我重点对齐三点：${emphasis.slice(0, 3).join('；')}。${highlightLine}`,
     skillLine ? `技能侧可直接复用：${skillLine}。` : '',
     match.blockers.length
       ? `若有条件不完全重合，我更愿意用可验证项目与学习曲线说明迁移路径，而不是回避差异。`
