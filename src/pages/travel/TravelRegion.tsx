@@ -15,6 +15,7 @@ import {
   type TravelGeoPath,
 } from '../../lib/travelTypes'
 import { travelCustomPath } from '../../lib/travelCustomLink'
+import { loadTravelPlanMode, saveTravelPlanMode } from '../../lib/travelPlanMode'
 import { loadTravelPrefs, saveTravelPrefs } from '../../lib/travelStorage'
 
 type PickMode = 'manual' | 'wheel'
@@ -28,6 +29,7 @@ function parentIdForLevel(path: TravelGeoPath, level: 1 | 2 | 3 | 4): string | n
 
 export function TravelRegion() {
   const navigate = useNavigate()
+  const planMode = loadTravelPlanMode()
   const [prefs, setPrefs] = useState(() => loadTravelPrefs())
   const [path, setPath] = useState<TravelGeoPath>(() => ({
     ...prefs.geo,
@@ -91,8 +93,18 @@ export function TravelRegion() {
           <strong> 四级国家</strong>（国内统一为中国）。选完再帮你
           <strong> 抽 3 个</strong> 具体目的地。
         </p>
-        <Link className="btn btn-ghost travel-btn-block" to={travelCustomPath()}>
-          顾客已定目的地 · 跳过选区，直接做 Word 攻略
+        {planMode !== 'has_plan' && (
+          <p className="travel-meta">
+            帮选路径：定好国家/城市后，去转盘或三选一；也可{' '}
+            <Link to="/travel">回第一步</Link> 改成「已有计划」。
+          </p>
+        )}
+        <Link
+          className="btn btn-ghost travel-btn-block"
+          to={travelCustomPath()}
+          onClick={() => saveTravelPlanMode('has_plan')}
+        >
+          其实已有计划 · 跳过帮选，第二步做 Word
         </Link>
 
         <div className="travel-segment travel-segment-2">

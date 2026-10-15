@@ -4,11 +4,17 @@ import { SpinWheel } from '../../components/travel/SpinWheel'
 import { formatGeoBreadcrumb } from '../../lib/travelGeoMatch'
 import { filterDestinations, relaxHints } from '../../lib/travelMatch'
 import { travelCustomPath } from '../../lib/travelCustomLink'
+import { saveTravelPlanMode } from '../../lib/travelPlanMode'
 import { loadTravelPrefs, saveTravelPrefs } from '../../lib/travelStorage'
+import { useEffect } from 'react'
 
 export function TravelSpin() {
   const navigate = useNavigate()
   const [prefs] = useState(() => loadTravelPrefs())
+
+  useEffect(() => {
+    saveTravelPlanMode('needs_help')
+  }, [])
   const pool = useMemo(() => filterDestinations(prefs), [prefs])
   const hints = relaxHints(prefs, pool.length)
 

@@ -1,9 +1,9 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 
 const tabs = [
-  { to: '/travel', label: '首页', end: true },
-  { to: '/travel/custom', label: '做攻略', end: false },
-  { to: '/travel/region', label: '地区', end: false },
+  { to: '/travel', label: '第一步', end: true },
+  { to: '/travel/custom', label: '第二步', end: false },
+  { to: '/travel/region', label: '帮选', end: false },
   { to: '/travel/picks', label: '三选一', end: false },
 ]
 
@@ -27,8 +27,12 @@ export function TravelLayout() {
               : loc.pathname.includes('/picks')
                 ? '一次给你 3 个备选'
                 : loc.pathname.includes('/spin')
-                  ? '转一下，交给运气一点'
-                  : '先选地区分级，再抽目的地'}
+                  ? '帮选 · 大转盘'
+                  : loc.pathname.includes('/custom')
+                    ? '第二步 · Word 模版攻略'
+                    : loc.pathname === '/travel' || loc.pathname === '/travel/'
+                      ? '第一步 · 是否已有计划？'
+                      : '帮顾客选目的地'}
         </p>
       </header>
       <div className="travel-body">

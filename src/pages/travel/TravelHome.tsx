@@ -1,77 +1,102 @@
-import { Link } from 'react-router-dom'
-import { DESTINATIONS } from '../../data/destinations'
+import { Link, useNavigate } from 'react-router-dom'
+import {
+  loadTravelPlanMode,
+  planModeLabel,
+  saveTravelPlanMode,
+  clearTravelPlanMode,
+} from '../../lib/travelPlanMode'
 import { travelCustomPath } from '../../lib/travelCustomLink'
-import { filterDestinations } from '../../lib/travelMatch'
-import { loadTravelPrefs } from '../../lib/travelStorage'
 
 export function TravelHome() {
-  const prefs = loadTravelPrefs()
-  const pool = filterDestinations(prefs)
+  const navigate = useNavigate()
+  const current = loadTravelPlanMode()
+
+  function chooseHasPlan() {
+    saveTravelPlanMode('has_plan')
+    navigate(travelCustomPath())
+  }
+
+  function chooseNeedsHelp() {
+    saveTravelPlanMode('needs_help')
+    navigate('/travel/region')
+  }
 
   return (
     <main className="travel-page">
       <section className="travel-card travel-hero-card">
-        <h1>去哪玩 · 决策或攻略</h1>
+        <p className="travel-path-step">第一步</p>
+        <h1>顾客是否已有出行计划？</h1>
         <p className="travel-lead">
-          顾客可以<strong>不用大转盘</strong>：已经知道去哪、几号走，直接做
-          <strong> Word 模版攻略</strong>。只有「选不出来」时才用转盘和地区分级。
+          先问清楚这一点，再决定要不要上大转盘。{' '}
+          <strong>有计划</strong> 就进第二步做 Word；{' '}
+          <strong>没想好</strong> 再用地区分级和大转盘帮选。
         </p>
+
+        {current && (
+          <p className="travel-geo-crumb">
+            当前选择：{planModeLabel(current)}
+            <button
+              type="button"
+              className="travel-chip-remove travel-plan-reset"
+              onClick={() => clearTravelPlanMode()}
+            >
+              重选
+            </button>
+          </p>
+        )}
 
         <div className="travel-path-grid">
           <section className="travel-path-card travel-path-primary">
-            <p className="travel-path-step">第二步 · 主路径</p>
-            <h2 className="travel-h2">直接做攻略</h2>
+            <h2 className="travel-h2">有计划</h2>
             <p className="travel-meta">
-              填日期、目的地、预算 → 选免费简版或完整 Word 实稿，无需转盘。
+              大概知道去哪、几号走（或客户已经说定了）→{' '}
+              <strong>不需要大转盘</strong>，直接做 Word 模版攻略。
             </p>
-            <Link className="btn btn-primary travel-btn-block" to={travelCustomPath()}>
-              开始定制 Word 攻略
-            </Link>
+            <button
+              type="button"
+              className="btn btn-primary travel-btn-block"
+              onClick={chooseHasPlan}
+            >
+              进入第二步 · 做 Word 攻略
+            </button>
           </section>
 
           <section className="travel-path-card">
-            <p className="travel-path-step">第一步 · 可选</p>
-            <h2 className="travel-h2">先帮顾客选去哪</h2>
+            <h2 className="travel-h2">还没想好</h2>
             <p className="travel-meta">
-              地区分级 → 大转盘 / 抽 3 个 → 满意后再进「做攻略」。
+              目的地不确定 → 先 <strong>地区分级</strong>，再{' '}
+              <strong>大转盘 / 抽 3 个</strong>，定下来后再做 Word。
             </p>
-            <Link className="btn btn-ghost travel-btn-block" to="/travel/region">
-              选地区 / 转盘
-            </Link>
-            <Link className="btn btn-ghost travel-btn-block" to="/travel/spin">
-              跳过地区，直接转
+            <button
+              type="button"
+              className="btn btn-ghost travel-btn-block"
+              onClick={chooseNeedsHelp}
+            >
+              需要大转盘 · 帮选目的地
+            </button>
+            <Link
+              className="travel-foot-link"
+              to="/travel/spin"
+              onClick={() => saveTravelPlanMode('needs_help')}
+            >
+              跳过地区，直接转（仍算「帮选」）
             </Link>
           </section>
         </div>
       </section>
 
-      <div className="travel-stats">
-        <div className="travel-stat">
-          <strong>{DESTINATIONS.length}</strong>
-          <span>精选目的地</span>
-        </div>
-        <div className="travel-stat">
-          <strong>{pool.length}</strong>
-          <span>当前匹配</span>
-        </div>
-        <div className="travel-stat">
-          <strong>2</strong>
-          <span>条路径</span>
-        </div>
-      </div>
-
       <section className="travel-card">
-        <h2 className="travel-h2">两条路怎么连</h2>
+        <h2 className="travel-h2">流程示意</h2>
         <ol className="travel-steps">
           <li>
-            <strong>知道去哪</strong> → 定制页（第二步）→ 下载 Word
+            <strong>第一步（本页）</strong>：有没有计划？要不要转盘？
           </li>
           <li>
-            <strong>不知道去哪</strong> → 转盘定城市 → 详情里点「做 Word 攻略」→ 同样进第二步
+            <strong>第二步</strong>：填日期、地点、套餐 → 导出 Word（两条路最后都到这里）
           </li>
         </ol>
         <p className="travel-note">
-          演示库覆盖国内热门与部分出境短目的地；真实出行请以签证、航司与当地政策为准。
+          底部 Tab「做攻略」= 第二步；「地区 / 三选一」主要在「还没想好」时使用。
         </p>
       </section>
     </main>

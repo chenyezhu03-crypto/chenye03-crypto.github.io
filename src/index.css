@@ -1324,6 +1324,11 @@ textarea {
   background: linear-gradient(180deg, #f4f8fc 0%, var(--white) 100%);
 }
 
+.travel-plan-reset {
+  margin-left: 0.5rem;
+  vertical-align: baseline;
+}
+
 .travel-path-step {
   margin: 0 0 0.35rem;
   font-size: 0.72rem;

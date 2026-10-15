@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { getDestinationById } from '../../lib/travelMatch'
+import { saveTravelPlanMode } from '../../lib/travelPlanMode'
 import { DESTINATIONS } from '../../data/destinations'
 import { buildCustomTripGuide } from '../../lib/customTripGuide'
 import {
@@ -48,6 +49,10 @@ export function TravelCustom() {
   const [customModules, setCustomModules] = useState<TemplateModuleId[]>([])
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    saveTravelPlanMode('has_plan')
+  }, [])
 
   useEffect(() => {
     const one = search.get('dest')
@@ -156,9 +161,13 @@ export function TravelCustom() {
   return (
     <main className="travel-page">
       <section className="travel-card">
-        <h1 className="travel-h1">第二步 · 做 Word 攻略</h1>
+        <p className="travel-path-step">第二步 · 已有计划</p>
+        <h1 className="travel-h1">做 Word 模版攻略</h1>
+        <Link className="travel-foot-link" to="/travel">
+          ← 回第一步：是否要用大转盘？
+        </Link>
         <p className="travel-lead">
-          <strong>不必使用大转盘</strong>——顾客只要说清日期、去哪、预算即可。豆包等模型写游记
+          不必使用大转盘——顾客只要说清日期、去哪、预算即可。豆包等模型写游记
           <strong>几乎免费</strong>，所以本站
           <strong> 简版攻略免费</strong>，只对「完整 Word 模版实稿（含逐日详程）」象征性收
           <strong> ¥{MAX_GUIDE_PRICE_CNY}</strong>——卖的是<strong>固定版式 + 已整理实稿</strong>，不是让 AI 现编。
