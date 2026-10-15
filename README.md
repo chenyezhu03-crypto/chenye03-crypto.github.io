@@ -13,6 +13,15 @@
 
 > 真实抓取第三方需登录/反爬的平台不在本仓库范围内；企业社招样本在 `src/data/rawFeeds.ts`。
 
+## 在线访问（与本地 `/jobs` 相同，浏览器直接打开）
+
+| 页面 | 链接 |
+|------|------|
+| 选岗助手 | https://chenyezhu03-crypto.github.io/pick |
+| 岗位雷达 | https://chenyezhu03-crypto.github.io/jobs |
+
+若 404，请按 [ENABLE_PAGES.md](./ENABLE_PAGES.md) 在 GitHub 仓库 **Settings → Pages** 选择 **`gh-pages`** 分支（只需一次）。
+
 ## 本地开发
 
 **公考选岗助手（推荐）：**

@@ -194,6 +194,18 @@ textarea {
   gap: 0.75rem;
 }
 
+.hero-online {
+  margin: 1rem 0 0;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.hero-online a {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;

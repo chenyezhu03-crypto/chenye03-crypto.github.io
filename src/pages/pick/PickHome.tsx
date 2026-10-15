@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { GUOKAO2027_GUIDE } from '../../data/guokao2027Guide'
 import { loadProfile, profileCompleteness } from '../../lib/profile'
 import { loadPickFavorites } from '../../lib/pickStorage'
+import { publicPage } from '../../lib/siteUrl'
 
 export function PickHome() {
   const profile = loadProfile()
@@ -56,7 +57,13 @@ export function PickHome() {
       </section>
 
       <p className="pick-foot-link">
+        在线地址（可收藏）：
+        <a href={publicPage('/pick')}>{publicPage('/pick')}</a>
+      </p>
+      <p className="pick-foot-link">
         <Link to="/">返回投简完整版</Link>
+        <span aria-hidden="true"> · </span>
+        <a href={publicPage('/jobs')}>岗位雷达</a>
       </p>
     </main>
   )
