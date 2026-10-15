@@ -18,6 +18,21 @@ export type RawFeedItem = {
   description: string
   requirementText: string
   applyUrl?: string
+  /** 2027 国考职位表原始字段（由 import 脚本写入 JSON） */
+  meta?: {
+    deptCode: string
+    positionCode: string
+    bureau: string
+    orgNature: string
+    positionAttr: string
+    positionDistribution: string
+    orgLevel: string
+    headcount: string
+    interviewRatio: string
+    settleLocation: string
+    deptWebsite: string
+    phones: string[]
+  }
 }
 
 export const RAW_FEEDS: RawFeedItem[] = [
@@ -191,5 +206,57 @@ export const RAW_FEEDS: RawFeedItem[] = [
       '参与推荐/搜索相关模型训练与上线，跟进指标复盘，与工程同学协作落地。',
     requirementText:
       '硕士及以上，计算机、人工智能、数学相关专业；扎实的机器学习基础；有论文或竞赛经历优先；2026/2027 届；男女不限。',
+  },
+  {
+    sourceId: 'shanghai-gwy',
+    sourceName: '上海市考职位表（演示）',
+    externalId: 'sh-pd-law-014',
+    title: '行政执法类公务员',
+    company: '上海市浦东新区市场监督管理局',
+    city: '上海',
+    district: '浦东',
+    type: '公务员 · 上海市考',
+    salary: '按上海市公务员待遇',
+    tags: ['行政执法', '法学', '党员'],
+    postedAt: '2026-11-01',
+    description:
+      '从事市场主体监管、消费维权与案件查办，参与食品安全、广告监管等一线执法与普法宣传。',
+    requirementText:
+      '本科及以上，须取得相应学位；法学类专业；具有2年及以上基层工作经历；中共党员；男女不限。',
+    applyUrl: 'https://example.com/shgwy/positions/sh-pd-law-014',
+  },
+  {
+    sourceId: 'shanghai-gwy',
+    sourceName: '上海市考职位表（演示）',
+    externalId: 'sh-ja-street-015',
+    title: '街道综合管理类',
+    company: '上海市静安区某街道',
+    city: '上海',
+    district: '静安',
+    type: '公务员 · 上海市考',
+    salary: '按上海市公务员待遇',
+    tags: ['综合管理', '专业不限', '应届'],
+    postedAt: '2026-11-01',
+    description:
+      '参与社区治理、民生服务与基层矛盾调解，承担文稿、活动组织与网格化治理等综合性工作。',
+    requirementText:
+      '本科及以上，须取得相应学位；专业不限；仅限2026届应届高校毕业生；基层工作经历不作要求；政治面貌不限；男女不限。',
+  },
+  {
+    sourceId: 'shanghai-gwy',
+    sourceName: '上海市考职位表（演示）',
+    externalId: 'sh-fin-016',
+    title: '财政管理',
+    company: '上海市财政局',
+    city: '上海',
+    district: '黄浦',
+    type: '公务员 · 上海市考',
+    salary: '按上海市公务员待遇',
+    tags: ['综合管理', '财政学', '2年基层'],
+    postedAt: '2026-11-01',
+    description:
+      '参与预算编制执行、绩效评价与财政政策研究，协助部门决算与国库集中支付相关业务。',
+    requirementText:
+      '硕士及以上，须取得相应学位；财政学、会计学、审计学、经济学相关专业；具有2年及以上基层工作经历；政治面貌不限；男女不限。',
   },
 ]

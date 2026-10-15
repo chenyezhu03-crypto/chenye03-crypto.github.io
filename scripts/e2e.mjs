@@ -22,7 +22,7 @@ try {
   await page.locator('input[autocomplete="tel"]').fill('13800138000')
   await page.locator('input[autocomplete="email"]').fill('zhangsan@example.com')
   await page.getByPlaceholder('如：计算机 / 视觉传达').fill('计算机')
-  await page.locator('input[type="number"]').fill('3')
+  await page.getByRole('spinbutton', { name: '工作年限', exact: true }).fill('3')
   await page.getByRole('button', { name: '保存画像' }).click()
   await page.waitForSelector('.form-ok')
   await page.screenshot({ path: path.join(OUT, 'profile-saved.png') })

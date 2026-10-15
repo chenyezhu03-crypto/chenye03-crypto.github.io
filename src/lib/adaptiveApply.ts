@@ -18,8 +18,25 @@ export function buildAdaptivePack(
     )
   }
 
+  const isGwy = job.sourceId === 'guokao' || job.sourceId === 'shanghai-gwy'
+
   // 侧重点随岗位变化
-  if (job.tags.some((t) => /React|前端|设计系统|Figma|UI/.test(t))) {
+  if (isGwy) {
+    emphasis.push(
+      '与职位表专业目录的对应关系',
+      '基层经历起止时间与证明口径',
+      '政治面貌与学位材料一致性',
+    )
+    if (job.sourceId === 'guokao') {
+      warnings.push(
+        '国考需同时满足中央机关及其直属机构招考公告中的通用条件（年龄、学历学位、回避等），本页仅透视单条职位要求。',
+      )
+    } else {
+      warnings.push(
+        '上海市考还需对照本市招考简章的户籍、学历来源与基层经历认定规则，本页为演示级单职位透视。',
+      )
+    }
+  } else if (job.tags.some((t) => /React|前端|设计系统|Figma|UI/.test(t))) {
     emphasis.push('作品/组件库/体验细节', '协作与落地节奏', '性能与可访问性意识')
   } else if (job.tags.some((t) => /Java|后端|微服务|测试|算法|SQL|Python/.test(t))) {
     emphasis.push('技术深度与问题拆解', '稳定性/质量意识', '可量化结果')

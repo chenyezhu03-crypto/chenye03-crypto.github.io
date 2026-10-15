@@ -17,7 +17,7 @@ export function Home() {
             先看清条件，再聪明投递
           </h1>
           <p className="hero-lead animate-rise delay-2">
-            多源岗位汇聚 · 学历/专业/性别标注透视 · 按岗位自适应生成投递内容
+            企业社招与国考 / 上海市考选岗 · 学历 / 专业 / 基层经历透视 · 按岗位自适应生成投递内容
           </p>
           <div className="hero-actions animate-rise delay-3">
             <Link className="btn btn-primary" to="/jobs">
@@ -25,6 +25,9 @@ export function Home() {
             </Link>
             <Link className="btn btn-ghost" to="/profile">
               完善求职画像
+            </Link>
+            <Link className="btn btn-ghost" to="/pick">
+              公考选岗助手（轻量版）
             </Link>
           </div>
         </div>
@@ -39,7 +42,9 @@ export function Home() {
           <li>
             <span className="how-step">01</span>
             <strong>条件透视</strong>
-            <p>从 JD 原文抽取学历、专业、经验、性别标注等结构字段，不再靠肉眼扫。 </p>
+            <p>
+              从 JD 或职位表原文抽取学历、专业、学位、基层经历、政治面貌与性别标注等字段，公考选岗也能一眼对照。
+            </p>
           </li>
           <li>
             <span className="how-step">02</span>

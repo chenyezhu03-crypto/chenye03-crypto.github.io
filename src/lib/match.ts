@@ -87,6 +87,57 @@ export function matchJob(profile: UserProfile, job: Job): MatchResult {
     })
   }
 
+  if (s.degreeRequired) {
+    const ok = profile.hasDegree
+    dimensions.push({
+      key: 'degree',
+      label: '学位',
+      status: ok ? '通过' : '缺口',
+      weight: 14,
+      detail: ok
+        ? '已取得与学历相应的学位'
+        : '岗位明确要求取得相应学位，需在报名前确认证书情况',
+    })
+    if (!ok) blockers.push('未取得相应学位')
+  }
+
+  if (s.political === '党员') {
+    const ok = profile.isPartyMember
+    dimensions.push({
+      key: 'political',
+      label: '政治面貌',
+      status: ok ? '通过' : '缺口',
+      weight: 16,
+      detail: ok ? '符合中共党员要求' : '岗位要求中共党员（含预备党员）',
+    })
+    if (!ok) blockers.push('政治面貌不符')
+  } else if (s.political === '中共党员或共青团员') {
+    dimensions.push({
+      key: 'political',
+      label: '政治面貌',
+      status: profile.isPartyMember ? '通过' : '接近',
+      weight: 10,
+      detail: profile.isPartyMember
+        ? '符合党员要求'
+        : '原文为党员或团员，请在画像中确认团员身份（演示版仅采集党员）',
+    })
+  }
+
+  if (s.grassrootsYearsMin != null && s.grassrootsYearsMin > 0) {
+    const ok = profile.grassrootsYears >= s.grassrootsYearsMin
+    const near = !ok && profile.grassrootsYears >= s.grassrootsYearsMin - 1
+    dimensions.push({
+      key: 'grassroots',
+      label: '基层经历',
+      status: ok ? '通过' : near ? '接近' : '缺口',
+      weight: 20,
+      detail: ok
+        ? `基层 ${profile.grassrootsYears} 年满足 ${s.grassrootsYearsMin}+ 年`
+        : `要求基层 ${s.grassrootsYearsMin}+ 年，你自述 ${profile.grassrootsYears} 年`,
+    })
+    if (!ok && !near) blockers.push(`基层经历未达 ${s.grassrootsYearsMin} 年`)
+  }
+
   // 经验 / 在校
   if (s.studentOnly) {
     const ok = profile.isStudent || profile.years <= 1
@@ -168,7 +219,13 @@ export function matchJob(profile: UserProfile, job: Job): MatchResult {
   const hardPass = !dimensions.some(
     (d) =>
       d.status === '缺口' &&
-      (d.key === 'education' || d.key === 'major' || d.key === 'stage' || d.key === 'years'),
+      (d.key === 'education' ||
+        d.key === 'major' ||
+        d.key === 'stage' ||
+        d.key === 'years' ||
+        d.key === 'degree' ||
+        d.key === 'political' ||
+        d.key === 'grassroots'),
   )
 
   const summary = hardPass
