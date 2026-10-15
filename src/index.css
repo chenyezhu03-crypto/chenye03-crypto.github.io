@@ -1170,7 +1170,7 @@ textarea {
   transform: translateX(-50%);
   width: min(100%, 430px);
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   background: rgba(255, 255, 255, 0.96);
   border-top: 1px solid var(--line);
   backdrop-filter: blur(8px);
@@ -1286,8 +1286,55 @@ textarea {
   border-radius: 10px;
 }
 
+.travel-segment-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
 .travel-segment-3 {
   grid-template-columns: repeat(3, 1fr);
+}
+
+.travel-geo-crumb {
+  margin: 0.35rem 0 0.65rem;
+  font-size: 0.88rem;
+  color: #1a4f7a;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.travel-geo-steps {
+  margin: 0.5rem 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+
+.travel-pick-three {
+  list-style: none;
+  margin: 0 0 0.85rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.travel-pick-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.travel-pick-card h2 {
+  margin: 0.25rem 0 0.35rem;
+  font-size: 1.15rem;
+}
+
+.travel-pick-rank {
+  font-size: 0.72rem;
+  color: #2a7f9e;
+  font-weight: 600;
+  letter-spacing: 0.04em;
 }
 
 .travel-segment button {

@@ -2,8 +2,9 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom'
 
 const tabs = [
   { to: '/travel', label: '首页', end: true },
+  { to: '/travel/region', label: '地区', end: false },
   { to: '/travel/prefs', label: '偏好', end: false },
-  { to: '/travel/spin', label: '转盘', end: false },
+  { to: '/travel/picks', label: '三选一', end: false },
 ]
 
 export function TravelLayout() {
@@ -17,9 +18,13 @@ export function TravelLayout() {
         <p className="travel-sub">
           {onPlace
             ? '目的地详情'
-            : loc.pathname.includes('/spin')
-              ? '转一下，交给运气一点'
-              : '不知道去哪？先定偏好，再转大盘'}
+            : loc.pathname.includes('/region')
+              ? '国内/国外 → 洲 → 子区域 → 国家'
+              : loc.pathname.includes('/picks')
+                ? '一次给你 3 个备选'
+                : loc.pathname.includes('/spin')
+                  ? '转一下，交给运气一点'
+                  : '先选地区分级，再抽目的地'}
         </p>
       </header>
       <div className="travel-body">

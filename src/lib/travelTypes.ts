@@ -26,8 +26,24 @@ export interface Destination {
 
 export type ScopeFilter = 'all' | 'domestic' | 'abroad'
 
+/** 地区路径：一级国内/国外 → 二级洲/大区 → 三级子区域 → 四级国家 */
+export type TravelGeoPath = {
+  l1: string | null
+  l2: string | null
+  l3: string | null
+  l4: string | null
+}
+
+export const EMPTY_GEO_PATH: TravelGeoPath = {
+  l1: null,
+  l2: null,
+  l3: null,
+  l4: null,
+}
+
 export interface TravelPrefs {
   scope: ScopeFilter
+  geo: TravelGeoPath
   vibes: TravelVibe[]
   budget: BudgetLevel | 'any'
   month: number | 'any'

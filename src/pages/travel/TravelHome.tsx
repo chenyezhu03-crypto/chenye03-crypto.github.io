@@ -12,19 +12,20 @@ export function TravelHome() {
       <section className="travel-card travel-hero-card">
         <h1>选不出来，就转出来</h1>
         <p className="travel-lead">
-          填几项偏好，大转盘从合适的目的地里帮你定一个；也可以直接盲抽，少纠结一点。
+          先按 <strong>国内/国外 → 大洲/大区 → 子区域 → 国家</strong>{' '}
+          缩小范围，再一次<strong>抽 3 个</strong>城市备选；每层也可以交给转盘。
         </p>
         <ol className="travel-steps">
-          <li>说说预算、时间、想玩什么</li>
-          <li>在转盘上转一次（或盲抽）</li>
-          <li>看攻略要点，不满意就再转</li>
+          <li>在「地区」里分级选到国家（或每层转盘）</li>
+          <li>补充预算、月份、玩法（可选）</li>
+          <li>抽 3 个目的地，或再转一次定一个</li>
         </ol>
         <div className="travel-actions">
-          <Link className="btn btn-primary travel-btn-block" to="/travel/prefs">
-            设置我的偏好
+          <Link className="btn btn-primary travel-btn-block" to="/travel/region">
+            开始选地区
           </Link>
-          <Link className="btn btn-ghost travel-btn-block" to="/travel/spin">
-            已有偏好，去转盘
+          <Link className="btn btn-ghost travel-btn-block" to="/travel/prefs">
+            设置出行偏好
           </Link>
         </div>
       </section>

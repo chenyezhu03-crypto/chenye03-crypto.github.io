@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { SpinWheel } from '../../components/travel/SpinWheel'
+import { formatGeoBreadcrumb } from '../../lib/travelGeoMatch'
 import { filterDestinations, relaxHints } from '../../lib/travelMatch'
 import { loadTravelPrefs, saveTravelPrefs } from '../../lib/travelStorage'
 
@@ -34,8 +35,14 @@ export function TravelSpin() {
       <section className="travel-card travel-spin-intro">
         <h1 className="travel-h1">目的地大转盘</h1>
         <p className="travel-lead">
-          指针停在哪儿，就去哪儿（只在 {pool.length} 个候选里随机的）。
+          {formatGeoBreadcrumb(prefs.geo)
+            ? `范围：${formatGeoBreadcrumb(prefs.geo)} · `
+            : ''}
+          只在 {pool.length} 个候选里随机。
         </p>
+        <Link className="travel-foot-link" to="/travel/region">
+          先改地区分级（到国家）
+        </Link>
         {pool.length < 3 && hints.length > 0 && (
           <p className="travel-warn">
             候选有点少，试试

@@ -1,5 +1,7 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { BUDGET_LABELS, MONTH_LABELS, VIBE_LABELS } from '../../lib/travelTypes'
+import { getDestinationGeo } from '../../data/destinationGeo'
+import { getGeoNode } from '../../data/travelGeo'
 import { getDestinationById } from '../../lib/travelMatch'
 
 export function TravelPlace() {
@@ -20,6 +22,17 @@ export function TravelPlace() {
     )
   }
 
+  const geo = getDestinationGeo(place.id)
+  const geoLine = geo
+    ? [
+        getGeoNode(geo.zoneId)?.label,
+        getGeoNode(geo.subRegionId)?.label,
+        getGeoNode(geo.countryId)?.label,
+      ]
+        .filter(Boolean)
+        .join(' › ')
+    : ''
+
   const months = place.bestMonths.map((m) => MONTH_LABELS[m - 1]).join('、')
   const budgets = place.budget.map((b) => BUDGET_LABELS[b].split('（')[0]).join(' / ')
   const vibes = place.vibes.map((v) => VIBE_LABELS[v]).join(' · ')
@@ -27,7 +40,9 @@ export function TravelPlace() {
   return (
     <main className="travel-page travel-place-page">
       <section className="travel-card travel-place-hero">
-        <p className="travel-place-region">{place.region}</p>
+        <p className="travel-place-region">
+          {geoLine || place.region}
+        </p>
         <h1>{place.name}</h1>
         <p className="travel-place-tagline">{place.tagline}</p>
         <ul className="travel-tags">

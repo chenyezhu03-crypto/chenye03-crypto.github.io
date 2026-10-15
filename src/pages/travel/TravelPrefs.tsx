@@ -7,6 +7,7 @@ import {
   type BudgetLevel,
   type TravelVibe,
 } from '../../lib/travelTypes'
+import { formatGeoBreadcrumb } from '../../lib/travelGeoMatch'
 import { filterDestinations, relaxHints } from '../../lib/travelMatch'
 import {
   DEFAULT_TRAVEL_PREFS,
@@ -31,11 +32,6 @@ export function TravelPrefs() {
     })
   }
 
-  function saveAndSpin() {
-    saveTravelPrefs(prefs)
-    navigate('/travel/spin')
-  }
-
   return (
     <main className="travel-page">
       <section className="travel-card">
@@ -43,25 +39,13 @@ export function TravelPrefs() {
         <p className="travel-lead">可以少填——留空表示「都行」。</p>
 
         <div className="field">
-          <span className="field-label">范围</span>
-          <div className="travel-segment travel-segment-3">
-            {(
-              [
-                ['all', '都行'],
-                ['domestic', '国内'],
-                ['abroad', '出境'],
-              ] as const
-            ).map(([val, label]) => (
-              <button
-                key={val}
-                type="button"
-                className={prefs.scope === val ? 'is-on' : ''}
-                onClick={() => setPrefs((p) => ({ ...p, scope: val }))}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+          <span className="field-label">地区（推荐在「地区」页分级选到国家）</span>
+          <p className="travel-geo-crumb">
+            {formatGeoBreadcrumb(prefs.geo) || '未选地区 · 默认全球候选'}
+          </p>
+          <Link className="btn btn-ghost travel-btn-block" to="/travel/region">
+            去选国内/国外 → 洲 → 国家
+          </Link>
         </div>
 
         <div className="field">
@@ -167,10 +151,13 @@ export function TravelPrefs() {
           <button
             type="button"
             className="btn btn-primary travel-btn-block"
-            onClick={saveAndSpin}
+            onClick={() => {
+              saveTravelPrefs(prefs)
+              navigate('/travel/picks')
+            }}
             disabled={pool.length === 0}
           >
-            保存并去转盘
+            保存并抽 3 个
           </button>
           <button
             type="button"
