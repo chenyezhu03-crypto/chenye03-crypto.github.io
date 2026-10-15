@@ -127,7 +127,7 @@ function quoteHeaderLines(brief: CustomTripBrief): string[] {
     '【服务报价单 · 演示定价】',
     `套餐  ${pkgLabel}`,
     `含模块  ${moduleLabels}`,
-    `参考价  ¥${q.priceCny} 元 / 份（不含机票酒店；门店成交价以您确认为准）`,
+    `参考价  ¥${q.priceCny} 元 / 份（文档服务费演示价，不含机票酒店；以您门店实际报价为准）`,
     `模版说明  正文结构对齐《新加坡5晚6天_完整版》Word；未购模块不会写入导出文件。`,
   ]
 }
