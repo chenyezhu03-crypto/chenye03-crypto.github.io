@@ -15,6 +15,17 @@
 
 ## 本地开发
 
+**公考选岗助手（推荐）：**
+
+```bash
+npm install
+npm run pick
+```
+
+浏览器会自动打开 `/pick`；同一 WiFi 下可用终端里打印的局域网地址。详见 [LOCAL.md](./LOCAL.md)。
+
+完整工作台：
+
 ```bash
 npm install
 npm run dev
