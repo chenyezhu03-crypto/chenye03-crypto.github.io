@@ -39,14 +39,11 @@ async function waitForServer(maxMs = 20000) {
 }
 
 console.log('正在启动选岗助手…')
-const vite = require.resolve('vite/bin/vite.js')
+const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const child = spawn(
-  process.execPath,
-  [vite, '--host', HOST, '--port', PORT, '--strictPort'],
-  {
-    stdio: 'inherit',
-    cwd: path.join(path.dirname(fileURLToPath(import.meta.url)), '..'),
-  },
+  'npm',
+  ['run', 'dev', '--', '--host', HOST, '--port', PORT, '--strictPort'],
+  { stdio: 'inherit', cwd: root, shell: false },
 )
 
 child.on('exit', (code) => process.exit(code ?? 0))
