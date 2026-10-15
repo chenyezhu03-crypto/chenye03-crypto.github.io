@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { DESTINATIONS } from '../../data/destinations'
+import { travelCustomPath } from '../../lib/travelCustomLink'
 import { filterDestinations } from '../../lib/travelMatch'
 import { loadTravelPrefs } from '../../lib/travelStorage'
 
@@ -10,26 +11,37 @@ export function TravelHome() {
   return (
     <main className="travel-page">
       <section className="travel-card travel-hero-card">
-        <h1>选不出来，就转出来</h1>
+        <h1>去哪玩 · 决策或攻略</h1>
         <p className="travel-lead">
-          先按 <strong>国内/国外 → 大洲/大区 → 子区域 → 国家</strong>{' '}
-          缩小范围，再一次<strong>抽 3 个</strong>城市备选；每层也可以交给转盘。
+          顾客可以<strong>不用大转盘</strong>：已经知道去哪、几号走，直接做
+          <strong> Word 模版攻略</strong>。只有「选不出来」时才用转盘和地区分级。
         </p>
-        <ol className="travel-steps">
-          <li>在「地区」里分级选到国家（或每层转盘）</li>
-          <li>补充预算、月份、玩法（可选）</li>
-          <li>抽 3 个目的地，或再转一次定一个</li>
-        </ol>
-        <div className="travel-actions">
-          <Link className="btn btn-primary travel-btn-block" to="/travel/custom">
-            客户定制攻略（日期+地点+预算）
-          </Link>
-          <Link className="btn btn-ghost travel-btn-block" to="/travel/region">
-            开始选地区 / 转盘
-          </Link>
-          <Link className="btn btn-ghost travel-btn-block" to="/travel/prefs">
-            设置出行偏好
-          </Link>
+
+        <div className="travel-path-grid">
+          <section className="travel-path-card travel-path-primary">
+            <p className="travel-path-step">第二步 · 主路径</p>
+            <h2 className="travel-h2">直接做攻略</h2>
+            <p className="travel-meta">
+              填日期、目的地、预算 → 选免费简版或完整 Word 实稿，无需转盘。
+            </p>
+            <Link className="btn btn-primary travel-btn-block" to={travelCustomPath()}>
+              开始定制 Word 攻略
+            </Link>
+          </section>
+
+          <section className="travel-path-card">
+            <p className="travel-path-step">第一步 · 可选</p>
+            <h2 className="travel-h2">先帮顾客选去哪</h2>
+            <p className="travel-meta">
+              地区分级 → 大转盘 / 抽 3 个 → 满意后再进「做攻略」。
+            </p>
+            <Link className="btn btn-ghost travel-btn-block" to="/travel/region">
+              选地区 / 转盘
+            </Link>
+            <Link className="btn btn-ghost travel-btn-block" to="/travel/spin">
+              跳过地区，直接转
+            </Link>
+          </section>
         </div>
       </section>
 
@@ -44,17 +56,20 @@ export function TravelHome() {
         </div>
         <div className="travel-stat">
           <strong>2</strong>
-          <span>种决定方式</span>
+          <span>条路径</span>
         </div>
       </div>
 
       <section className="travel-card">
-        <h2 className="travel-h2">和攻略站不一样</h2>
-        <ul className="travel-bullets">
-          <li>不是信息流，而是帮你「做决定」</li>
-          <li>转盘只从你符合条件的候选里出结果</li>
-          <li>数据在本地浏览器，无需登录</li>
-        </ul>
+        <h2 className="travel-h2">两条路怎么连</h2>
+        <ol className="travel-steps">
+          <li>
+            <strong>知道去哪</strong> → 定制页（第二步）→ 下载 Word
+          </li>
+          <li>
+            <strong>不知道去哪</strong> → 转盘定城市 → 详情里点「做 Word 攻略」→ 同样进第二步
+          </li>
+        </ol>
         <p className="travel-note">
           演示库覆盖国内热门与部分出境短目的地；真实出行请以签证、航司与当地政策为准。
         </p>

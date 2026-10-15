@@ -14,6 +14,7 @@ import {
   EMPTY_GEO_PATH,
   type TravelGeoPath,
 } from '../../lib/travelTypes'
+import { travelCustomPath } from '../../lib/travelCustomLink'
 import { loadTravelPrefs, saveTravelPrefs } from '../../lib/travelStorage'
 
 type PickMode = 'manual' | 'wheel'
@@ -90,6 +91,9 @@ export function TravelRegion() {
           <strong> 四级国家</strong>（国内统一为中国）。选完再帮你
           <strong> 抽 3 个</strong> 具体目的地。
         </p>
+        <Link className="btn btn-ghost travel-btn-block" to={travelCustomPath()}>
+          顾客已定目的地 · 跳过选区，直接做 Word 攻略
+        </Link>
 
         <div className="travel-segment travel-segment-2">
           <button

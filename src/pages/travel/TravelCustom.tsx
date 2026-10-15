@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { getDestinationById } from '../../lib/travelMatch'
 import { DESTINATIONS } from '../../data/destinations'
 import { buildCustomTripGuide } from '../../lib/customTripGuide'
 import {
@@ -30,6 +31,7 @@ function defaultEnd(start: string): string {
 
 export function TravelCustom() {
   const navigate = useNavigate()
+  const [search] = useSearchParams()
   const [startDate, setStartDate] = useState(() =>
     new Date().toISOString().slice(0, 10),
   )
@@ -46,6 +48,22 @@ export function TravelCustom() {
   const [customModules, setCustomModules] = useState<TemplateModuleId[]>([])
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    const one = search.get('dest')
+    const many = search.get('dests')
+    if (many) {
+      const ids = many
+        .split(',')
+        .map((s) => s.trim())
+        .filter((id) => getDestinationById(id))
+      if (ids.length) setDestinationIds(ids)
+      return
+    }
+    if (one && getDestinationById(one)) {
+      setDestinationIds([one])
+    }
+  }, [search])
 
   const { nights, days } = useMemo(
     () => tripNightsAndDays(startDate, endDate),
@@ -138,9 +156,10 @@ export function TravelCustom() {
   return (
     <main className="travel-page">
       <section className="travel-card">
-        <h1 className="travel-h1">按客户信息做攻略</h1>
+        <h1 className="travel-h1">第二步 · 做 Word 攻略</h1>
         <p className="travel-lead">
-          豆包等模型写游记<strong>几乎免费</strong>，所以本站
+          <strong>不必使用大转盘</strong>——顾客只要说清日期、去哪、预算即可。豆包等模型写游记
+          <strong>几乎免费</strong>，所以本站
           <strong> 简版攻略免费</strong>，只对「完整 Word 模版实稿（含逐日详程）」象征性收
           <strong> ¥{MAX_GUIDE_PRICE_CNY}</strong>——卖的是<strong>固定版式 + 已整理实稿</strong>，不是让 AI 现编。
         </p>

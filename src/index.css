@@ -1306,6 +1306,39 @@ textarea {
   font-size: 0.95rem;
 }
 
+.travel-path-grid {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.travel-path-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.85rem;
+  background: var(--white);
+}
+
+.travel-path-primary {
+  border-color: rgba(26, 79, 122, 0.35);
+  background: linear-gradient(180deg, #f4f8fc 0%, var(--white) 100%);
+}
+
+.travel-path-step {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #2a7f9e;
+  letter-spacing: 0.04em;
+}
+
+.travel-skip-wheel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.65rem;
+}
+
 .travel-form textarea {
   width: 100%;
   resize: vertical;

@@ -1,4 +1,5 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { travelCustomPath } from '../../lib/travelCustomLink'
 import { BUDGET_LABELS, MONTH_LABELS, VIBE_LABELS } from '../../lib/travelTypes'
 import { guidesForDestination } from '../../lib/travelGuideCatalog'
 import { getDestinationGeo } from '../../data/destinationGeo'
@@ -87,19 +88,25 @@ export function TravelPlace() {
       </section>
 
       <div className="travel-actions travel-place-actions">
+        <Link
+          className="btn btn-primary travel-btn-block"
+          to={travelCustomPath({ dest: place.id })}
+        >
+          做 Word 攻略（填日期 · 第二步）
+        </Link>
         {guideList.length > 0 ? (
           <Link
-            className="btn btn-primary travel-btn-block"
+            className="btn btn-ghost travel-btn-block"
             to={`/travel/guide/${guideList[0].id}`}
           >
-            下载完整攻略（Word / PDF）
+            快速预览完整模版
           </Link>
         ) : (
           <Link
-            className="btn btn-primary travel-btn-block"
+            className="btn btn-ghost travel-btn-block"
             to={`/travel/guide/auto?dest=${place.id}`}
           >
-            生成简版攻略（Word / PDF）
+            快速预览简版
           </Link>
         )}
         <button

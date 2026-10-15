@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { SpinWheel } from '../../components/travel/SpinWheel'
 import { formatGeoBreadcrumb } from '../../lib/travelGeoMatch'
 import { filterDestinations, relaxHints } from '../../lib/travelMatch'
+import { travelCustomPath } from '../../lib/travelCustomLink'
 import { loadTravelPrefs, saveTravelPrefs } from '../../lib/travelStorage'
 
 export function TravelSpin() {
@@ -40,6 +41,12 @@ export function TravelSpin() {
             : ''}
           只在 {pool.length} 个候选里随机。
         </p>
+        <Link
+          className="btn btn-primary travel-btn-block"
+          to={travelCustomPath()}
+        >
+          不用转盘 · 直接做 Word 攻略
+        </Link>
         <Link className="travel-foot-link" to="/travel/region">
           先改地区分级（到国家）
         </Link>

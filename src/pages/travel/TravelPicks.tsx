@@ -6,7 +6,7 @@ import {
   pickRandomDestinations,
 } from '../../lib/travelGeoMatch'
 import { filterDestinations, getDestinationById } from '../../lib/travelMatch'
-import { guidesForDestination } from '../../lib/travelGuideCatalog'
+import { travelCustomPath } from '../../lib/travelCustomLink'
 import { loadTravelPrefs, saveTravelPrefs } from '../../lib/travelStorage'
 
 type LocationState = { picks?: string[] }
@@ -54,12 +54,18 @@ export function TravelPicks() {
         </p>
         <button
           type="button"
-          className="btn btn-primary travel-btn-block"
+          className="btn btn-ghost travel-btn-block"
           onClick={rerollThree}
           disabled={pool.length === 0}
         >
           换一批 3 个
         </button>
+        <Link
+          className="btn btn-primary travel-btn-block"
+          to={travelCustomPath({ dests: pickIds })}
+        >
+          已定案 · 为这 {picks.length} 个做 Word 攻略
+        </Link>
       </section>
 
       <ul className="travel-pick-three">
@@ -74,13 +80,9 @@ export function TravelPicks() {
               </Link>
               <Link
                 className="btn btn-ghost"
-                to={
-                  guidesForDestination(d.id)[0]
-                    ? `/travel/guide/${guidesForDestination(d.id)[0].id}`
-                    : `/travel/guide/auto?dest=${d.id}`
-                }
+                to={travelCustomPath({ dest: d.id })}
               >
-                攻略 Word/PDF
+                做 Word 攻略
               </Link>
             </div>
           </li>
