@@ -6,6 +6,7 @@ export type GuideLineKind =
   | 'subhead'
   | 'label'
   | 'muted'
+  | 'field'
   | 'body'
 
 export type TravelGuideDoc = {

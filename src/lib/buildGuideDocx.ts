@@ -6,9 +6,57 @@ import {
   TextRun,
 } from 'docx'
 import { classifyGuideLine } from './travelGuideFormat'
+import {
+  classifyWordTemplateLine,
+  parseWordFieldLine,
+} from './guideWordMode'
 import type { TravelGuideDoc } from './travelGuideTypes'
 
-function paragraphForLine(line: string): Paragraph {
+function paragraphForTemplateLine(line: string, prev?: string): Paragraph {
+  const field = parseWordFieldLine(line)
+  if (field) {
+    return new Paragraph({
+      children: [
+        new TextRun({ text: `${field.label}  `, bold: true, size: 21 }),
+        new TextRun({ text: field.value, size: 21 }),
+      ],
+      spacing: { after: 80 },
+    })
+  }
+
+  const wkind = classifyWordTemplateLine(line, prev)
+  if (wkind === 'day') {
+    return new Paragraph({
+      heading: HeadingLevel.HEADING_1,
+      children: [new TextRun({ text: line, bold: true, size: 30, color: '1a4f7a' })],
+      spacing: { before: 280, after: 140 },
+      pageBreakBefore: line.startsWith('DAY 1 ·') || line.startsWith('DAY 1  '),
+    })
+  }
+  if (wkind === 'poiTitle') {
+    return new Paragraph({
+      heading: HeadingLevel.HEADING_2,
+      children: [new TextRun({ text: line, bold: true, size: 26 })],
+      spacing: { before: 200, after: 60 },
+    })
+  }
+  if (wkind === 'poiEn') {
+    return new Paragraph({
+      children: [
+        new TextRun({ text: line, italics: true, size: 22, color: '444444' }),
+      ],
+      spacing: { after: 60 },
+    })
+  }
+  if (wkind === 'source') {
+    return new Paragraph({
+      children: [
+        new TextRun({ text: line, italics: true, size: 18, color: '666666' }),
+      ],
+      spacing: { after: 40 },
+    })
+  }
+
   const kind = classifyGuideLine(line)
   if (kind === 'title') {
     return new Paragraph({
@@ -17,7 +65,7 @@ function paragraphForLine(line: string): Paragraph {
       spacing: { after: 200 },
     })
   }
-  if (kind === 'day' || kind === 'section') {
+  if (kind === 'section') {
     return new Paragraph({
       heading: HeadingLevel.HEADING_1,
       children: [new TextRun({ text: line, bold: true, size: 28 })],
@@ -46,19 +94,23 @@ function paragraphForLine(line: string): Paragraph {
 }
 
 export async function downloadGuideDocx(doc: TravelGuideDoc): Promise<void> {
-  const children = [
+  const children: Paragraph[] = [
     new Paragraph({
       children: [
         new TextRun({
-          text: '目录提示：完整版请在 Word 中使用导航窗格或搜索 DAY / 出发前',
+          text: '版式说明：分日标题 · 景点中英名 · 时间/怎么去/费用等字段，对齐《新加坡5晚6天_完整版》Word 模版。',
           italics: true,
-          size: 20,
+          size: 18,
+          color: '666666',
         }),
       ],
       spacing: { after: 200 },
     }),
-    ...doc.lines.map((line) => paragraphForLine(line)),
   ]
+
+  doc.lines.forEach((line, i) => {
+    children.push(paragraphForTemplateLine(line, doc.lines[i - 1]))
+  })
 
   const file = new Document({
     sections: [{ properties: {}, children }],

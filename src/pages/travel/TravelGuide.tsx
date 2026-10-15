@@ -11,6 +11,7 @@ import {
   buildGuideSections,
   classifyGuideLine,
 } from '../../lib/travelGuideFormat'
+import { parseWordFieldLine } from '../../lib/guideWordMode'
 import { buildCustomTripGuide } from '../../lib/customTripGuide'
 import {
   CUSTOM_BRIEF_STORAGE_KEY,
@@ -177,7 +178,19 @@ export function TravelGuide() {
 
       <article className="travel-guide-article">
         {doc.lines.map((line, i) => {
-          const kind = classifyGuideLine(line)
+          const prev = doc.lines[i - 1]
+          const field = parseWordFieldLine(line)
+          if (field) {
+            return (
+              <p
+                key={`${i}-f`}
+                className="travel-guide-line travel-guide-field"
+              >
+                <strong>{field.label}</strong> {field.value}
+              </p>
+            )
+          }
+          const kind = classifyGuideLine(line, prev)
           const sec = sections.find((x) => x.lineStart === i)
           const Tag =
             kind === 'title'

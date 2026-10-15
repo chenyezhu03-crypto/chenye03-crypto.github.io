@@ -1773,6 +1773,19 @@ textarea {
   color: var(--ink-soft);
 }
 
+.travel-guide-field {
+  margin-left: 0.35rem;
+  padding-left: 0.65rem;
+  border-left: 3px solid #e8eef5;
+  font-size: 0.86rem;
+}
+
+.travel-guide-field strong {
+  color: #1a4f7a;
+  font-weight: 600;
+  margin-right: 0.35rem;
+}
+
 .travel-guide-toc-list {
   margin: 0;
   padding-left: 1.1rem;

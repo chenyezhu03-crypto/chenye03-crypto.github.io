@@ -148,6 +148,11 @@ export function TravelCustom() {
           <li>免费 AI：每次格式不同，要自己排版、核对信息</li>
           <li>本站：同一套目录结构，新加坡可从您的 docx 原稿截取，直接下 Word 给客户</li>
         </ul>
+        <p className="travel-foot-link">
+          <a href="/templates/singapore-5n6d-template.docx" download>
+            下载您的 Word 原版模版（参考）
+          </a>
+        </p>
       </section>
 
       <section className="travel-card">

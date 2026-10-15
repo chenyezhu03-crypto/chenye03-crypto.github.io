@@ -6,6 +6,7 @@ import {
   quotePrice,
   type TemplateModuleId,
 } from './guideTemplateCatalog'
+import { buildWordModeDailyDetail } from './guideWordMode'
 import {
   mergeTemplateModules,
   personalizeOverviewLines,
@@ -206,20 +207,33 @@ function genericModuleBlocks(
     )
   }
   if (pick.has('daily_detail')) {
-    stops.forEach((d) => {
-      map.daily_detail.push(
-        `【${d.name}】${d.region}`,
-        d.tagline,
-        `推荐玩法  ${d.highlights.join(' · ')}`,
-        `小贴士  ${d.tips}`,
-      )
-    })
+    const wordDays = buildWordModeDailyDetail(
+      brief.startDate,
+      brief.endDate,
+      days,
+      stops.map((d) => ({
+        name: d.name,
+        highlights: d.highlights,
+        tips: d.tips,
+      })),
+    )
+    if (wordDays.length) {
+      map.daily_detail.push(...wordDays)
+    }
     brief.customPlaces.forEach((name) => {
-      map.daily_detail.push(`【${name}】（客户指定）`, '请补充逐日时段与预约信息。')
+      map.daily_detail.push(
+        `DAY · ${name}`,
+        name,
+        '客户指定地点：请按 Word 模版补全时间/怎么去/费用等字段。',
+        `时间  待填`,
+        `怎么去  待填`,
+        '官方/核实来源',
+        'Google地图·照片·菜单',
+      )
     })
     if (map.daily_detail.length === 0) {
       map.daily_detail.push(
-        '逐日详程说明  完整 Word 逐日图文模版当前以新加坡样稿为准；其它目的地可在此段手工扩写。',
+        '逐日详程说明  请选目的地或购买完整新加坡实稿模版。',
       )
     }
   }

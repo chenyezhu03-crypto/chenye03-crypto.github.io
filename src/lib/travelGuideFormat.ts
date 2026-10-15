@@ -1,10 +1,21 @@
+import { parseWordFieldLine } from './guideWordMode'
 import type { GuideLineKind, GuideSection, TravelGuideDoc } from './travelGuideTypes'
 
-export function classifyGuideLine(line: string): GuideLineKind {
+export function classifyGuideLine(line: string, prev?: string): GuideLineKind {
+  if (parseWordFieldLine(line)) return 'field'
+  if (/^DAY \d ·/.test(line)) return 'day'
   if (line.startsWith('【服务报价单')) return 'section'
   if (/^SINGAPORE ·/.test(line)) return 'title'
   if (/^新加坡\d+晚\d+天/.test(line) || /^【/.test(line)) return 'title'
-  if (/^DAY \d\b/.test(line) || /^DAY \d ·/.test(line)) return 'day'
+  if (/^DAY \d\b/.test(line)) return 'day'
+  if (
+    prev &&
+    (/^DAY \d ·/.test(prev) || prev.startsWith('DAY ·')) &&
+    line.length <= 28 &&
+    !/[。；]/.test(line) &&
+    !line.startsWith('本段')
+  )
+    return 'subhead'
   if (/^出发前/.test(line)) return 'section'
   if (
     line === '六天路线一眼看懂' ||
