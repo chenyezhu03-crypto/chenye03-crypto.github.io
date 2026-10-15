@@ -21,8 +21,11 @@ export function TravelHome() {
           <li>抽 3 个目的地，或再转一次定一个</li>
         </ol>
         <div className="travel-actions">
-          <Link className="btn btn-primary travel-btn-block" to="/travel/region">
-            开始选地区
+          <Link className="btn btn-primary travel-btn-block" to="/travel/custom">
+            客户定制攻略（日期+地点+预算）
+          </Link>
+          <Link className="btn btn-ghost travel-btn-block" to="/travel/region">
+            开始选地区 / 转盘
           </Link>
           <Link className="btn btn-ghost travel-btn-block" to="/travel/prefs">
             设置出行偏好

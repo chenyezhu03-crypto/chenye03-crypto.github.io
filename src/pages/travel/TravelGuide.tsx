@@ -11,6 +11,11 @@ import {
   buildGuideSections,
   classifyGuideLine,
 } from '../../lib/travelGuideFormat'
+import { buildCustomTripGuide } from '../../lib/customTripGuide'
+import {
+  CUSTOM_BRIEF_STORAGE_KEY,
+  type CustomTripBrief,
+} from '../../lib/customTripTypes'
 import { getDestinationById } from '../../lib/travelMatch'
 import type { TravelGuideDoc } from '../../lib/travelGuideTypes'
 
@@ -26,7 +31,18 @@ export function TravelGuide() {
     let cancelled = false
     ;(async () => {
       setLoading(true)
-      if (guideId && guideId !== 'auto') {
+      if (guideId === 'custom') {
+        try {
+          const raw = sessionStorage.getItem(CUSTOM_BRIEF_STORAGE_KEY)
+          if (raw) {
+            const brief = JSON.parse(raw) as CustomTripBrief
+            const built = await buildCustomTripGuide(brief)
+            if (!cancelled) setDoc(built)
+          } else if (!cancelled) setDoc(null)
+        } catch {
+          if (!cancelled) setDoc(null)
+        }
+      } else if (guideId && guideId !== 'auto') {
         const loaded = await loadGuideDocument(guideId)
         if (!cancelled) setDoc(loaded)
       } else if (destId) {
@@ -96,8 +112,17 @@ export function TravelGuide() {
         <p className="travel-lead">
           {doc.dateRange ? `${doc.dateRange} · ` : ''}
           {doc.subtitle ?? `${doc.nights} 晚 ${doc.days} 天`}
-          {catalogEntry ? ' · 完整图文版' : ' · 简版（可换完整稿）'}
+          {guideId === 'custom'
+            ? ' · 客户定制'
+            : catalogEntry
+              ? ' · 完整图文版'
+              : ' · 简版（可换完整稿）'}
         </p>
+        {guideId === 'custom' && (
+          <Link className="travel-foot-link" to="/travel/custom">
+            修改日期 / 目的地 / 预算
+          </Link>
+        )}
         <div className="travel-actions">
           <button
             type="button"

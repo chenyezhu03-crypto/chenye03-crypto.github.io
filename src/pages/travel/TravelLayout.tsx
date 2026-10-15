@@ -2,8 +2,8 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom'
 
 const tabs = [
   { to: '/travel', label: '首页', end: true },
+  { to: '/travel/custom', label: '定制', end: false },
   { to: '/travel/region', label: '地区', end: false },
-  { to: '/travel/prefs', label: '偏好', end: false },
   { to: '/travel/picks', label: '三选一', end: false },
 ]
 

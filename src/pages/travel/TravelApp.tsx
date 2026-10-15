@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
+import { TravelCustom } from './TravelCustom'
 import { TravelGuide } from './TravelGuide'
 import { TravelHome } from './TravelHome'
 import { TravelLayout } from './TravelLayout'
@@ -13,6 +14,7 @@ export function TravelApp() {
     <Routes>
       <Route element={<TravelLayout />}>
         <Route index element={<TravelHome />} />
+        <Route path="custom" element={<TravelCustom />} />
         <Route path="region" element={<TravelRegion />} />
         <Route path="prefs" element={<TravelPrefs />} />
         <Route path="picks" element={<TravelPicks />} />

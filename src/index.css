@@ -1177,6 +1177,72 @@ textarea {
   z-index: 30;
 }
 
+.travel-date-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.travel-date-row input[type='date'] {
+  width: 100%;
+}
+
+.travel-dest-pick {
+  max-height: 12rem;
+  overflow-y: auto;
+  padding: 0.25rem 0;
+}
+
+.travel-chip-sub {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 400;
+  opacity: 0.75;
+}
+
+.travel-inline-add {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.travel-inline-add input {
+  flex: 1;
+}
+
+.travel-custom-place-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  font-size: 0.88rem;
+}
+
+.travel-custom-place-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.travel-chip-remove {
+  border: none;
+  background: none;
+  color: #c45c26;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.travel-form textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 5rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+}
+
 .travel-tab {
   padding: 0.55rem 0.25rem 0.65rem;
   text-align: center;
