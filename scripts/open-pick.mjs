@@ -13,13 +13,14 @@ const PORT = process.env.PICK_PORT || '5173'
 const HOST = process.env.PICK_HOST || '0.0.0.0'
 const URL = `http://127.0.0.1:${PORT}/pick`
 
-function lanUrls(): string[] {
+function lanUrls() {
   const nets = os.networkInterfaces()
-  const urls: string[] = []
+  const urls = []
   for (const list of Object.values(nets)) {
     if (!list) continue
     for (const ni of list) {
-      if (ni.family !== 'IPv4' || ni.internal) continue
+      const v4 = ni.family === 'IPv4' || ni.family === 4
+      if (!v4 || ni.internal) continue
       urls.push(`http://${ni.address}:${PORT}/pick`)
     }
   }
