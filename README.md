@@ -18,6 +18,7 @@
 | 页面 | 链接 |
 |------|------|
 | 选岗助手 | https://chenyezhu03-crypto.github.io/pick |
+| 去哪玩（旅游转盘） | https://chenyezhu03-crypto.github.io/travel |
 | 岗位雷达 | https://chenyezhu03-crypto.github.io/jobs |
 
 若 404，请按 [ENABLE_PAGES.md](./ENABLE_PAGES.md) 在 GitHub 仓库 **Settings → Pages** 选择 **`gh-pages`** 分支（只需一次）。

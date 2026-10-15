@@ -30,6 +30,9 @@ export function Home() {
             <Link className="btn btn-ghost" to="/pick">
               公考选岗助手（轻量版）
             </Link>
+            <Link className="btn btn-ghost" to="/travel">
+              去哪玩 · 旅游转盘
+            </Link>
           </div>
           <p className="hero-online animate-rise delay-3">
             在线直接打开（无需本地 npm）：
