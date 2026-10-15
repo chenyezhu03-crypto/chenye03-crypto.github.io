@@ -186,11 +186,38 @@ export const FAMOUS_CN_COMPANIES: string[] = [
 
 export const FAMOUS_CN_COMPANY_SET = new Set(FAMOUS_CN_COMPANIES)
 
+const FAMOUS_ALIASES: Record<string, string[]> = {
+  字节跳动: ['今日头条', '北京字节跳动'],
+  阿里巴巴: ['阿里巴巴集团', 'ALIYUN', '阿里云'],
+  蚂蚁集团: ['蚂蚁金服'],
+  百度: ['百度在线', 'Baidu'],
+  美团: ['美团点评'],
+  京东: ['京东集团', '京东世纪贸易有限公司', '京东物流'],
+  网易: ['网易集团', '网易游戏'],
+  腾讯: ['腾讯游戏'],
+  携程: ['携程旅行网', '携程集团'],
+  盒马: ['盒马生鲜'],
+  顺丰: ['顺丰快递'],
+  小鹏: ['小鹏汽车'],
+  智谱AI: ['智谱'],
+  商汤: ['商汤科技'],
+  哔哩哔哩: ['上海哔哩哔哩科技有限公司'],
+  微博: ['新浪微博'],
+  吉利: ['极氪'],
+}
+
 /** 粗匹配：岗位公司名是否属于知名企业清单 */
 export function matchFamousCompany(company: string): string | null {
   const raw = (company || '').trim()
   if (!raw) return null
   if (FAMOUS_CN_COMPANY_SET.has(raw)) return raw
+  for (const [canon, aliases] of Object.entries(FAMOUS_ALIASES)) {
+    if (raw === canon || aliases.some((a) => raw.includes(a) || a.includes(raw))) {
+      if (FAMOUS_CN_COMPANY_SET.has(canon)) return canon
+      const hit = FAMOUS_CN_COMPANIES.find((f) => f.includes(canon) || canon.includes(f))
+      if (hit) return hit
+    }
+  }
   for (const name of FAMOUS_CN_COMPANIES) {
     if (raw.includes(name) || name.includes(raw)) return name
   }

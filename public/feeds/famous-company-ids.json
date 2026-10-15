@@ -1,0 +1,446 @@
+{
+  "腾讯": {
+    "compId": 7983148,
+    "liepinName": "腾讯"
+  },
+  "字节跳动": {
+    "compId": 7863078,
+    "liepinName": "字节跳动"
+  },
+  "阿里巴巴": {
+    "compId": 1072424,
+    "liepinName": "阿里巴巴集团"
+  },
+  "蚂蚁集团": {
+    "compId": 8968236,
+    "liepinName": "蚂蚁集团"
+  },
+  "百度": {
+    "compId": 884492,
+    "liepinName": "Baidu"
+  },
+  "美团": {
+    "compId": 2036768,
+    "liepinName": "美团"
+  },
+  "京东": {
+    "compId": 9770323,
+    "liepinName": "京东物流"
+  },
+  "网易": {
+    "compId": 5964833,
+    "liepinName": "网易集团"
+  },
+  "滴滴": {
+    "compId": 8076624,
+    "liepinName": "滴滴"
+  },
+  "快手": {
+    "compId": 8605497,
+    "liepinName": "快手"
+  },
+  "小红书": {
+    "compId": 7921271,
+    "liepinName": "小红书"
+  },
+  "拼多多": {
+    "compId": 8537928,
+    "liepinName": "拼多多"
+  },
+  "SHEIN": {
+    "compId": 8706847,
+    "liepinName": "SHEIN"
+  },
+  "哔哩哔哩": {
+    "compId": 9736931,
+    "liepinName": "上海哔哩哔哩科技有限公司"
+  },
+  "爱奇艺": {
+    "compId": 1388777,
+    "liepinName": "爱奇艺"
+  },
+  "微博": {
+    "compId": 2638435,
+    "liepinName": "新浪微博"
+  },
+  "知乎": {
+    "compId": 8226090,
+    "liepinName": "知乎"
+  },
+  "得物": {
+    "compId": 9698935,
+    "liepinName": "得物"
+  },
+  "叮咚买菜": {
+    "compId": 8126179,
+    "liepinName": "叮咚买菜"
+  },
+  "盒马": {
+    "compId": 9496464,
+    "liepinName": "上海盒马网络科技有限公司"
+  },
+  "携程": {
+    "compId": 182339,
+    "liepinName": "携程"
+  },
+  "同程旅行": {
+    "compId": 3698161,
+    "liepinName": "同程旅行"
+  },
+  "贝壳": {
+    "compId": 8461883,
+    "liepinName": "贝壳"
+  },
+  "链家": {
+    "compId": 988431,
+    "liepinName": "链家"
+  },
+  "货拉拉": {
+    "compId": 9142549,
+    "liepinName": "货拉拉"
+  },
+  "满帮": {
+    "compId": 9484343,
+    "liepinName": "满帮"
+  },
+  "菜鸟": {
+    "compId": 8488703,
+    "liepinName": "菜鸟"
+  },
+  "圆通速递": {
+    "compId": 8096323,
+    "liepinName": "圆通"
+  },
+  "韵达": {
+    "compId": 1605781,
+    "liepinName": "韵达"
+  },
+  "华为": {
+    "compId": 954482,
+    "liepinName": "华为"
+  },
+  "OPPO": {
+    "compId": 3922321,
+    "liepinName": "OPPO"
+  },
+  "荣耀": {
+    "compId": 12331203,
+    "liepinName": "荣耀终端股份有限公司"
+  },
+  "大疆": {
+    "compId": 2495108,
+    "liepinName": "大疆"
+  },
+  "联想": {
+    "compId": 1365319,
+    "liepinName": "联想"
+  },
+  "中兴": {
+    "compId": 540933,
+    "liepinName": "中兴"
+  },
+  "海尔": {
+    "compId": 9671743,
+    "liepinName": "海尔"
+  },
+  "美的": {
+    "compId": 1792495,
+    "liepinName": "美的"
+  },
+  "TCL": {
+    "compId": 7876341,
+    "liepinName": "TCL实业控股股份有限公司"
+  },
+  "京东方": {
+    "compId": 886895,
+    "liepinName": "京东方"
+  },
+  "歌尔股份": {
+    "compId": 885718,
+    "liepinName": "歌尔股份"
+  },
+  "安克创新": {
+    "compId": 8733738,
+    "liepinName": "安克创新"
+  },
+  "比亚迪": {
+    "compId": 434237,
+    "liepinName": "BYD"
+  },
+  "蔚来": {
+    "compId": 8524725,
+    "liepinName": "NIO蔚来"
+  },
+  "理想汽车": {
+    "compId": 8572825,
+    "liepinName": "理想汽车"
+  },
+  "长城汽车": {
+    "compId": 3418006,
+    "liepinName": "长城汽车"
+  },
+  "广汽集团": {
+    "compId": 8098191,
+    "liepinName": "广州汽车集团股份有限公司官方网站"
+  },
+  "一汽": {
+    "compId": 8405114,
+    "liepinName": "中国第一汽车股份有限公司"
+  },
+  "赛力斯": {
+    "compId": 4025720,
+    "liepinName": "赛力斯集团"
+  },
+  "哪吒汽车": {
+    "compId": 13841137,
+    "liepinName": "威海恒旺光伏发电服务有限公司"
+  },
+  "小马智行": {
+    "compId": 9382502,
+    "liepinName": "小马智行科技有限公司"
+  },
+  "宁德时代": {
+    "compId": 8768998,
+    "liepinName": "宁德时代"
+  },
+  "亿纬锂能": {
+    "compId": 7901249,
+    "liepinName": "惠州亿纬锂能股份有限公司"
+  },
+  "隆基绿能": {
+    "compId": 9274661,
+    "liepinName": "隆基绿能"
+  },
+  "三一重工": {
+    "compId": 8700683,
+    "liepinName": "三一"
+  },
+  "徐工集团": {
+    "compId": 1939058,
+    "liepinName": "徐工集团"
+  },
+  "海康威视": {
+    "compId": 1033486,
+    "liepinName": "海康威视"
+  },
+  "科大讯飞": {
+    "compId": 4454894,
+    "liepinName": "科大讯飞"
+  },
+  "完美世界": {
+    "compId": 164236,
+    "liepinName": "完美世界"
+  },
+  "三七互娱": {
+    "compId": 3504489,
+    "liepinName": "三七互娱"
+  },
+  "微众银行": {
+    "compId": 8312365,
+    "liepinName": "微众银行"
+  },
+  "中金公司": {
+    "compId": 4580900,
+    "liepinName": "中金公司"
+  },
+  "金山办公": {
+    "compId": 1805522,
+    "liepinName": "金山办公"
+  },
+  "用友": {
+    "compId": 5634845,
+    "liepinName": "用友"
+  },
+  "龙湖集团": {
+    "compId": 8364657,
+    "liepinName": "龙湖集团"
+  },
+  "苏宁易购": {
+    "compId": 2051657,
+    "liepinName": "苏宁易购"
+  },
+  "唯品会": {
+    "compId": 2020322,
+    "liepinName": "唯品会(中国)"
+  },
+  "永辉超市": {
+    "compId": 7909112,
+    "liepinName": "永辉超市"
+  },
+  "农夫山泉": {
+    "compId": 2868477,
+    "liepinName": "农夫山泉"
+  },
+  "伊利": {
+    "compId": 883905,
+    "liepinName": "伊利集团"
+  },
+  "蒙牛": {
+    "compId": 7926050,
+    "liepinName": "蒙牛"
+  },
+  "茅台": {
+    "compId": 13418071,
+    "liepinName": "贵州茅台镇大福酒业(集团)销售有限公司"
+  },
+  "五粮液": {
+    "compId": 21351801,
+    "liepinName": "四川省宜宾五粮液集团进出口有限公司"
+  },
+  "中国移动": {
+    "compId": 8932876,
+    "liepinName": "中国移动国际有限公司"
+  },
+  "中国联通": {
+    "compId": 9385173,
+    "liepinName": "中国联通香港运营"
+  },
+  "中国电信": {
+    "compId": 9146069,
+    "liepinName": "中国电信国际有限公司"
+  },
+  "药明康德": {
+    "compId": 5696000,
+    "liepinName": "药明康德"
+  },
+  "恒瑞医药": {
+    "compId": 10100267,
+    "liepinName": "恒瑞医药"
+  },
+  "迈瑞医疗": {
+    "compId": 7898965,
+    "liepinName": "迈瑞医疗"
+  },
+  "新东方": {
+    "compId": 2485876,
+    "liepinName": "新东方教育科技集团有限公司"
+  },
+  "好未来": {
+    "compId": 922091,
+    "liepinName": "好未来"
+  },
+  "作业帮": {
+    "compId": 8518662,
+    "liepinName": "作业帮"
+  },
+  "猿辅导": {
+    "compId": 13730263,
+    "liepinName": "北京猿辅导线上学科培训学校"
+  },
+  "去哪儿": {
+    "compId": 882936,
+    "liepinName": "去哪儿"
+  },
+  "58同城": {
+    "compId": 591850,
+    "liepinName": "58同城"
+  },
+  "猎聘": {
+    "compId": 1051482,
+    "liepinName": "同道猎聘集团"
+  },
+  "申通快递": {
+    "compId": 8076592,
+    "liepinName": "申通快递"
+  },
+  "京东物流": {
+    "compId": 9770323,
+    "liepinName": "京东物流"
+  },
+  "格力": {
+    "compId": 21128477,
+    "liepinName": "格力新能源"
+  },
+  "立讯精密": {
+    "compId": 9400261,
+    "liepinName": "立讯精密工业股份有限公司"
+  },
+  "传音控股": {
+    "compId": 8459640,
+    "liepinName": "传音控股"
+  },
+  "极氪": {
+    "compId": 911622,
+    "liepinName": "浙江吉利控股集团"
+  },
+  "上汽集团": {
+    "compId": 8399212,
+    "liepinName": "上海汽车集团股份有限公司乘用车分公司"
+  },
+  "长安汽车": {
+    "compId": 8091337,
+    "liepinName": "长安汽车"
+  },
+  "东风汽车": {
+    "compId": 8726875,
+    "liepinName": "东风汽车"
+  },
+  "中联重科": {
+    "compId": 4450360,
+    "liepinName": "中联重科"
+  },
+  "中国中车": {
+    "compId": 8748168,
+    "liepinName": "中车株洲电力机车研究所有限公司"
+  },
+  "地平线": {
+    "compId": 8871522,
+    "liepinName": "Horizon Robotics"
+  },
+  "宇树科技": {
+    "compId": 9328741,
+    "liepinName": "宇树科技(unitree)"
+  },
+  "阅文集团": {
+    "compId": 8166451,
+    "liepinName": "阅文集团"
+  },
+  "芒果超媒": {
+    "compId": 7862610,
+    "liepinName": "快乐阳光"
+  },
+  "平安银行": {
+    "compId": 8795704,
+    "liepinName": "平安银行上海分行"
+  },
+  "中国平安": {
+    "compId": 13771323,
+    "liepinName": "中国平安人寿保险"
+  },
+  "华泰证券": {
+    "compId": 9341773,
+    "liepinName": "华泰证券股份有限公司湖北分公司"
+  },
+  "国泰君安": {
+    "compId": 861071,
+    "liepinName": "国泰君安期货"
+  },
+  "东方财富": {
+    "compId": 9868787,
+    "liepinName": "东方财富证券"
+  },
+  "同花顺": {
+    "compId": 1070136,
+    "liepinName": "同花顺财经"
+  },
+  "饿了么": {
+    "compId": 2778803,
+    "liepinName": "淘宝闪购"
+  },
+  "零跑": {
+    "compId": 8656091,
+    "liepinName": "零跑科技"
+  },
+  "国轩高科": {
+    "compId": 8980432,
+    "liepinName": "国轩高科"
+  },
+  "阳光电源": {
+    "compId": 7906145,
+    "liepinName": "阳光电源"
+  },
+  "通威股份": {
+    "compId": 13745503,
+    "liepinName": "通威股份"
+  }
+}

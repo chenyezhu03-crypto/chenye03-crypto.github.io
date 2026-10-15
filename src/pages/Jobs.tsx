@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { FAMOUS_CN_COMPANIES, matchFamousCompany } from '../data/famousCompanies'
 import {
   crawlJobs,
   ensureJobsLoaded,
@@ -112,7 +113,15 @@ export function Jobs() {
             多源汇聚后做条件透视。按学历 / 专业 / 性别标注筛选，并按与你画像的匹配度排序。
           </p>
           <p className="meta-line">
-            当前 {jobs.length} 条 · 上次汇聚{' '}
+            当前 {jobs.length} 条 · 知名企业{' '}
+            {
+              new Set(
+                jobs
+                  .map((j) => matchFamousCompany(j.company))
+                  .filter(Boolean),
+              ).size
+            }
+            /{FAMOUS_CN_COMPANIES.length} 家 · 上次汇聚{' '}
             {crawledAt
               ? new Date(crawledAt).toLocaleString('zh-CN')
               : '尚未汇聚'}
