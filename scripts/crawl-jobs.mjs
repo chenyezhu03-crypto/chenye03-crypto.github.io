@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
  * 中国岗位汇聚（大厂官招公开接口，无需登录）
- * - 腾讯 / 字节 / 京东
+ * - 腾讯 / 字节 / 京东 / 美团 / 网易 / 滴滴
+ * - 阿里 / 蚂蚁 / 百度 / 米哈游 / 顺丰 / 讯飞 / 携程
  * - 飞书 ATS 租户：小米、蔚来、理想、小鹏、智谱、智元、商汤、莉莉丝
- * - 美团 / 网易 / 滴滴
  * - BOSS 开源样本 CSV
  *
  * 用法：npm run crawl
@@ -658,6 +658,595 @@ async function fetchDidi(maxItems = 1000) {
   return out
 }
 
+async function fetchBaidu(maxItems = 1500) {
+  const headers = {
+    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    Accept: 'application/json',
+    Origin: 'https://talent.baidu.com',
+    'User-Agent':
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    'X-Requested-With': 'XMLHttpRequest',
+  }
+  const jobs = []
+  for (const recruitType of ['SOCIAL', 'GRADUATE', 'INTERN']) {
+    let page = 1
+    while (jobs.length < maxItems) {
+      const body = new URLSearchParams({
+        recruitType,
+        keyWord: '',
+        curPage: String(page),
+        pageSize: '20',
+      })
+      const res = await fetch(
+        'https://talent.baidu.com/httservice/getPostListNew',
+        {
+          method: 'POST',
+          headers: {
+            ...headers,
+            Referer: `https://talent.baidu.com/jobs/list?recruitType=${recruitType}`,
+          },
+          body,
+        },
+      )
+      const data = await res.json()
+      if (data.status !== 'ok') break
+      const rows = data.data?.list || []
+      if (!rows.length) break
+      for (const row of rows) {
+        if (jobs.length >= maxItems) break
+        const postId = String(row.postId || row.jobId || '')
+        jobs.push({
+          sourceId: 'baidu',
+          sourceName: '百度官招',
+          externalId: postId || `${recruitType}-${row.name}`,
+          title: row.name,
+          company: '百度',
+          city: row.workPlace || '中国',
+          type:
+            recruitType === 'SOCIAL'
+              ? '社招'
+              : recruitType === 'INTERN'
+                ? '实习'
+                : '校招',
+          salary: '面议',
+          tags: [row.postType, row.education, row.workYears, row.orgName].filter(
+            Boolean,
+          ),
+          postedAt: (row.updateDate || row.publishDate || '')
+            .toString()
+            .slice(0, 10),
+          description: String(row.workContent || '').slice(0, 240),
+          requirementText: [
+            row.serviceCondition || '',
+            row.workContent ? `岗位职责：\n${row.workContent}` : '',
+            row.education ? `学历标签：${row.education}` : '',
+            row.workYears ? `经验标签：${row.workYears}` : '',
+          ]
+            .filter(Boolean)
+            .join('\n\n'),
+          applyUrl: postId
+            ? `https://talent.baidu.com/jobs/detail/${recruitType}/${postId}`
+            : undefined,
+        })
+      }
+      const total = Number(data.data?.total || 0)
+      console.log(
+        `baidu ${recruitType} page=${page} collected=${jobs.length}/${total}`,
+      )
+      if (page * 20 >= total) break
+      page++
+      await sleep(120)
+    }
+  }
+  console.log('baidu jobs', jobs.length)
+  return jobs
+}
+
+async function fetchAlibaba(maxItems = 900) {
+  const origin = 'https://campus-talent.alibaba.com'
+  const pageRes = await fetch(`${origin}/campus/position`, {
+    headers: { 'User-Agent': 'Mozilla/5.0' },
+  })
+  const jar = new Map()
+  for (const c of pageRes.headers.getSetCookie?.() || []) {
+    const [kv] = c.split(';')
+    const i = kv.indexOf('=')
+    if (i > 0) jar.set(kv.slice(0, i), kv.slice(i + 1))
+  }
+  const token = jar.get('XSRF-TOKEN')
+  if (!token) throw new Error('alibaba csrf missing')
+  const cookie = [...jar.entries()].map(([k, v]) => `${k}=${v}`).join('; ')
+  const headers = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    Referer: `${origin}/campus/position`,
+    'X-XSRF-TOKEN': token,
+    Cookie: cookie,
+    'User-Agent': 'Mozilla/5.0',
+  }
+  const channel = 'campus_talent_official'
+  const batchRes = await (
+    await fetch(`${origin}/searchCondition/listBatch`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ channel, language: 'zh' }),
+    })
+  ).json()
+  const content = batchRes.content || {}
+  const batchIds = []
+  for (const section of ['graduate', 'internship', 'topTalentPlan']) {
+    for (const b of content[section] || []) {
+      if (b?.id && !batchIds.includes(b.id)) batchIds.push(b.id)
+    }
+  }
+  if (!batchIds.length) throw new Error('alibaba no batches')
+
+  const jobs = []
+  for (const batchId of batchIds) {
+    let page = 1
+    while (jobs.length < maxItems) {
+      const data = await (
+        await fetch(`${origin}/position/search`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            batchId,
+            pageIndex: page,
+            pageSize: 50,
+            channel,
+            language: 'zh',
+          }),
+        })
+      ).json()
+      const rows = data.content?.datas || []
+      if (!rows.length) break
+      for (const row of rows) {
+        if (jobs.length >= maxItems) break
+        const cities = row.workLocations || []
+        jobs.push({
+          sourceId: 'alibaba',
+          sourceName: '阿里官招',
+          externalId: String(row.id),
+          title: row.name,
+          company: '阿里巴巴',
+          city: cities[0] || '中国',
+          type: row.positionType || row.batchName || '校招',
+          salary: '面议',
+          tags: [row.categoryName, row.department, row.degree].filter(Boolean),
+          postedAt: (row.publishTime || row.modifyTime || '')
+            .toString()
+            .slice(0, 10),
+          description: String(row.description || '').slice(0, 240),
+          requirementText: [
+            row.requirement || '',
+            row.description ? `岗位描述：\n${row.description}` : '',
+            row.degree ? `学历标签：${row.degree}` : '',
+            cities.length ? `工作城市：${cities.join(' / ')}` : '',
+          ]
+            .filter(Boolean)
+            .join('\n\n'),
+          applyUrl: `${origin}/campus/positionDetail?positionId=${row.id}`,
+        })
+      }
+      const total = data.content?.totalCount || 0
+      console.log(
+        `alibaba batch=${batchId} page=${page} collected=${jobs.length}/${total}`,
+      )
+      if (page * 50 >= total) break
+      page++
+      await sleep(120)
+    }
+  }
+  console.log('alibaba jobs', jobs.length)
+  return jobs
+}
+
+async function fetchAntGroup(maxItems = 1200) {
+  const jobs = []
+  async function pull(recruitType, max) {
+    const path =
+      recruitType === 'campus'
+        ? '/campus/position/search'
+        : '/social/position/search'
+    const referer =
+      recruitType === 'campus'
+        ? 'https://talent.antgroup.com/campus-list'
+        : 'https://talent.antgroup.com/off-campus-position'
+    let page = 1
+    while (jobs.length < max) {
+      const body = {
+        key: '',
+        pageIndex: page,
+        pageSize: 49,
+        language: 'zh',
+      }
+      if (recruitType === 'social') {
+        Object.assign(body, {
+          channel: 'group_official_site',
+          regions: '',
+          categories: '',
+          subCategories: '',
+          bgCode: '',
+          socialQrCode: '',
+        })
+      }
+      const data = await (
+        await fetch(`https://hrcareersweb.antgroup.com/api${path}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Origin: 'https://talent.antgroup.com',
+            Referer: referer,
+            'User-Agent': 'Mozilla/5.0',
+          },
+          body: JSON.stringify(body),
+        })
+      ).json()
+      if (!data.success) break
+      const rows = data.content || []
+      if (!rows.length) break
+      for (const row of rows) {
+        if (jobs.length >= max) break
+        const cities = row.workLocations || []
+        jobs.push({
+          sourceId: 'antgroup',
+          sourceName: '蚂蚁集团官招',
+          externalId: String(row.id),
+          title: row.name,
+          company: '蚂蚁集团',
+          city: cities[0] || '中国',
+          type: recruitType === 'campus' ? '校招/实习' : '社招',
+          salary: '面议',
+          tags: [row.categoryName, row.department, row.degree].filter(Boolean),
+          postedAt: (row.publishTime || '').toString().slice(0, 10),
+          description: String(row.description || '').slice(0, 240),
+          requirementText: [
+            row.requirement || '',
+            row.description ? `岗位描述：\n${row.description}` : '',
+            row.degree ? `学历标签：${row.degree}` : '',
+            cities.length ? `工作城市：${cities.join(' / ')}` : '',
+          ]
+            .filter(Boolean)
+            .join('\n\n'),
+          applyUrl:
+            recruitType === 'campus'
+              ? `https://talent.antgroup.com/campus-position?positionId=${row.id}`
+              : `https://talent.antgroup.com/off-campus-position?positionId=${row.id}`,
+        })
+      }
+      const total = data.totalCount || 0
+      console.log(
+        `antgroup ${recruitType} page=${page} collected=${jobs.length}/${total}`,
+      )
+      if (page * 49 >= total) break
+      page++
+      await sleep(120)
+    }
+  }
+  await pull('campus', Math.min(maxItems, 500))
+  await pull('social', maxItems)
+  console.log('antgroup jobs', jobs.length)
+  return jobs
+}
+
+async function fetchMihoyo(maxItems = 700) {
+  const headers = {
+    'Content-Type': 'application/json',
+    Origin: 'https://jobs.mihoyo.com',
+    Referer: 'https://jobs.mihoyo.com/',
+    'User-Agent': 'Mozilla/5.0',
+  }
+  const ids = []
+  for (const hireType of [0, 1]) {
+    let page = 1
+    while (ids.length < maxItems) {
+      const data = await (
+        await fetch('https://ats.openout.mihoyo.com/ats-portal/v1/job/list', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            channelDetailIds: [1],
+            hireType,
+            pageNo: page,
+            pageSize: 50,
+          }),
+        })
+      ).json()
+      if (data.code !== 0) break
+      const rows = data.data?.list || []
+      if (!rows.length) break
+      for (const row of rows) {
+        if (ids.length >= maxItems) break
+        ids.push({ id: row.id, hireType, summary: row })
+      }
+      const total = data.data?.total || 0
+      console.log(
+        `mihoyo list hireType=${hireType} page=${page} collected=${ids.length}/${total}`,
+      )
+      if (page * 50 >= total) break
+      page++
+      await sleep(100)
+    }
+  }
+
+  const out = []
+  let i = 0
+  async function worker() {
+    while (i < ids.length) {
+      const idx = i++
+      const item = ids[idx]
+      try {
+        const data = await (
+          await fetch('https://ats.openout.mihoyo.com/ats-portal/v1/job/info', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              id: item.id,
+              channelDetailIds: [1],
+            }),
+          })
+        ).json()
+        const d = data.data || item.summary
+        const cities = (d.addressDetailList || [])
+          .map((a) => a.addressDetail)
+          .filter(Boolean)
+        out.push({
+          sourceId: 'mihoyo',
+          sourceName: '米哈游官招',
+          externalId: String(item.id),
+          title: d.title || item.summary.title,
+          company: '米哈游',
+          city: cities[0] || '中国',
+          type: d.hireTypeName || (item.hireType === 1 ? '校招' : '社招'),
+          salary: '面议',
+          tags: [d.competencyType, d.jobNature, d.projectName].filter(Boolean),
+          postedAt: new Date().toISOString().slice(0, 10),
+          description: String(d.description || d.jobSummary || '').slice(0, 240),
+          requirementText: [
+            d.jobRequire || '',
+            d.description ? `岗位描述：\n${d.description}` : '',
+            cities.length ? `工作城市：${cities.join(' / ')}` : '',
+          ]
+            .filter(Boolean)
+            .join('\n\n'),
+          applyUrl: `https://jobs.mihoyo.com/#/position/${item.id}`,
+        })
+      } catch {
+        /* skip */
+      }
+      if ((idx + 1) % 100 === 0) console.log(`mihoyo details ${idx + 1}`)
+    }
+  }
+  await Promise.all(Array.from({ length: 6 }, () => worker()))
+  console.log('mihoyo jobs', out.length)
+  return out
+}
+
+async function fetchSF(maxItems = 1200) {
+  const jobs = []
+  // campus
+  let page = 1
+  while (jobs.length < Math.min(400, maxItems)) {
+    const data = await (
+      await fetch(
+        `https://campus.sf-express.com/api/web/position/query?pageNum=${page}&pageSize=20`,
+        {
+          headers: {
+            Accept: 'application/json',
+            'User-Agent': 'Mozilla/5.0',
+            Referer: 'https://campus.sf-express.com/',
+          },
+        },
+      )
+    ).json()
+    const rows = data.list || []
+    if (!rows.length) break
+    for (const row of rows) {
+      if (jobs.length >= maxItems) break
+      jobs.push({
+        sourceId: 'sf',
+        sourceName: '顺丰官招',
+        externalId: `campus-${row.id}`,
+        title: row.positionName,
+        company: '顺丰',
+        city: row.demandCity || '中国',
+        type: row.positionTypeName || '校招',
+        salary: '面议',
+        tags: [row.educationName, row.internTypeName].filter(Boolean),
+        postedAt: (row.createDate || '').toString().slice(0, 10),
+        description: String(row.postDuty || '').slice(0, 240),
+        requirementText: [
+          row.jobRequirement || '',
+          row.postDuty ? `岗位职责：\n${row.postDuty}` : '',
+          row.otherRequirement || '',
+          row.educationName ? `学历标签：${row.educationName}` : '',
+        ]
+          .filter(Boolean)
+          .join('\n\n'),
+        applyUrl: `https://campus.sf-express.com/#/postDetail/${row.id}`,
+      })
+    }
+    if (!data.hasNextPage) break
+    page++
+    await sleep(100)
+  }
+
+  // social
+  page = 1
+  while (jobs.length < maxItems) {
+    const data = await (
+      await fetch('https://hr.sf-express.com/SearchJob.do', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Origin: 'https://hr.sf-express.com',
+          Referer:
+            'https://hr.sf-express.com/jobMainHandlerT/main?jobType=9999',
+          'User-Agent': 'Mozilla/5.0',
+        },
+        body: JSON.stringify({
+          workAddress: '',
+          currentPage: page,
+          outName: '',
+        }),
+      })
+    ).json()
+    const rows = data.JobSearchList?.listObj || []
+    if (!rows.length) break
+    for (const row of rows) {
+      if (jobs.length >= maxItems) break
+      const id = row.positionId || row.id
+      jobs.push({
+        sourceId: 'sf',
+        sourceName: '顺丰官招',
+        externalId: `social-${id}`,
+        title: row.outName || row.positionName || row.jobName || row.name,
+        company: '顺丰',
+        city: (row.workAddress || '中国').split('/')[0] || '中国',
+        type: '社招',
+        salary: row.salaryRangeTxt || '面议',
+        tags: [row.educationReqTxt, row.workYearTxt, row.positionTypeTxt].filter(
+          Boolean,
+        ),
+        postedAt: (row.lastUpdateTime || row.publishTime || '')
+          .toString()
+          .slice(0, 10),
+        description: String(row.mainDuty || '').slice(0, 240),
+        requirementText: [
+          row.positionReq || '',
+          row.mainDuty ? `岗位职责：\n${row.mainDuty}` : '',
+          row.educationReqTxt ? `学历标签：${row.educationReqTxt}` : '',
+          row.workYearTxt ? `经验标签：${row.workYearTxt}` : '',
+        ]
+          .filter(Boolean)
+          .join('\n\n'),
+        applyUrl: id
+          ? `https://hr.sf-express.com/JobSearchById/${id},1`
+          : undefined,
+      })
+    }
+    const totalPage = data.JobSearchList?.totalPage || page
+    console.log(`sf social page=${page}/${totalPage} collected=${jobs.length}`)
+    if (page >= totalPage) break
+    page++
+    await sleep(100)
+  }
+  console.log('sf jobs', jobs.length)
+  return jobs
+}
+
+async function fetchIflytek(maxItems = 900) {
+  const jobs = []
+  let page = 1
+  while (jobs.length < maxItems) {
+    const data = await (
+      await fetch('https://iflytek.zhiye.com/api/Jobad/GetJobAdPageList', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Origin: 'https://iflytek.zhiye.com',
+          Referer: 'https://iflytek.zhiye.com/jobs',
+          'User-Agent': 'Mozilla/5.0',
+        },
+        body: JSON.stringify({ PageIndex: page, PageSize: 50 }),
+      })
+    ).json()
+    if (data.Code !== 200) break
+    const rows = data.Data || []
+    if (!rows.length) break
+    for (const row of rows) {
+      if (jobs.length >= maxItems) break
+      const cities = row.LocNames || []
+      jobs.push({
+        sourceId: 'iflytek',
+        sourceName: '科大讯飞官招',
+        externalId: String(row.JobAdId || row.Id),
+        title: row.JobAdName,
+        company: '科大讯飞',
+        city: cities[0] || '中国',
+        type: '全职',
+        salary: row.Salary || '面议',
+        tags: [row.Category, row.Degree, row.YearsOfWorking].filter(Boolean),
+        postedAt: (row.PostDate || row.ChangeDate || '')
+          .toString()
+          .slice(0, 10),
+        description: String(row.Duty || '').slice(0, 240),
+        requirementText: [
+          row.Require || '',
+          row.Duty ? `岗位职责：\n${row.Duty}` : '',
+          row.Degree ? `学历标签：${row.Degree}` : '',
+          row.YearsOfWorking ? `经验标签：${row.YearsOfWorking}` : '',
+        ]
+          .filter(Boolean)
+          .join('\n\n'),
+        applyUrl: `https://iflytek.zhiye.com/social/detail?jobAdId=${row.JobAdId || row.Id}`,
+      })
+    }
+    const total = data.Count || 0
+    console.log(`iflytek page=${page} collected=${jobs.length}/${total}`)
+    if (page * 50 >= total) break
+    page++
+    await sleep(120)
+  }
+  console.log('iflytek jobs', jobs.length)
+  return jobs
+}
+
+async function fetchTrip(maxItems = 600) {
+  // 上游对 pageSize 不敏感；带 category 仍可能只回一页，尽量拉社招+校招各一页
+  const rows = []
+  const seen = new Set()
+  for (const category of ['1', '2', undefined]) {
+    const condition = { pageIndex: 1, pageSize: 100 }
+    if (category) condition.category = category
+    const data = await (
+      await fetch('https://careers.ctrip.com/api/hrrecruit/getJobAd', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Origin: 'https://careers.ctrip.com',
+          Referer: 'https://careers.ctrip.com/campus',
+          'User-Agent': 'Mozilla/5.0',
+        },
+        body: JSON.stringify({ condition }),
+      })
+    ).json()
+    if (data.retCode !== '201' && data.retCode !== '200') continue
+    for (const row of data.retValue?.recruitJobAdList || []) {
+      const id = String(row.fromId || row.id)
+      if (!id || seen.has(id)) continue
+      seen.add(id)
+      rows.push(row)
+    }
+    await sleep(100)
+  }
+  if (!rows.length) throw new Error('trip empty')
+  const jobs = rows.slice(0, maxItems).map((row) => ({
+    sourceId: 'trip',
+    sourceName: '携程官招',
+    externalId: String(row.fromId || row.id),
+    title: row.jobTitle,
+    company: '携程',
+    city: row.cityName || row.city || '中国',
+    type: row.kind === '3' ? '实习' : row.category === '2' ? '校招' : '社招',
+    salary: '面议',
+    tags: [row.jobFamilyGroupName, row.buName].filter(Boolean),
+    postedAt: (row.publishDate || '').toString().slice(0, 10),
+    description: String(row.duty || '').slice(0, 240),
+    requirementText: [
+      row.requirements || '',
+      row.duty ? `岗位职责：\n${row.duty}` : '',
+    ]
+      .filter(Boolean)
+      .join('\n\n'),
+    applyUrl: row.fromId
+      ? `https://careers.ctrip.com/campus#/experienced/job-detail/${row.fromId}`
+      : undefined,
+  }))
+  console.log('trip jobs', jobs.length)
+  return jobs
+}
+
 const FEISHU_TENANTS = [
   {
     sourceId: 'xiaomi',
@@ -737,6 +1326,13 @@ const tasks = [
   ['meituan', () => fetchMeituan(1200)],
   ['netease', () => fetchNetease(1500)],
   ['didi', () => fetchDidi(1000)],
+  ['baidu', () => fetchBaidu(1500)],
+  ['alibaba', () => fetchAlibaba(900)],
+  ['antgroup', () => fetchAntGroup(1200)],
+  ['mihoyo', () => fetchMihoyo(700)],
+  ['sf', () => fetchSF(1200)],
+  ['iflytek', () => fetchIflytek(900)],
+  ['trip', () => fetchTrip(600)],
   ...FEISHU_TENANTS.map((t) => [
     t.sourceId,
     () => fetchFeishuTenant(t),
