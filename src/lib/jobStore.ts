@@ -99,3 +99,24 @@ export function readLegacyLocalCache(): JobsCache | null {
     return null
   }
 }
+
+/** 清空 IndexedDB / localStorage 岗位缓存（不碰内存，由调用方 reset） */
+export async function idbClearJobsCache(): Promise<void> {
+  try {
+    const db = await openDb()
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(STORE, 'readwrite')
+      tx.objectStore(STORE).delete(CACHE_KEY)
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => reject(tx.error ?? new Error('indexedDB clear failed'))
+    })
+  } catch {
+    /* ignore */
+  }
+  try {
+    localStorage.removeItem(META_KEY)
+    localStorage.removeItem(LEGACY_KEY)
+  } catch {
+    /* ignore */
+  }
+}

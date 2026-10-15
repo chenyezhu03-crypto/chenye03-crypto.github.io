@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom'
 import { FAMOUS_CN_COMPANIES, matchFamousCompany } from '../data/famousCompanies'
 import {
   crawlJobs,
-  hydrateJobs,
+  ensureJobsLoaded,
   lastCrawledAt,
   lastCrawlReports,
   lastJobCount,
   loadJobs,
+  reloadFullJobBundle,
 } from '../lib/crawl'
 import {
   SOURCE_CATALOG,
@@ -52,12 +53,18 @@ export function Sources() {
   }
 
   useEffect(() => {
-    void hydrateJobs().then((jobs) => {
-      setCount(jobs.length)
-      setCrawledAt(lastCrawledAt())
-      setReports(lastCrawlReports())
-      recountFamous(jobs)
-    })
+    setBusy(true)
+    void ensureJobsLoaded()
+      .then((jobs) => {
+        setCount(jobs.length)
+        setCrawledAt(lastCrawledAt())
+        setReports(lastCrawlReports())
+        recountFamous(jobs)
+      })
+      .catch((err) => {
+        setError(err instanceof Error ? err.message : '自动加载失败')
+      })
+      .finally(() => setBusy(false))
   }, [])
 
   const labels = useMemo(
@@ -108,6 +115,24 @@ export function Sources() {
     await runCrawl(true, ['crawled-bundle', 'local-demo'])
   }
 
+  async function forceReload() {
+    setBusy(true)
+    setError('')
+    try {
+      const jobs = await reloadFullJobBundle()
+      setReports(lastCrawlReports())
+      setCrawledAt(lastCrawledAt())
+      setCount(jobs.length)
+      recountFamous(jobs)
+      saveEnabledSources(['crawled-bundle', 'local-demo'])
+      setEnabled(['crawled-bundle', 'local-demo'])
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '重载失败')
+    } finally {
+      setBusy(false)
+    }
+  }
+
   return (
     <main className="page">
       <header className="page-header row">
@@ -122,6 +147,10 @@ export function Sources() {
             {crawledAt
               ? new Date(crawledAt).toLocaleString('zh-CN')
               : '尚未汇聚'}
+            {busy ? ' · 正在加载完整岗位包…' : ''}
+            {count > 0 && count < 500
+              ? ' · 当前像是旧样本缓存，正在/请点「清空并重载」拉约 2 万条'
+              : ''}
           </p>
         </div>
         <div className="hero-actions">
@@ -132,6 +161,14 @@ export function Sources() {
             onClick={() => void oneClickCrawl()}
           >
             {busy ? '正在爬取…' : '一键爬取并导入'}
+          </button>
+          <button
+            type="button"
+            className="btn btn-ghost"
+            disabled={busy}
+            onClick={() => void forceReload()}
+          >
+            清空并重载完整包
           </button>
           <button
             type="button"

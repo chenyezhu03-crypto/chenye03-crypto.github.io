@@ -27,13 +27,17 @@ export function Jobs() {
   const [page, setPage] = useState(1)
   const [crawledAt, setCrawledAt] = useState(() => lastCrawledAt())
   const [busy, setBusy] = useState(false)
+  const [booting, setBooting] = useState(() => loadJobs().length < 500)
   const pageSize = 30
 
   useEffect(() => {
-    void ensureJobsLoaded().then((list) => {
-      setJobs(list)
-      setCrawledAt(lastCrawledAt())
-    })
+    setBooting(true)
+    void ensureJobsLoaded()
+      .then((list) => {
+        setJobs(list)
+        setCrawledAt(lastCrawledAt())
+      })
+      .finally(() => setBooting(false))
   }, [])
 
   const cities = useMemo(() => {
@@ -125,6 +129,7 @@ export function Jobs() {
             {crawledAt
               ? new Date(crawledAt).toLocaleString('zh-CN')
               : '尚未汇聚'}
+            {booting ? ' · 正在拉取完整岗位包（约 2 万条，首次稍慢）…' : ''}
             {' · '}
             <Link to="/sources">管理数据源</Link>
             {' · '}
@@ -134,10 +139,10 @@ export function Jobs() {
         <button
           type="button"
           className="btn btn-primary"
-          disabled={busy}
+          disabled={busy || booting}
           onClick={() => void refreshCrawl()}
         >
-          {busy ? '汇聚中…' : '重新汇聚岗位'}
+          {busy || booting ? '汇聚中…' : '重新汇聚岗位'}
         </button>
       </header>
 

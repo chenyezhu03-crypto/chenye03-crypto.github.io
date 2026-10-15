@@ -26,7 +26,8 @@ export const SOURCE_CATALOG: SourceMeta[] = [
     id: 'local-demo',
     name: '国内细JD样本',
     kind: '本地',
-    description: '多城市/多职能细任职要求，含学历专业性别等条件透视字段。',
+    description:
+      '约一百条细任职要求样本（学历/专业/性别透视）。完整库存请依赖「国内已爬岗位包」，不要只开这一项。',
     enabledByDefault: true,
   },
   {
