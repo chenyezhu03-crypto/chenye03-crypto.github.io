@@ -12,8 +12,11 @@ export type TemplateModuleId =
 
 export type GuidePackageId = 'partial' | 'standard' | 'full' | 'custom'
 
-/** 全站演示价上限 */
-export const MAX_GUIDE_PRICE_CNY = 59.9
+/**
+ * 付费上限：聊天模型（豆包等）生成游记近乎免费，
+ * 这里只对「已整理好的完整 Word 模版实稿导出」象征性收费。
+ */
+export const MAX_GUIDE_PRICE_CNY = 9.9
 
 export type TemplateModuleDef = {
   id: TemplateModuleId
@@ -30,56 +33,56 @@ export const TEMPLATE_MODULES: TemplateModuleDef[] = [
     id: 'overview',
     label: '行程总览',
     desc: '封面、六天路线摘要、活动怎么排、预算说明（对应模版前几章）',
-    priceCny: 9.9,
+    priceCny: 0,
     templateRef: '01 图文导游 · 六天路线一眼看懂',
   },
   {
     id: 'pretrip_01',
     label: '出发前 · 证件入境',
     desc: 'SGAC/MyICA、证件包、入境流程（模版 出发前 01）',
-    priceCny: 4.9,
+    priceCny: 0,
     templateRef: '02 证件与入境申报',
   },
   {
     id: 'pretrip_02',
     label: '出发前 · 天气行李',
     desc: '预报、穿搭、行李与药品（模版 出发前 02）',
-    priceCny: 4.9,
+    priceCny: 0,
     templateRef: '03 天气与行李',
   },
   {
     id: 'pretrip_03',
     label: '出发前 · 交通支付',
     desc: '地铁、Grab、现金与汇率（模版 出发前 03）',
-    priceCny: 4.9,
+    priceCny: 0,
     templateRef: '04 地铁支付与打车',
   },
   {
     id: 'pretrip_apps',
     label: '出发前 · App 登录',
     desc: '5 段 App 下载登录说明（模版 05–09）',
-    priceCny: 5.9,
+    priceCny: 0,
     templateRef: '05–09 App下载登录',
   },
   {
     id: 'daily_detail',
     label: '逐日图文详程',
-    desc: 'DAY1–6 分时段、餐饮二选一、拍照点（模版主体最大部分）',
-    priceCny: 24.9,
+    desc: 'DAY1–6 分时段、餐饮二选一、拍照点（模版主体，非 AI 现写）',
+    priceCny: 9.9,
     templateRef: '10–61 每日行程与二选一',
   },
   {
     id: 'budget_final',
     label: '出发前检查 · 预算',
     desc: '现金、门票比价、最后检查清单（模版 61）',
-    priceCny: 3.9,
+    priceCny: 0,
     templateRef: '61 注意事项与预算',
   },
   {
     id: 'official_menu',
     label: '官方来源菜单',
     desc: '官网/售票/菜单核实入口索引（模版 62）',
-    priceCny: 2.9,
+    priceCny: 0,
     templateRef: '62 官方来源菜单',
   },
 ]
@@ -95,15 +98,15 @@ export const GUIDE_PACKAGES: {
   {
     id: 'partial',
     label: '部分攻略',
-    desc: '只要总览 + 检查清单，适合已有大致想法、需快速成稿',
+    desc: '总览 + 检查清单 · 免费（结构固定，可直接改 Word）',
     moduleIds: ['overview', 'budget_final'],
-    priceCny: 19.9,
-    badge: '入门',
+    priceCny: 0,
+    badge: '免费',
   },
   {
     id: 'standard',
     label: '标准攻略',
-    desc: '总览 + 出发前 01–03 + App + 预算检查（不含逐日详程）',
+    desc: '出发前证件/天气/交通/App · 免费（适合先给客户一版）',
     moduleIds: [
       'overview',
       'pretrip_01',
@@ -112,16 +115,16 @@ export const GUIDE_PACKAGES: {
       'pretrip_apps',
       'budget_final',
     ],
-    priceCny: 39.9,
-    badge: '热销',
+    priceCny: 0,
+    badge: '免费',
   },
   {
     id: 'full',
     label: '完整图文版',
-    desc: 'Word 模版全部章节（含逐日详程与官方来源）',
+    desc: '含逐日详程整本模版实稿（新加坡同款 Word 内容）',
     moduleIds: 'all',
     priceCny: MAX_GUIDE_PRICE_CNY,
-    badge: '同款模版',
+    badge: '实稿',
   },
 ]
 
@@ -138,6 +141,11 @@ export function priceForModules(ids: TemplateModuleId[]): number {
 
 function roundPrice(n: number): number {
   return Math.round(n * 10) / 10
+}
+
+export function formatGuidePrice(priceCny: number): string {
+  if (priceCny <= 0) return '免费'
+  return `¥${priceCny.toFixed(1)}`
 }
 
 export function resolveModuleIds(

@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { DESTINATIONS } from '../../data/destinations'
 import { buildCustomTripGuide } from '../../lib/customTripGuide'
 import {
+  formatGuidePrice,
   GUIDE_PACKAGES,
+  MAX_GUIDE_PRICE_CNY,
   quotePrice,
   TEMPLATE_MODULES,
   type GuidePackageId,
@@ -138,10 +140,14 @@ export function TravelCustom() {
       <section className="travel-card">
         <h1 className="travel-h1">按客户信息做攻略</h1>
         <p className="travel-lead">
-          以您的 Word《新加坡 5 晚 6 天完整版》为模版：客户可选
-          <strong> 部分 / 标准 / 完整 </strong>
-          章节，定价不同；仅新加坡单目的地时从原稿精确截取模块，其它目的地为同结构简版。
+          豆包等模型写游记<strong>几乎免费</strong>，所以本站
+          <strong> 简版攻略免费</strong>，只对「完整 Word 模版实稿（含逐日详程）」象征性收
+          <strong> ¥{MAX_GUIDE_PRICE_CNY}</strong>——卖的是<strong>固定版式 + 已整理实稿</strong>，不是让 AI 现编。
         </p>
+        <ul className="travel-bullets travel-vs-ai">
+          <li>免费 AI：每次格式不同，要自己排版、核对信息</li>
+          <li>本站：同一套目录结构，新加坡可从您的 docx 原稿截取，直接下 Word 给客户</li>
+        </ul>
       </section>
 
       <section className="travel-card">
@@ -163,7 +169,7 @@ export function TravelCustom() {
               )}
               <strong>{pkg.label}</strong>
               <span className="travel-package-price">
-                ¥{pkg.priceCny.toFixed(pkg.priceCny % 1 ? 1 : 0)}
+                {formatGuidePrice(pkg.priceCny)}
               </span>
               <p className="travel-meta">{pkg.desc}</p>
             </button>
@@ -207,7 +213,10 @@ export function TravelCustom() {
                       />
                       <span>
                         <strong>{m.label}</strong>
-                        <span className="travel-meta"> · ¥{m.priceCny} · {m.templateRef}</span>
+                        <span className="travel-meta">
+                          {' '}
+                          · {formatGuidePrice(m.priceCny)} · {m.templateRef}
+                        </span>
                         <span className="travel-module-desc">{m.desc}</span>
                       </span>
                     </label>
@@ -219,9 +228,11 @@ export function TravelCustom() {
         )}
 
         <p className="travel-quote-line">
-          当前报价：<strong>¥{quote.priceCny.toFixed(1)}</strong>
-          <span className="travel-meta"> · 最高价 ¥59.9</span>
-          <span className="travel-meta">（演示价，Word 首页会写入报价单）</span>
+          当前报价：<strong>{formatGuidePrice(quote.priceCny)}</strong>
+          <span className="travel-meta">
+            {' '}
+            · 含逐日实稿时最高 {formatGuidePrice(MAX_GUIDE_PRICE_CNY)}
+          </span>
         </p>
       </section>
 
