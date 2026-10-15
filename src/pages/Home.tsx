@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import hero from '../assets/hero.jpg'
+import { publicPage } from '../lib/siteUrl'
 
 export function Home() {
   return (
@@ -30,6 +31,12 @@ export function Home() {
               公考选岗助手（轻量版）
             </Link>
           </div>
+          <p className="hero-online animate-rise delay-3">
+            在线直接打开（无需本地 npm）：
+            <a href={publicPage('/pick')}>选岗助手</a>
+            <span aria-hidden="true"> · </span>
+            <a href={publicPage('/jobs')}>岗位雷达</a>
+          </p>
         </div>
       </section>
 
