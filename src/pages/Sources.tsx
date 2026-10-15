@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { FAMOUS_CN_COMPANIES, matchFamousCompany } from '../data/famousCompanies'
 import {
   crawlJobs,
   hydrateJobs,
   lastCrawledAt,
   lastCrawlReports,
   lastJobCount,
+  loadJobs,
 } from '../lib/crawl'
 import {
   SOURCE_CATALOG,
@@ -37,13 +39,24 @@ export function Sources() {
   const [reports, setReports] = useState<string[]>(() => lastCrawlReports())
   const [crawledAt, setCrawledAt] = useState(() => lastCrawledAt())
   const [count, setCount] = useState(() => lastJobCount())
+  const [famousHit, setFamousHit] = useState(0)
   const [error, setError] = useState('')
+
+  function recountFamous(jobs: ReturnType<typeof loadJobs>) {
+    const hit = new Set<string>()
+    for (const job of jobs) {
+      const name = matchFamousCompany(job.company)
+      if (name) hit.add(name)
+    }
+    setFamousHit(hit.size)
+  }
 
   useEffect(() => {
     void hydrateJobs().then((jobs) => {
       setCount(jobs.length)
       setCrawledAt(lastCrawledAt())
       setReports(lastCrawlReports())
+      recountFamous(jobs)
     })
   }, [])
 
@@ -83,6 +96,7 @@ export function Sources() {
       setReports(result.reports)
       setCrawledAt(result.crawledAt)
       setCount(result.jobs.length)
+      recountFamous(result.jobs)
     } catch (err) {
       setError(err instanceof Error ? err.message : '汇聚失败')
     } finally {
@@ -100,10 +114,11 @@ export function Sources() {
         <div>
           <h1>数据源</h1>
           <p className="section-lead">
-            只汇聚中国岗位：腾讯/字节/阿里/蚂蚁/百度/美团/网易/滴滴/米哈游/顺丰/讯飞/携程/OPPO/vivo/B站/爱奇艺，以及小米、蔚来、理想、小鹏等飞书官招。也可导入你自己的国内爬虫 JSON。
+            目标覆盖约 {FAMOUS_CN_COMPANIES.length}{' '}
+            家国内知名企业：大厂官招、飞书/Moka 租户，以及猎聘公开补源。也可导入你自己的国内爬虫 JSON。
           </p>
           <p className="meta-line">
-            库存 {count} 条 · 上次汇聚{' '}
+            库存 {count} 条 · 知名企业 {famousHit}/{FAMOUS_CN_COMPANIES.length} 家 · 上次汇聚{' '}
             {crawledAt
               ? new Date(crawledAt).toLocaleString('zh-CN')
               : '尚未汇聚'}

@@ -25,7 +25,9 @@
 19. **BOSS 开源样本 CSV**（[jhcoco/bosszp](https://github.com/jhcoco/bosszp)）
 20. **国内细 JD 样本**（本地）
 
-脚本：`npm run crawl`
+脚本：
+- `npm run crawl` — 大厂官招主爬
+- `npm run crawl:famous` — 约 150 家知名企业补源（猎聘 + Moka + 额外飞书）
 
 ## 还能扩但暂未稳定接入
 

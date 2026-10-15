@@ -19,7 +19,7 @@ export const SOURCE_CATALOG: SourceMeta[] = [
     name: '国内已爬岗位包',
     kind: '已爬缓存',
     description:
-      '腾讯/字节/阿里/蚂蚁/百度/美团/网易/滴滴/米哈游/顺丰/讯飞/携程/OPPO/vivo/B站/爱奇艺 + 小米/蔚来/理想/小鹏等飞书官招 + BOSS 开源样本，仅中国岗位。',
+      '覆盖约 150 家国内知名企业：大厂官招 + 飞书/Moka 租户 + 猎聘知名企业补源 + BOSS 开源样本，仅中国岗位。',
     enabledByDefault: true,
   },
   {

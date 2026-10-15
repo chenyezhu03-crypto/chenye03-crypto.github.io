@@ -9,6 +9,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "crawl": "node scripts/crawl-jobs.mjs",
+    "crawl:famous": "node scripts/crawl-famous.mjs",
     "test:e2e": "node scripts/e2e.mjs"
   },
   "dependencies": {
