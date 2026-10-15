@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
+import { TravelGuide } from './TravelGuide'
 import { TravelHome } from './TravelHome'
 import { TravelLayout } from './TravelLayout'
 import { TravelPlace } from './TravelPlace'
@@ -17,6 +18,7 @@ export function TravelApp() {
         <Route path="picks" element={<TravelPicks />} />
         <Route path="spin" element={<TravelSpin />} />
         <Route path="place/:id" element={<TravelPlace />} />
+        <Route path="guide/:guideId" element={<TravelGuide />} />
         <Route path="*" element={<Navigate to="/travel" replace />} />
       </Route>
     </Routes>

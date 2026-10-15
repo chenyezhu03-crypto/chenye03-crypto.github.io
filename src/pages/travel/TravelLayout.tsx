@@ -10,13 +10,17 @@ const tabs = [
 export function TravelLayout() {
   const loc = useLocation()
   const onPlace = loc.pathname.includes('/place/')
+  const onGuide = loc.pathname.includes('/guide/')
+  const hideTab = onPlace || onGuide
 
   return (
     <div className="travel-app">
       <header className="travel-header">
         <p className="travel-brand">去哪玩</p>
         <p className="travel-sub">
-          {onPlace
+          {onGuide
+            ? '图文攻略 · 可导出 Word / PDF'
+            : onPlace
             ? '目的地详情'
             : loc.pathname.includes('/region')
               ? '国内/国外 → 洲 → 子区域 → 国家'
@@ -30,7 +34,7 @@ export function TravelLayout() {
       <div className="travel-body">
         <Outlet />
       </div>
-      {!onPlace && (
+      {!hideTab && (
         <nav className="travel-tabbar" aria-label="去哪玩导航">
           {tabs.map((tab) => (
             <NavLink

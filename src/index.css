@@ -1577,6 +1577,104 @@ textarea {
   text-align: center;
 }
 
+.travel-pick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.travel-guide-page .travel-guide-article {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem 1.1rem 1.5rem;
+  margin-bottom: 1rem;
+  max-width: 100%;
+}
+
+.travel-guide-line {
+  margin: 0 0 0.55rem;
+  line-height: 1.55;
+  font-size: 0.9rem;
+}
+
+.travel-guide-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  margin: 0 0 0.75rem;
+  color: #1a4f7a;
+}
+
+.travel-guide-day,
+.travel-guide-section {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  margin: 1.25rem 0 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--line);
+  color: #0a3531;
+  scroll-margin-top: 4.5rem;
+}
+
+.travel-guide-subhead,
+.travel-guide-label {
+  font-size: 0.92rem;
+  font-weight: 600;
+  margin: 0.65rem 0 0.25rem;
+}
+
+.travel-guide-muted {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.travel-guide-body {
+  color: var(--ink-soft);
+}
+
+.travel-guide-toc-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  max-height: 14rem;
+  overflow-y: auto;
+}
+
+.travel-guide-toc-list a {
+  color: #1a4f7a;
+  text-decoration: underline;
+}
+
+@media print {
+  .no-print,
+  .travel-header,
+  .travel-tabbar {
+    display: none !important;
+  }
+
+  .travel-app {
+    max-width: none;
+    box-shadow: none;
+  }
+
+  .travel-body {
+    padding-bottom: 0;
+  }
+
+  .travel-guide-article {
+    border: none;
+    padding: 0;
+  }
+
+  .travel-guide-day,
+  .travel-guide-section {
+    page-break-after: avoid;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -6,6 +6,7 @@ import {
   pickRandomDestinations,
 } from '../../lib/travelGeoMatch'
 import { filterDestinations, getDestinationById } from '../../lib/travelMatch'
+import { guidesForDestination } from '../../lib/travelGuideCatalog'
 import { loadTravelPrefs, saveTravelPrefs } from '../../lib/travelStorage'
 
 type LocationState = { picks?: string[] }
@@ -67,9 +68,21 @@ export function TravelPicks() {
             <span className="travel-pick-rank">备选 {i + 1}</span>
             <h2>{d.name}</h2>
             <p className="travel-meta">{d.region} · {d.tagline}</p>
-            <Link className="btn btn-ghost" to={`/travel/place/${d.id}`}>
-              看详情
-            </Link>
+            <div className="travel-pick-actions">
+              <Link className="btn btn-ghost" to={`/travel/place/${d.id}`}>
+                看详情
+              </Link>
+              <Link
+                className="btn btn-ghost"
+                to={
+                  guidesForDestination(d.id)[0]
+                    ? `/travel/guide/${guidesForDestination(d.id)[0].id}`
+                    : `/travel/guide/auto?dest=${d.id}`
+                }
+              >
+                攻略 Word/PDF
+              </Link>
+            </div>
           </li>
         ))}
       </ul>

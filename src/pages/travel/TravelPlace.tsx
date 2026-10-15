@@ -1,5 +1,6 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { BUDGET_LABELS, MONTH_LABELS, VIBE_LABELS } from '../../lib/travelTypes'
+import { guidesForDestination } from '../../lib/travelGuideCatalog'
 import { getDestinationGeo } from '../../data/destinationGeo'
 import { getGeoNode } from '../../data/travelGeo'
 import { getDestinationById } from '../../lib/travelMatch'
@@ -22,6 +23,7 @@ export function TravelPlace() {
     )
   }
 
+  const guideList = guidesForDestination(place.id)
   const geo = getDestinationGeo(place.id)
   const geoLine = geo
     ? [
@@ -85,9 +87,24 @@ export function TravelPlace() {
       </section>
 
       <div className="travel-actions travel-place-actions">
+        {guideList.length > 0 ? (
+          <Link
+            className="btn btn-primary travel-btn-block"
+            to={`/travel/guide/${guideList[0].id}`}
+          >
+            下载完整攻略（Word / PDF）
+          </Link>
+        ) : (
+          <Link
+            className="btn btn-primary travel-btn-block"
+            to={`/travel/guide/auto?dest=${place.id}`}
+          >
+            生成简版攻略（Word / PDF）
+          </Link>
+        )}
         <button
           type="button"
-          className="btn btn-primary travel-btn-block"
+          className="btn btn-ghost travel-btn-block"
           onClick={() => navigate('/travel/spin')}
         >
           不满意，再转一次
