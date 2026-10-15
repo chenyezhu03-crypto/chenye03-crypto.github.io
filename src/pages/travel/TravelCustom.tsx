@@ -162,7 +162,9 @@ export function TravelCustom() {
                 <span className="travel-package-badge">{pkg.badge}</span>
               )}
               <strong>{pkg.label}</strong>
-              <span className="travel-package-price">¥{pkg.priceCny}</span>
+              <span className="travel-package-price">
+                ¥{pkg.priceCny.toFixed(pkg.priceCny % 1 ? 1 : 0)}
+              </span>
               <p className="travel-meta">{pkg.desc}</p>
             </button>
           ))}
@@ -217,7 +219,8 @@ export function TravelCustom() {
         )}
 
         <p className="travel-quote-line">
-          当前报价：<strong>¥{quote.priceCny}</strong>
+          当前报价：<strong>¥{quote.priceCny.toFixed(1)}</strong>
+          <span className="travel-meta"> · 最高价 ¥59.9</span>
           <span className="travel-meta">（演示价，Word 首页会写入报价单）</span>
         </p>
       </section>
