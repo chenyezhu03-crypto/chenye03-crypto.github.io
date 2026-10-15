@@ -17,9 +17,13 @@
 11. **顺丰官招**（校招 `campus.sf-express.com` + 社招 `hr.sf-express.com`）
 12. **科大讯飞官招**（`iflytek.zhiye.com`）
 13. **携程官招**（`careers.ctrip.com`）
-14. **飞书 ATS 租户**：小米、蔚来、理想汽车、小鹏、智谱 AI、智元机器人、商汤、莉莉丝
-15. **BOSS 开源样本 CSV**（[jhcoco/bosszp](https://github.com/jhcoco/bosszp)）
-16. **国内细 JD 样本**（本地）
+14. **OPPO 官招**（`careers.oppo.com/openapi/position/pageNew`）
+15. **vivo 官招**（`hr-campus.vivo.com` 北森校招）
+16. **B 站官招**（`jobs.bilibili.com`，需 X-AppKey + CSRF）
+17. **爱奇艺官招**（`careers.iqiyi.com` 飞书 ATS）
+18. **飞书 ATS 租户**：小米、蔚来、理想汽车、小鹏、智谱 AI、智元机器人、商汤、莉莉丝
+19. **BOSS 开源样本 CSV**（[jhcoco/bosszp](https://github.com/jhcoco/bosszp)）
+20. **国内细 JD 样本**（本地）
 
 脚本：`npm run crawl`
 
@@ -27,8 +31,9 @@
 
 | 来源 | 现状 |
 | --- | --- |
-| 快手 / 小红书 / B 站 / 拼多多 | 需登录、签名或接口 403 |
+| 快手 / 小红书 / 拼多多 | 需登录、签名或接口 403 |
 | 华为官招 | 公开列表目前几乎空/参数常变 |
+| DeepSeek / Moonshot 等 Moka 租户 | 返回加密 payload，暂未解 |
 | BOSS / 智联 / 前程无忧主站 | 强反爬，需登录态，本仓库不接 |
 
 ## GitHub 相关参考

@@ -3,7 +3,8 @@
  * 中国岗位汇聚（大厂官招公开接口，无需登录）
  * - 腾讯 / 字节 / 京东 / 美团 / 网易 / 滴滴
  * - 阿里 / 蚂蚁 / 百度 / 米哈游 / 顺丰 / 讯飞 / 携程
- * - 飞书 ATS 租户：小米、蔚来、理想、小鹏、智谱、智元、商汤、莉莉丝
+ * - OPPO / vivo / B站 / 爱奇艺
+ * - 飞书 ATS 租户：小米、蔚来、理想、小鹏、智谱、智元、商汤、莉莉丝、爱奇艺
  * - BOSS 开源样本 CSV
  *
  * 用法：npm run crawl
@@ -1312,7 +1313,203 @@ const FEISHU_TENANTS = [
     applyPath: 'campus/position',
     maxItems: 200,
   },
+  {
+    sourceId: 'iqiyi',
+    sourceName: '爱奇艺官招',
+    company: '爱奇艺',
+    host: 'careers.iqiyi.com',
+    applyPath: 'job',
+    maxItems: 200,
+  },
 ]
+
+async function fetchOppo(maxItems = 300) {
+  const jobs = []
+  let page = 1
+  while (jobs.length < maxItems) {
+    const data = await (
+      await fetch('https://careers.oppo.com/openapi/position/pageNew', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Origin: 'https://careers.oppo.com',
+          Referer: 'https://careers.oppo.com/',
+          'User-Agent': 'Mozilla/5.0',
+        },
+        body: JSON.stringify({ pageNum: page, pageSize: 50 }),
+      })
+    ).json()
+    if (!(data.code === 0 || data.code === 200)) {
+      throw new Error(`oppo ${data.msg || data.code}`)
+    }
+    const rows = data.data?.records || []
+    if (!rows.length) break
+    for (const row of rows) {
+      if (jobs.length >= maxItems) break
+      const id = row.idRecruitPosition
+      jobs.push({
+        sourceId: 'oppo',
+        sourceName: 'OPPO官招',
+        externalId: String(id),
+        title: row.positionName,
+        company: 'OPPO',
+        city: row.workCityName || row.workCityVOList?.[0]?.name || '中国',
+        type: row.recruitmentTypeName || row.recruitmentType || '全职',
+        salary: '面议',
+        tags: [row.positionTypeName, row.projectName].filter(Boolean),
+        postedAt: (row.releaseTime || '').toString().slice(0, 10),
+        description: String(row.positionDesc || '').slice(0, 180),
+        requirementText: [
+          row.positionRequire || '',
+          row.positionDesc ? `岗位职责：\n${row.positionDesc}` : '',
+        ]
+          .filter(Boolean)
+          .join('\n\n')
+          .slice(0, 1200),
+        applyUrl: `https://careers.oppo.com/#/campus/talent/positionDetail/${id}`,
+      })
+    }
+    const total = data.data?.total || 0
+    console.log(`oppo page=${page} ${jobs.length}/${total}`)
+    if (page * 50 >= total) break
+    page++
+    await sleep(120)
+  }
+  console.log('oppo jobs', jobs.length)
+  return jobs
+}
+
+async function fetchVivo(maxItems = 300) {
+  const jobs = []
+  let page = 1
+  while (jobs.length < maxItems) {
+    const data = await (
+      await fetch('https://hr-campus.vivo.com/api/Jobad/GetJobAdPageList', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Origin: 'https://hr-campus.vivo.com',
+          Referer: 'https://hr-campus.vivo.com/',
+          'User-Agent': 'Mozilla/5.0',
+        },
+        body: JSON.stringify({ PageIndex: page, PageSize: 50 }),
+      })
+    ).json()
+    if (data.Code !== 200) throw new Error(`vivo ${data.Message}`)
+    const rows = data.Data || []
+    if (!rows.length) break
+    for (const row of rows) {
+      if (jobs.length >= maxItems) break
+      const cities = row.LocNames || []
+      jobs.push({
+        sourceId: 'vivo',
+        sourceName: 'vivo官招',
+        externalId: String(row.JobAdId || row.Id),
+        title: row.JobAdName,
+        company: 'vivo',
+        city: cities[0] || '中国',
+        type: '校招/实习',
+        salary: row.Salary || '面议',
+        tags: [row.Category, row.Degree].filter(Boolean),
+        postedAt: (row.PostDate || '').toString().slice(0, 10),
+        description: String(row.Duty || '').slice(0, 180),
+        requirementText: [
+          row.Require || '',
+          row.Duty ? `岗位职责：\n${row.Duty}` : '',
+        ]
+          .filter(Boolean)
+          .join('\n\n')
+          .slice(0, 1200),
+        applyUrl: `https://hr-campus.vivo.com/campus/detail?jobAdId=${row.JobAdId || row.Id}`,
+      })
+    }
+    console.log(`vivo page=${page} ${jobs.length}/${data.Count}`)
+    if (page * 50 >= (data.Count || 0)) break
+    page++
+    await sleep(120)
+  }
+  console.log('vivo jobs', jobs.length)
+  return jobs
+}
+
+async function fetchBilibili(maxItems = 450) {
+  const H = {
+    'User-Agent': 'Mozilla/5.0',
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'X-AppKey': 'ops.ehr-api.auth',
+    'X-UserType': '2',
+    Referer: 'https://jobs.bilibili.com/',
+  }
+  let csrf
+  for (let t = 0; t < 3; t++) {
+    try {
+      const j = await (
+        await fetch('https://jobs.bilibili.com/api/auth/v1/csrf/token', {
+          headers: H,
+        })
+      ).json()
+      if (j.code === 0 && j.data) {
+        csrf = j.data
+        break
+      }
+    } catch {
+      await sleep(1000)
+    }
+  }
+  if (!csrf) throw new Error('bilibili csrf missing')
+
+  const jobs = []
+  let page = 1
+  while (jobs.length < maxItems) {
+    let data
+    for (let t = 0; t < 3; t++) {
+      try {
+        data = await (
+          await fetch(
+            'https://jobs.bilibili.com/api/campus/position/positionList',
+            {
+              method: 'POST',
+              headers: { ...H, 'X-CSRF': csrf, Cookie: `X-CSRF=${csrf}` },
+              body: JSON.stringify({ pageNum: page, pageSize: 50 }),
+            },
+          )
+        ).json()
+        break
+      } catch {
+        await sleep(1500)
+      }
+    }
+    if (!data || data.code !== 0) break
+    const rows = data.data?.list || []
+    if (!rows.length) break
+    for (const row of rows) {
+      if (jobs.length >= maxItems) break
+      jobs.push({
+        sourceId: 'bilibili',
+        sourceName: 'B站官招',
+        externalId: String(row.id),
+        title: row.positionName,
+        company: '哔哩哔哩',
+        city: row.workLocation || '中国',
+        type: row.recruitType || row.positionTypeName || '校招',
+        salary: '面议',
+        tags: [row.postCodeName, row.positionTypeName].filter(Boolean),
+        postedAt: (row.pushTime || '').toString().slice(0, 10),
+        description: String(row.positionDescription || '').slice(0, 180),
+        requirementText: String(row.positionDescription || '').slice(0, 1200),
+        applyUrl: `https://jobs.bilibili.com/campus/positions/${row.id}`,
+      })
+    }
+    const total = data.data?.total || data.data?.totalCount || 0
+    console.log(`bilibili page=${page} ${jobs.length}/${total}`)
+    if (page * 50 >= total) break
+    page++
+    await sleep(200)
+  }
+  console.log('bilibili jobs', jobs.length)
+  return jobs
+}
 
 console.log('CN multi-source crawl start…')
 await ensureBossCsv()
@@ -1333,6 +1530,9 @@ const tasks = [
   ['sf', () => fetchSF(1200)],
   ['iflytek', () => fetchIflytek(900)],
   ['trip', () => fetchTrip(600)],
+  ['oppo', () => fetchOppo(300)],
+  ['vivo', () => fetchVivo(300)],
+  ['bilibili', () => fetchBilibili(450)],
   ...FEISHU_TENANTS.map((t) => [
     t.sourceId,
     () => fetchFeishuTenant(t),
