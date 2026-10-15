@@ -1,5 +1,15 @@
-import { DESTINATIONS } from '../data/destinations'
-import { guidesForDestination, loadGuideDocument } from './travelGuideCatalog'
+import {
+  GUIDE_PACKAGES,
+  moduleById,
+  quotePrice,
+  type TemplateModuleId,
+} from './guideTemplateCatalog'
+import {
+  mergeTemplateModules,
+  personalizeOverviewLines,
+  splitSingaporeTemplate,
+} from './guideTemplateSplit'
+import { loadGuideDocument } from './travelGuideCatalog'
 import type { CustomTripBrief } from './customTripTypes'
 import {
   formatCnDate,
@@ -47,7 +57,7 @@ function buildDayPlan(
   days: number,
 ): string[] {
   if (stops.length === 0 && brief.customPlaces.length > 0) {
-    const lines: string[] = ['行程一眼看懂']
+    const lines: string[] = ['六天路线一眼看懂', 'Routes with practical details']
     for (let i = 1; i <= days; i++) {
       const iso = addDays(brief.startDate, i - 1)
       const place = brief.customPlaces[(i - 1) % brief.customPlaces.length]
@@ -55,21 +65,18 @@ function buildDayPlan(
     }
     return lines
   }
-  const lines: string[] = ['行程一眼看懂', 'Routes with practical details']
+
+  const lines: string[] = ['六天路线一眼看懂', 'Routes with practical details']
   if (days === 1) {
     lines.push(
-      `DAY 1  ${formatCnDate(brief.startDate)} 抵达与离开同日：${stops.map((s) => s.name).join(' · ')} 择重点执行。`,
+      `DAY 1  ${formatCnDate(brief.startDate)} 抵达与离开同日：${stops.map((s) => s.name).join(' · ')}`,
     )
     return lines
   }
 
-  const names = stops.map((s) => s.name).join(' → ')
-  lines.push(`主线路  ${names}${brief.customPlaces.length ? ` · ${brief.customPlaces.join(' · ')}` : ''}`)
-
   const middleDays = days - 2
   const weights = stops.map((s) => s.daysIdeal[1])
   const totalW = weights.reduce((a, b) => a + b, 0) || stops.length
-
   const alloc: number[] = stops.map((_, i) =>
     middleDays <= 0
       ? 0
@@ -87,97 +94,163 @@ function buildDayPlan(
   }
 
   lines.push(
-    `DAY 1  ${formatCnDate(brief.startDate)} 抵达 → 入住 → 市区轻量熟悉（${stops[0]?.highlights[0] ?? '核心区域'}）。`,
+    `DAY 1  ${formatCnDate(brief.startDate)} 抵达 → 入住 → 市区轻量熟悉。`,
   )
-
   let dayIdx = 2
   stops.forEach((dest, si) => {
     for (let k = 0; k < alloc[si]; k++) {
-      const iso = addDays(brief.startDate, dayIdx - 1)
       const hi = dest.highlights[k % dest.highlights.length]
       lines.push(
-        `DAY ${dayIdx}  ${formatCnDate(iso)} ${dest.name} · ${hi} · 午餐休息后安排晚间自由活动。`,
+        `DAY ${dayIdx}  ${formatCnDate(addDays(brief.startDate, dayIdx - 1))} ${dest.name} · ${hi}`,
       )
       dayIdx++
     }
   })
-
   while (dayIdx < days) {
-    const iso = addDays(brief.startDate, dayIdx - 1)
     lines.push(
-      `DAY ${dayIdx}  ${formatCnDate(iso)} 机动/缓冲日 · 补漏、购物或应对天气。`,
+      `DAY ${dayIdx}  ${formatCnDate(addDays(brief.startDate, dayIdx - 1))} 机动/缓冲日`,
     )
     dayIdx++
   }
-
   lines.push(
-    `DAY ${days}  ${formatCnDate(brief.endDate)} 退房 → 前往机场/车站 → 返程（以订单时间为准）。`,
+    `DAY ${days}  ${formatCnDate(brief.endDate)} 退房 → 前往机场/车站 → 返程。`,
   )
   return lines
 }
 
-function preTripBlocks(stops: Destination[]): string[] {
-  const hasAbroad = stops.some((s) => s.scope === 'abroad')
-  const hasDomestic = stops.some((s) => s.scope === 'domestic')
-  const lines: string[] = []
-
-  lines.push('出发前 01', '证件与入境申报')
-  if (hasAbroad) {
-    lines.push(
-      '证件  护照有效期建议 ≥6 个月；签证/免签/入境卡政策以目的地官方与使馆信息为准，提交前逐字核对航班与酒店英文地址。',
-      '订单  往返机票、酒店英文全名与地址、入住退房日期；离线保存一份。',
-    )
-  }
-  if (hasDomestic) {
-    lines.push(
-      '证件  国内行程携带身份证件；港澳通行证/签注、台湾通行证等按目的地要求准备。',
-    )
-  }
-  if (hasAbroad && hasDomestic) {
-    lines.push('混合行程  分别核对每一段交通的证件与行李规定。')
-  }
-
-  lines.push('出发前 02', '天气与行李')
-  lines.push(
-    '出发前一周起关注逐日预报；湿热/干冷/高原按目的地分层穿衣，室内空调偏冷可带薄外套。',
-  )
-
-  lines.push('出发前 03', '交通与支付')
-  if (hasAbroad) {
-    lines.push(
-      'App  离线地图、翻译、当地打车/地铁 App；境外漫游或 eSIM 提前开通；备少量当地现金。',
-    )
-  } else {
-    lines.push('App  地图导航、铁路/航司官方渠道；移动支付与少量现金并用。')
-  }
-
-  return lines
-}
-
-function destinationDetailBlocks(stops: Destination[], customPlaces: string[]): string[] {
-  const lines: string[] = []
-  stops.forEach((d) => {
-    lines.push(`【${d.name}】${d.region}`, d.tagline)
-    lines.push(`推荐玩法  ${d.highlights.join(' · ')}`)
-    lines.push(`小贴士  ${d.tips}`)
-    lines.push('官方/核实来源  出行前请打开当地旅游局/景区官网核对开放时间与票价。')
-  })
-  customPlaces.forEach((name) => {
-    lines.push(`【${name}】（客户指定）`, '请自行补充交通、预约与开放时间；本段为占位，可在 Word 中编辑。')
-  })
-  return lines
-}
-
-async function singaporeAppendix(): Promise<string[]> {
-  const full = await loadGuideDocument('singapore-5n6d')
-  if (!full) return []
-  const start = full.lines.findIndex((l) => l.startsWith('出发前 01'))
-  if (start < 0) return []
+function quoteHeaderLines(brief: CustomTripBrief): string[] {
+  const q = quotePrice(brief.packageId, brief.customModules)
+  const pkgLabel =
+    GUIDE_PACKAGES.find((p) => p.id === brief.packageId)?.label ?? '自定义组合'
+  const moduleLabels = q.moduleIds.map((id) => moduleById(id).label).join('、')
   return [
-    '附录 · 新加坡完整版正文（来自标准 5 晚 6 天模板）',
-    '图文说明  下列内容可与上方个性化日期对照使用；涉及具体日期的句子请以您本次订单为准。',
-    ...full.lines.slice(start),
+    '【服务报价单 · 演示定价】',
+    `套餐  ${pkgLabel}`,
+    `含模块  ${moduleLabels}`,
+    `参考价  ¥${q.priceCny} 元 / 份（不含机票酒店；门店成交价以您确认为准）`,
+    `模版说明  正文结构对齐《新加坡5晚6天_完整版》Word；未购模块不会写入导出文件。`,
   ]
+}
+
+function genericModuleBlocks(
+  moduleIds: TemplateModuleId[],
+  brief: CustomTripBrief,
+  stops: Destination[],
+  days: number,
+): Record<TemplateModuleId, string[]> {
+  const empty = (): Record<TemplateModuleId, string[]> => ({
+    overview: [],
+    pretrip_01: [],
+    pretrip_02: [],
+    pretrip_03: [],
+    pretrip_apps: [],
+    daily_detail: [],
+    budget_final: [],
+    official_menu: [],
+  })
+  const map = empty()
+  const pick = new Set(moduleIds)
+
+  if (pick.has('overview')) {
+    const names =
+      stops.map((s) => s.name).join('+') ||
+      brief.customPlaces.join('+') ||
+      '定制行程'
+    const { nights } = tripNightsAndDays(brief.startDate, brief.endDate)
+    map.overview.push(
+      `${names.toUpperCase()} · ${formatDateRange(brief.startDate, brief.endDate)}`,
+      `${names}${nights}晚${days}天个性化图文导游`,
+      ...buildDayPlan(brief, stops, days),
+      '活动怎么放才不赶',
+      '主推荐  首日轻量、中间核心景点、末日前移值机。',
+    )
+    if (brief.notes.trim()) {
+      map.overview.push('客户需求摘要', brief.notes.trim())
+    }
+    map.overview.push(...budgetGuideText(brief.budget))
+  }
+
+  const hasAbroad = stops.some((s) => s.scope === 'abroad')
+  if (pick.has('pretrip_01')) {
+    map.pretrip_01.push(
+      '出发前 01',
+      '证件与入境申报',
+      hasAbroad
+        ? '证件  护照与签证/入境卡政策以官方为准；订单与酒店英文地址离线保存。'
+        : '证件  国内行程携带身份证件；跨境段另备港澳/台湾等证件。',
+    )
+  }
+  if (pick.has('pretrip_02')) {
+    map.pretrip_02.push(
+      '出发前 02',
+      '天气与行李',
+      '查逐日预报；分层穿衣，备雨具与舒适鞋。',
+    )
+  }
+  if (pick.has('pretrip_03')) {
+    map.pretrip_03.push(
+      '出发前 03',
+      '交通与支付',
+      hasAbroad
+        ? 'App  地图、打车、地铁；漫游或 eSIM；少量当地现金。'
+        : 'App  地图导航与官方购票渠道；移动支付+现金。',
+    )
+  }
+  if (pick.has('pretrip_apps')) {
+    map.pretrip_apps.push(
+      '出发前 APP 1',
+      '请按目的地安装地图、支付、预约类 App，并完成登录与支付方式绑定。',
+    )
+  }
+  if (pick.has('daily_detail')) {
+    stops.forEach((d) => {
+      map.daily_detail.push(
+        `【${d.name}】${d.region}`,
+        d.tagline,
+        `推荐玩法  ${d.highlights.join(' · ')}`,
+        `小贴士  ${d.tips}`,
+      )
+    })
+    brief.customPlaces.forEach((name) => {
+      map.daily_detail.push(`【${name}】（客户指定）`, '请补充逐日时段与预约信息。')
+    })
+    if (map.daily_detail.length === 0) {
+      map.daily_detail.push(
+        '逐日详程说明  完整 Word 逐日图文模版当前以新加坡样稿为准；其它目的地可在此段手工扩写。',
+      )
+    }
+  }
+  if (pick.has('budget_final')) {
+    map.budget_final.push(
+      '出发前最后检查 注意事项与预算',
+      '出发前检查  证件/订单/保险 · 预报 · 预约截图 · 付款方式。',
+    )
+  }
+  if (pick.has('official_menu')) {
+    map.official_menu.push(
+      '官方来源菜单',
+      '请粘贴航司、酒店、景区官网与地图链接（导出后可在 Word 中编辑）。',
+    )
+  }
+  return map
+}
+
+function injectCustomerDaysIntoOverview(
+  overview: string[],
+  dayLines: string[],
+): string[] {
+  const start = overview.findIndex((l) => l === '六天路线一眼看懂')
+  if (start < 0) return [...overview, ...dayLines]
+  let end = start + 1
+  while (end < overview.length) {
+    const l = overview[end]
+    if (l.startsWith('Routes with') || (l.startsWith('DAY ') && !l.includes(' · '))) {
+      end++
+      continue
+    }
+    break
+  }
+  return [...overview.slice(0, start), ...dayLines, ...overview.slice(end)]
 }
 
 export async function buildCustomTripGuide(
@@ -195,39 +268,48 @@ export async function buildCustomTripGuide(
     '定制行程'
   const client = brief.clientLabel.trim()
   const title = `${titleNames}${nights}晚${days}天个性化图文导游`
+  const subtitle = client
+    ? `${client} · 出发 ${formatCnDate(brief.startDate)}，返程 ${formatCnDate(brief.endDate)}`
+    : `出发 ${formatCnDate(brief.startDate)}，返程 ${formatCnDate(brief.endDate)} · 出发前以机票/酒店订单复核`
 
-  const lines: string[] = [
-    `${titleNames.toUpperCase()} · ${range}`,
-    title,
-    client ? `${client} · 出发 ${formatCnDate(brief.startDate)}，返程 ${formatCnDate(brief.endDate)}` : `出发 ${formatCnDate(brief.startDate)}，返程 ${formatCnDate(brief.endDate)} · 出发前以机票/酒店订单复核`,
-    ...buildDayPlan(brief, stops, days),
-    '活动怎么放才不赶',
-    'Choose one evening theme',
-    '主推荐  首日轻量、中间安排核心景点、末日前移值机；不要把两个相距很远的夜场排在同一晚。',
-  ]
-
-  if (brief.notes.trim()) {
-    lines.push('客户需求摘要', brief.notes.trim())
-  }
-
-  lines.push(...preTripBlocks(stops.length ? stops : DESTINATIONS.slice(0, 1)))
-  lines.push(...budgetGuideText(brief.budget))
-  lines.push(...destinationDetailBlocks(stops, brief.customPlaces))
-
-  lines.push('出发前最后检查 注意事项与预算')
-  lines.push(
-    '出发前检查  证件/订单/保险 · 每日预报 · 预约截图 · 付款方式 · 同行人联系方式。',
-    '官方来源菜单  航司、酒店、景区官网与地图链接请在 Word 中自行粘贴最新 URL。',
-  )
+  const moduleIds = quotePrice(brief.packageId, brief.customModules).moduleIds
+  const dayLines = buildDayPlan(brief, stops, days)
 
   const onlySg =
     stops.length === 1 &&
     stops[0].id === 'singapore' &&
-    guidesForDestination('singapore').length > 0
+    (await loadGuideDocument('singapore-5n6d'))
+
+  let bodyLines: string[]
 
   if (onlySg) {
-    lines.push(...(await singaporeAppendix()))
+    const parts = splitSingaporeTemplate(onlySg.lines)
+    if (moduleIds.includes('overview')) {
+      parts.overview = injectCustomerDaysIntoOverview(
+        personalizeOverviewLines(
+          parts.overview.length ? parts.overview : onlySg.lines.slice(0, 32),
+          title,
+          `SINGAPORE · ${range}`,
+          subtitle,
+        ),
+        dayLines,
+      )
+      if (brief.notes.trim()) {
+        parts.overview.push('客户需求摘要', brief.notes.trim())
+      }
+    }
+    bodyLines = mergeTemplateModules(parts, moduleIds)
+  } else {
+    const generic = genericModuleBlocks(moduleIds, brief, stops, days)
+    bodyLines = mergeTemplateModules(generic, moduleIds)
+    if (moduleIds.includes('daily_detail') && !stops.some((s) => s.id === 'singapore')) {
+      bodyLines.unshift(
+        '模版提示  逐日图文详程的完整 Word 样稿目前以新加坡 5 晚 6 天为基准；本目的地以下为标准化简版段落。',
+      )
+    }
   }
+
+  const lines = [...quoteHeaderLines(brief), ...bodyLines]
 
   return {
     id: 'custom',
@@ -238,5 +320,22 @@ export async function buildCustomTripGuide(
     dateRange: range,
     subtitle: client ? `客户：${client}` : '根据客户日期与目的地生成',
     lines,
+  }
+}
+
+export function defaultCustomBrief(): CustomTripBrief {
+  const start = new Date().toISOString().slice(0, 10)
+  const endD = new Date(`${start}T12:00:00`)
+  endD.setDate(endD.getDate() + 5)
+  return {
+    startDate: start,
+    endDate: endD.toISOString().slice(0, 10),
+    destinationIds: ['singapore'],
+    customPlaces: [],
+    budget: 'mid',
+    notes: '',
+    clientLabel: '',
+    packageId: 'standard',
+    customModules: [],
   }
 }

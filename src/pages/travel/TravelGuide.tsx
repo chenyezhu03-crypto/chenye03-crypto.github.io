@@ -35,7 +35,18 @@ export function TravelGuide() {
         try {
           const raw = sessionStorage.getItem(CUSTOM_BRIEF_STORAGE_KEY)
           if (raw) {
-            const brief = JSON.parse(raw) as CustomTripBrief
+            const parsed = JSON.parse(raw) as Partial<CustomTripBrief>
+            const brief: CustomTripBrief = {
+              startDate: parsed.startDate ?? '',
+              endDate: parsed.endDate ?? '',
+              destinationIds: parsed.destinationIds ?? [],
+              customPlaces: parsed.customPlaces ?? [],
+              budget: parsed.budget ?? 'any',
+              notes: parsed.notes ?? '',
+              clientLabel: parsed.clientLabel ?? '',
+              packageId: parsed.packageId ?? 'standard',
+              customModules: parsed.customModules ?? [],
+            }
             const built = await buildCustomTripGuide(brief)
             if (!cancelled) setDoc(built)
           } else if (!cancelled) setDoc(null)

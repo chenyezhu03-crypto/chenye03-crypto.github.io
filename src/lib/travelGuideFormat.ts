@@ -1,6 +1,7 @@
 import type { GuideLineKind, GuideSection, TravelGuideDoc } from './travelGuideTypes'
 
 export function classifyGuideLine(line: string): GuideLineKind {
+  if (line.startsWith('【服务报价单')) return 'section'
   if (/^SINGAPORE ·/.test(line)) return 'title'
   if (/^新加坡\d+晚\d+天/.test(line) || /^【/.test(line)) return 'title'
   if (/^DAY \d\b/.test(line) || /^DAY \d ·/.test(line)) return 'day'

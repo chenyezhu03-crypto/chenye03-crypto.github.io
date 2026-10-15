@@ -3,6 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { DESTINATIONS } from '../../data/destinations'
 import { buildCustomTripGuide } from '../../lib/customTripGuide'
 import {
+  GUIDE_PACKAGES,
+  quotePrice,
+  TEMPLATE_MODULES,
+  type GuidePackageId,
+  type TemplateModuleId,
+} from '../../lib/guideTemplateCatalog'
+import {
   CUSTOM_BRIEF_STORAGE_KEY,
   formatDateRange,
   tripNightsAndDays,
@@ -33,6 +40,8 @@ export function TravelCustom() {
   const [budget, setBudget] = useState<CustomTripBrief['budget']>('mid')
   const [notes, setNotes] = useState('')
   const [clientLabel, setClientLabel] = useState('')
+  const [packageId, setPackageId] = useState<GuidePackageId>('standard')
+  const [customModules, setCustomModules] = useState<TemplateModuleId[]>([])
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
 
@@ -44,6 +53,11 @@ export function TravelCustom() {
   const sortedDests = useMemo(
     () => [...DESTINATIONS].sort((a, b) => a.name.localeCompare(b.name, 'zh')),
     [],
+  )
+
+  const quote = useMemo(
+    () => quotePrice(packageId, customModules),
+    [packageId, customModules],
   )
 
   function toggleDest(id: string) {
@@ -68,13 +82,24 @@ export function TravelCustom() {
       budget,
       notes,
       clientLabel,
+      packageId,
+      customModules,
     }
+  }
+
+  function toggleModule(id: TemplateModuleId) {
+    setPackageId('custom')
+    setCustomModules((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    )
   }
 
   function validate(): string | null {
     if (endDate < startDate) return '返程日期不能早于出发日期'
     if (destinationIds.length === 0 && customPlaces.length === 0)
       return '请至少选择一个目的地，或填写想去的地点'
+    if (packageId === 'custom' && customModules.length === 0)
+      return '自定义组合请至少勾选一个模版模块'
     return null
   }
 
@@ -113,8 +138,87 @@ export function TravelCustom() {
       <section className="travel-card">
         <h1 className="travel-h1">按客户信息做攻略</h1>
         <p className="travel-lead">
-          填写大概出行日期、想去的地方和预算，系统会生成与「5 晚 6 天完整版」同结构的
-          Word，可再打印为 PDF。若只选新加坡，会自动附上完整新加坡正文附录。
+          以您的 Word《新加坡 5 晚 6 天完整版》为模版：客户可选
+          <strong> 部分 / 标准 / 完整 </strong>
+          章节，定价不同；仅新加坡单目的地时从原稿精确截取模块，其它目的地为同结构简版。
+        </p>
+      </section>
+
+      <section className="travel-card">
+        <h2 className="travel-h2">选套餐（按模版章节）</h2>
+        <div className="travel-package-grid">
+          {GUIDE_PACKAGES.map((pkg) => (
+            <button
+              key={pkg.id}
+              type="button"
+              className={
+                packageId === pkg.id
+                  ? 'travel-package-card is-on'
+                  : 'travel-package-card'
+              }
+              onClick={() => setPackageId(pkg.id)}
+            >
+              {pkg.badge && (
+                <span className="travel-package-badge">{pkg.badge}</span>
+              )}
+              <strong>{pkg.label}</strong>
+              <span className="travel-package-price">¥{pkg.priceCny}</span>
+              <p className="travel-meta">{pkg.desc}</p>
+            </button>
+          ))}
+          <button
+            type="button"
+            className={
+              packageId === 'custom'
+                ? 'travel-package-card is-on'
+                : 'travel-package-card'
+            }
+            onClick={() => setPackageId('custom')}
+          >
+            <strong>自定义组合</strong>
+            <span className="travel-package-price">按模块累加</span>
+            <p className="travel-meta">自选章节，适合「只要证件+逐日」等需求</p>
+          </button>
+        </div>
+
+        {(packageId === 'custom' || packageId !== 'full') && (
+          <div className="travel-module-pick">
+            <p className="field-label">
+              {packageId === 'custom'
+                ? '勾选需要的模版模块'
+                : '本套餐已含模块（切到「自定义」可改）'}
+            </p>
+            <ul className="travel-module-list">
+              {TEMPLATE_MODULES.map((m) => {
+                const on =
+                  packageId === 'custom'
+                    ? customModules.includes(m.id)
+                    : quote.moduleIds.includes(m.id)
+                return (
+                  <li key={m.id}>
+                    <label className="travel-module-row">
+                      <input
+                        type="checkbox"
+                        checked={on}
+                        disabled={packageId !== 'custom'}
+                        onChange={() => toggleModule(m.id)}
+                      />
+                      <span>
+                        <strong>{m.label}</strong>
+                        <span className="travel-meta"> · ¥{m.priceCny} · {m.templateRef}</span>
+                        <span className="travel-module-desc">{m.desc}</span>
+                      </span>
+                    </label>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        )}
+
+        <p className="travel-quote-line">
+          当前报价：<strong>¥{quote.priceCny}</strong>
+          <span className="travel-meta">（演示价，Word 首页会写入报价单）</span>
         </p>
       </section>
 

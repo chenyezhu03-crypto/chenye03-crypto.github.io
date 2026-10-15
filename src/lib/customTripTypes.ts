@@ -1,3 +1,4 @@
+import type { GuidePackageId, TemplateModuleId } from './guideTemplateCatalog'
 import type { BudgetLevel } from './travelTypes'
 
 export type CustomTripBrief = {
@@ -8,9 +9,12 @@ export type CustomTripBrief = {
   budget: BudgetLevel | 'any'
   notes: string
   clientLabel: string
+  /** 部分 / 标准 / 完整 / 自定义模块 */
+  packageId: GuidePackageId
+  customModules: TemplateModuleId[]
 }
 
-export const CUSTOM_BRIEF_STORAGE_KEY = 'travel-custom-brief-v1'
+export const CUSTOM_BRIEF_STORAGE_KEY = 'travel-custom-brief-v2'
 
 export function tripNightsAndDays(startDate: string, endDate: string): {
   nights: number
