@@ -9,6 +9,7 @@
     "travel": "node scripts/open-travel.mjs",
     "travel:build": "node scripts/generate-travel.mjs",
     "travel:serve": "node scripts/serve-travel-dist.mjs",
+    "travel:html": "node scripts/build-travel-html.mjs",
     "build": "tsc -b && vite build && cp dist/index.html dist/404.html",
     "lint": "oxlint",
     "preview": "vite preview",
@@ -31,6 +32,7 @@
     "playwright": "^1.64.1",
     "typescript": "~6.0.2",
     "vite": "^8.3.0",
+    "vite-plugin-singlefile": "^2.3.3",
     "xlsx": "^0.18.5"
   }
 }

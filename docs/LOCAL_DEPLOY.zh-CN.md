@@ -5,15 +5,22 @@
 ## 一键打开（Mac 可双击）
 
 - **`启动全球中文旅行文旅.command`** — 开发模式，自动打开浏览器  
-- **`生成旅行网页.command`** — **直接生成** `dist/` 静态站并预览  
+- **`双击打开旅行网页.command`** — 生成 **一个 HTML**，浏览器**直接双击打开**（不用 localhost）  
+- **`打开旅行站5174.command`** — 固定 http://localhost:5174/（需后台服务）  
 
 或终端：
 
 ```bash
 npm install
 npm run travel          # 开发，热更新
-npm run travel:build    # 生成 dist/ + 预览（= 直接生成网页文件）
+npm run travel:html     # ★ 单个 HTML：release/全球中文旅行文旅-双击打开.html
+npm run travel:build    # 生成 dist/ + 预览
+npm run travel:serve    # http://localhost:5174/
 ```
+
+> **为什么不能只双击 dist/index.html？**  
+> 普通构建会引用外部 `.js` 文件，Chrome 在 `file://` 下会拦截。  
+> `travel:html` 会把 JS/CSS **全部内联进一个 HTML**，才能真·双击打开。
 
 ## 本地开发
 
