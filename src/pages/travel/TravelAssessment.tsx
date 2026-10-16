@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
+import { getDestinationById } from '../../lib/travelMatch'
 import { PlatformDisclaimer } from '../../components/travel/PlatformDisclaimer'
 import { DESTINATIONS } from '../../data/destinations'
 import {
@@ -18,7 +19,13 @@ import { BUDGET_LABELS, type BudgetLevel } from '../../lib/travelTypes'
 const BUDGETS = Object.keys(BUDGET_LABELS) as BudgetLevel[]
 
 export function TravelAssessment() {
+  const [search] = useSearchParams()
   const [destinationIds, setDestinationIds] = useState<string[]>(['singapore'])
+
+  useEffect(() => {
+    const d = search.get('dest')
+    if (d && getDestinationById(d)) setDestinationIds([d])
+  }, [search])
   const [travelers, setTravelers] = useState(2)
   const [budget, setBudget] = useState<AssessmentInput['budget']>('mid')
   const [pace, setPace] = useState<AssessmentInput['pace']>('balanced')

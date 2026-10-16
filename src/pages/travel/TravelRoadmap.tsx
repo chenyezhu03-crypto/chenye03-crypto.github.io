@@ -15,8 +15,9 @@ export function TravelRoadmap() {
       <section className="travel-card">
         <h1 className="travel-h1">{PLATFORM.name}</h1>
         <p className="travel-lead">
-          服务<strong>中国大陆用户</strong>（仅中文）· 全球出境规划 + 社区 + 赛事 + 直播 + 文创助农 +
-          未来 IP。本页为<strong>开发路线图</strong>，与代码中 `platform/manifest.ts` 同步。
+          服务<strong>中国大陆用户</strong>（仅中文）。下面 V1–V6 来自「你和 AI
+          聊想法后整理的产品框架」，是<strong>方向清单</strong>，不是承诺已全部开发。
+          当前仓库<strong>只有 V1 原型能点能演示</strong>；改优先级请直接说，以你的决定为准。
         </p>
       </section>
 

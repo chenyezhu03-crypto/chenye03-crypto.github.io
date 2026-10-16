@@ -1,7 +1,11 @@
-# 全球中文旅行文旅 · 完整开发框架
+# 全球中文旅行文旅 · 产品框架（AI 协助整理）
 
-> 与代码同步：`src/platform/manifest.ts`、`src/platform/refundRules.ts`  
-> 当前仓库为 **Web 原型**，按 **V1 → V6** 严格顺序扩展。
+> **来源说明**：本文档由「创始人想法 + AI 归纳」生成，供开发和迭代参考，  
+> 不等于已全部实现。代码真相：`src/platform/manifest.ts`  
+> 当前仓库 = **Web 原型**，优先把 **V1 跑通** 再谈 V2+。
+
+> 与代码同步：`src/platform/refundRules.ts`  
+> 扩展顺序建议 **V1 → V6**，但可随时按业务砍 scope。
 
 ## 总定位（固定）
 
