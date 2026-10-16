@@ -1962,9 +1962,85 @@ textarea {
 
 .travel-community-tabs {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 0.35rem;
   padding: 0 1rem 0.65rem;
+}
+
+@media (min-width: 380px) {
+  .travel-community-tabs {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.travel-hub-grid {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.55rem;
+}
+
+.travel-hub-grid-compact .travel-hub-card {
+  min-height: 4.5rem;
+}
+
+.travel-hub-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--white);
+  text-decoration: none;
+  color: inherit;
+}
+
+.travel-hub-card strong {
+  font-size: 0.82rem;
+}
+
+.travel-hub-emoji {
+  font-size: 1.35rem;
+}
+
+.travel-ugc-preview-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.travel-ugc-watermark {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  background: repeating-linear-gradient(
+    -24deg,
+    transparent,
+    transparent 40px,
+    #1a4f7a 40px,
+    #1a4f7a 41px
+  );
+}
+
+.travel-ugc-watermark::after {
+  content: attr(data-watermark);
+  position: absolute;
+  inset: 0;
+  font-size: 0.65rem;
+  color: #1a4f7a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem;
+  transform: rotate(-12deg);
+}
+
+.travel-ip-hero {
+  text-align: center;
 }
 
 .travel-community-tab {

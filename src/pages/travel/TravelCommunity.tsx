@@ -14,8 +14,14 @@ import {
 } from '../../lib/travelCommunityStorage'
 import type { TravelMomentStatusId } from '../../lib/travelCommunityTypes'
 import { overlapDayCount } from '../../lib/travelTripOverlap'
+import {
+  likeMoment,
+  loadMoments24h,
+  momentRemainingLabel,
+  publishMoment24h,
+} from '../../lib/travelMoment24h'
 
-type CommunityTab = 'status' | 'same-time' | 'feed'
+type CommunityTab = 'status' | 'same-time' | 'moments' | 'feed'
 
 export function TravelCommunity() {
   const [tab, setTab] = useState<CommunityTab>('status')
@@ -24,10 +30,14 @@ export function TravelCommunity() {
   )
   const [postDraft, setPostDraft] = useState('')
   const [savedHint, setSavedHint] = useState('')
+  const [momentBody, setMomentBody] = useState('')
+  const [momentTags, setMomentTags] = useState('')
+  const [momentTick, setMomentTick] = useState(0)
 
   const preset = statusById(profile.statusId)
   const sameTime = useMemo(() => membersOnSameTrip(profile), [profile])
   const feed = useMemo(() => communityFeed(profile), [profile, postDraft])
+  const moments24 = useMemo(() => loadMoments24h(), [profile, momentTick])
 
   function flash(msg: string) {
     setSavedHint(msg)
@@ -103,6 +113,7 @@ export function TravelCommunity() {
           [
             ['status', '设状态'],
             ['same-time', `同期${sameTime.length ? ` (${sameTime.length})` : ''}`],
+            ['moments', '24h动态'],
             ['feed', '广场交流'],
           ] as const
         ).map(([id, label]) => (
@@ -312,6 +323,66 @@ export function TravelCommunity() {
               })}
             </ul>
           )}
+        </section>
+      )}
+
+      {tab === 'moments' && (
+        <section className="travel-card travel-form">
+          <h2 className="travel-h2">24 小时旅行动态</h2>
+          <p className="travel-meta">出行计划 · 疑问 · 规划进度 · 话题标签 · 过期自动消失</p>
+          <textarea
+            rows={3}
+            value={momentBody}
+            onChange={(e) => setMomentBody(e.target.value)}
+            placeholder="如：还在纠结去不去新加坡…"
+          />
+          <input
+            value={momentTags}
+            onChange={(e) => setMomentTags(e.target.value)}
+            placeholder="话题，逗号分隔，如：找搭子,签证"
+          />
+          <button
+            type="button"
+            className="btn btn-primary travel-btn-block"
+            onClick={() => {
+              if (!momentBody.trim()) return
+              publishMoment24h(
+                momentBody,
+                momentTags.split(/[,，]/).map((t) => t.trim()),
+              )
+              setMomentBody('')
+              setMomentTags('')
+              setMomentTick((t) => t + 1)
+              flash('已发布 24h 动态')
+            }}
+          >
+            发布（24h 后过期）
+          </button>
+          <ul className="travel-feed-list">
+            {moments24.map((m) => (
+              <li key={m.id} className="travel-feed-item">
+                <div className="travel-feed-head">
+                  <span>{m.authorEmoji}</span>
+                  <strong>{m.authorName}</strong>
+                  <span className="travel-meta">{momentRemainingLabel(m.expiresAt)}</span>
+                </div>
+                <p className="travel-feed-body">{m.body}</p>
+                {m.tags.length > 0 && (
+                  <p className="travel-meta">{m.tags.map((t) => `#${t}`).join(' ')}</p>
+                )}
+                <button
+                  type="button"
+                  className="btn btn-ghost"
+                  onClick={() => {
+                    likeMoment(m.id)
+                    setMomentTick((t) => t + 1)
+                  }}
+                >
+                  👍 {m.likes}
+                </button>
+              </li>
+            ))}
+          </ul>
         </section>
       )}
 

@@ -4,10 +4,10 @@ import { PLATFORM } from '../../platform/manifest'
 
 const tabs = [
   { to: '/travel', label: '首页', end: true },
-  { to: '/travel/custom', label: '攻略', end: false },
+  { to: '/travel/spin', label: '盲盒', end: false },
   { to: '/travel/community', label: '社区', end: false },
-  { to: '/travel/region', label: '帮选', end: false },
-  { to: '/travel/picks', label: '三选一', end: false },
+  { to: '/travel/hub', label: '全部', end: false },
+  { to: '/travel/mine', label: '我的', end: false },
 ]
 
 export function TravelLayout() {
@@ -31,6 +31,10 @@ export function TravelLayout() {
                 ? '一次给你 3 个备选'
                 : loc.pathname.includes('/spin')
                   ? '帮选 · 大转盘'
+                  : loc.pathname.includes('/hub')
+                    ? '全部功能 · V1–V6'
+                  : loc.pathname.includes('/mine')
+                    ? '个人中心'
                   : loc.pathname.includes('/community')
                     ? '旅友社区 · 状态与同期出行'
                   : loc.pathname.includes('/custom')

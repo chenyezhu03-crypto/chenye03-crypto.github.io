@@ -7,6 +7,7 @@ import {
 } from '../../lib/travelPlanMode'
 import { travelCustomPath } from '../../lib/travelCustomLink'
 import { HOME_ADVANTAGES, PLATFORM } from '../../platform/manifest'
+import { PLATFORM_MODULES } from '../../platform/moduleRegistry'
 
 export function TravelHome() {
   const navigate = useNavigate()
@@ -97,16 +98,33 @@ export function TravelHome() {
           </li>
         </ol>
         <p className="travel-note">
-          底部 Tab「做攻略」= 第二步；「地区 / 三选一」主要在「还没想好」时使用。
+          底部 Tab：<strong>盲盒</strong>抽签 · <strong>社区</strong>状态 · <strong>全部</strong>
+          打开 V1–V6 各模块 · <strong>我的</strong>订单与会员。
         </p>
+        <Link className="btn btn-primary travel-btn-block" to="/travel/hub">
+          进入全部功能（按你的框架 V1–V6）
+        </Link>
         <Link className="btn btn-ghost travel-btn-block" to="/travel/pricing">
           V1 定价：免费 + ¥5.99 测评 + ¥19.99 Word
         </Link>
-        <Link className="btn btn-primary travel-btn-block" to="/travel/community">
-          旅友社区 · 设状态 / 找同期出行
-        </Link>
-        <Link className="travel-foot-link" to="/travel/roadmap">
-          完整产品路线图（V1–V6）→
+      </section>
+
+      <section className="travel-card">
+        <h2 className="travel-h2">快捷入口</h2>
+        <ul className="travel-hub-grid travel-hub-grid-compact">
+          {PLATFORM_MODULES.filter((m) => m.id !== 'roadmap')
+            .slice(0, 8)
+            .map((m) => (
+              <li key={m.id}>
+                <Link className="travel-hub-card" to={m.path}>
+                  <span className="travel-hub-emoji">{m.emoji}</span>
+                  <strong>{m.title}</strong>
+                </Link>
+              </li>
+            ))}
+        </ul>
+        <Link className="travel-foot-link" to="/travel/hub">
+          查看全部 {PLATFORM_MODULES.length} 个模块 →
         </Link>
       </section>
 

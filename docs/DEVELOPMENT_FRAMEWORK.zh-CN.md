@@ -18,34 +18,31 @@
 
 | 模块 | 路由/代码 | 状态 |
 |------|-----------|------|
-| 全球盲盒抽签 | `/travel/spin`, `/travel/region` | 已有 |
-| 目的地知识库 | `destinationKnowledge.ts`, 目的地详情页 | 样例+自动生成 |
-| AI 多目的地行程 | `/travel/custom`, `buildCustomTripGuide` | 模版引擎 |
-| 免费大纲预览 | `preview` 套餐, `/travel/guide` | 已有 |
-| ¥5.99 适配测评 | `/travel/assessment` | 已有 |
-| ¥19.99 Word 导出 | `premium` 套餐, `guidePaywall` | 已有 |
-| 会员 | 定价页占位 | 待支付 |
-| 退款/重生成 | `refundRules.ts` | 规则已写死 |
+| 全球盲盒抽签 | `/travel/spin`, `/travel/region` | 原型 |
+| 目的地知识库 | `destinationKnowledge.ts`, 目的地详情页 | 原型 |
+| AI 多目的地行程 | `/travel/custom`, `buildCustomTripGuide` | 原型 |
+| 免费大纲预览 | `preview` 套餐, `/travel/guide` | 原型 |
+| ¥5.99 适配测评 | `/travel/assessment` | 原型 |
+| ¥19.99 Word 导出 | `premium` 套餐, `guidePaywall` | 原型 |
+| 会员 | `/travel/mine`, `/travel/pricing` | 占位 |
+| 退款/重生成 | `refundRules.ts` | 已写死 |
 | 免责声明 | `PlatformDisclaimer` | 全局 |
 
-## V2 — UGC + 24h 状态
+**总入口**：`/travel/hub` · `platform/moduleRegistry.ts`
 
-- 攻略上传、水印、打赏 5% / 售卖 10%
-- 24h 过期状态（现有社区可演进）
+## V2 — UGC + 24h 状态 → `/travel/ugc`, 社区「24h动态」
 
-## V2.5 — 频道社群
+## V2.5 — 频道社群 → `/travel/channels`
 
-- 洲/国频道、签证、组队、创作、大赛专区
+## V3 — 直播连麦 → `/travel/live`
 
-## V3 — 直播连麦
+## V3.5 — 季度四大赛事 → `/travel/contests`
 
-## V3.5 — 季度四大赛事
+## V4 — 助农/非遗/主题季 → `/travel/eco`
 
-## V4 — 助农 5%、非遗 10–15%、56 民族/世界文明季
+## V5 — 持证地陪撮合 → `/travel/guides`
 
-## V5 — 持证地陪撮合（不做旅行社）
-
-## V6 — IP 宇宙（环环）
+## V6 — IP 宇宙（环环）→ `/travel/ip`
 
 ## 盈利模式（代码常量 `PLATFORM_FEES` + `V1_PRICING`）
 
