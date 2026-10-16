@@ -2,11 +2,12 @@
 
 **主产品 · 文旅小程序 Web 版**：盲盒抽签、中国护照知识库、行程/Word/测评、社区与 V1–V6 模块原型。
 
-| 入口 | 链接 |
+| 入口 | 说明 |
 |------|------|
-| **文旅首页** | https://chenyezhu03-crypto.github.io/travel |
-| 全部功能 | https://chenyezhu03-crypto.github.io/travel/hub |
-| 微信小程序壳 | 见 [`miniprogram/README.md`](./miniprogram/README.md) |
+| 文旅 Web | 本地 `npm run dev` → `/travel`（**不在 GitHub Pages 公开发布**） |
+| 全部功能 | `/travel/hub` |
+| 部署说明 | [`docs/LOCAL_DEPLOY.zh-CN.md`](./docs/LOCAL_DEPLOY.zh-CN.md) |
+| 微信小程序壳 | [`miniprogram/README.md`](./miniprogram/README.md) |
 
 ---
 
@@ -24,17 +25,6 @@
 > 演示数据保存在浏览器 `localStorage`（**2027 国考全量职位表**约 1.9 万条在 `public/data/guokao2027-positions.json`，运行时按需加载，不写入 localStorage）。更新 Excel 后可运行 `npm run import:guokao -- /path/to/27国考岗位表.xlsx` 重新生成 JSON。
 
 > 真实抓取第三方需登录/反爬的平台不在本仓库范围内；企业社招样本在 `src/data/rawFeeds.ts`。
-
-## 在线访问（与本地 `/jobs` 相同，浏览器直接打开）
-
-| 页面 | 链接 |
-|------|------|
-| 全球中文旅行文旅 | https://chenyezhu03-crypto.github.io/travel |
-| 投简工作台 | https://chenyezhu03-crypto.github.io/toujian |
-| 选岗助手 | https://chenyezhu03-crypto.github.io/pick |
-| 岗位雷达 | https://chenyezhu03-crypto.github.io/jobs |
-
-若 404，请按 [ENABLE_PAGES.md](./ENABLE_PAGES.md) 在 GitHub 仓库 **Settings → Pages** 选择 **`gh-pages`** 分支（只需一次）。
 
 ## 本地开发
 
