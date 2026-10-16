@@ -1,0 +1,12 @@
+{
+  "name": "全球中文旅行文旅",
+  "short_name": "中文文旅",
+  "description": "盲盒抽签 · 行程攻略 · 旅友社区",
+  "lang": "zh-CN",
+  "start_url": "/travel",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f4f8fc",
+  "theme_color": "#1a4f7a",
+  "orientation": "portrait-primary"
+}
