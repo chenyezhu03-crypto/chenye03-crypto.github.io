@@ -13,7 +13,7 @@
 ```bash
 npm install
 npm run travel          # 开发，热更新
-npm run travel:html     # ★ 单个 HTML：release/全球中文旅行文旅-双击打开.html
+npm run travel:html     # ★ 本地生成 release/*.html（已 gitignore，勿提交 GitHub）
 npm run travel:build    # 生成 dist/ + 预览
 npm run travel:serve    # http://localhost:5174/
 ```

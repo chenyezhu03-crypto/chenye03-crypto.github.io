@@ -35,7 +35,8 @@ fs.copyFileSync(distIndex, outFileAscii)
 console.log('\n✓ 完成！请用浏览器双击打开：\n')
 console.log(outFile)
 console.log('（英文名副本：）', outFileAscii)
-console.log('\n无需 localhost，无需终端。Safari / Chrome 均可。\n')
+console.log('\n无需 localhost，无需终端。Safari / Chrome 均可。')
+console.log('⚠️  release/ 已在 .gitignore，请勿把该 HTML 提交或上传到公开 GitHub。\n')
 
 if (process.platform === 'darwin') {
   spawn('open', [outFile], { stdio: 'ignore', detached: true }).unref()
