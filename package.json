@@ -8,6 +8,7 @@
     "pick": "node scripts/open-pick.mjs",
     "travel": "node scripts/open-travel.mjs",
     "travel:build": "node scripts/generate-travel.mjs",
+    "travel:serve": "node scripts/serve-travel-dist.mjs",
     "build": "tsc -b && vite build && cp dist/index.html dist/404.html",
     "lint": "oxlint",
     "preview": "vite preview",

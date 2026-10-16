@@ -7,4 +7,5 @@ if ! command -v npm >/dev/null; then
   exit 1
 fi
 npm install --no-fund --no-audit 2>/dev/null
+export TRAVEL_PORT=5174
 npm run travel

@@ -6,8 +6,8 @@ import path from 'node:path'
 import { setTimeout as sleep } from 'node:timers/promises'
 import { fileURLToPath } from 'node:url'
 
-const PORT = process.env.TRAVEL_PORT || '5173'
-const HOST = process.env.TRAVEL_HOST || '0.0.0.0'
+const PORT = process.env.TRAVEL_PORT || '5174'
+const HOST = process.env.TRAVEL_HOST || '127.0.0.1'
 const URL = `http://127.0.0.1:${PORT}/`
 
 function lanUrls() {

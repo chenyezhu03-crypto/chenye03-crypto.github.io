@@ -4,11 +4,12 @@
  * 生成物在 dist/，可整包拷贝到你的服务器或 OSS。
  */
 import { spawn } from 'node:child_process'
+import fs from 'node:fs'
 import path from 'node:path'
 import { setTimeout as sleep } from 'node:timers/promises'
 import { fileURLToPath } from 'node:url'
 
-const PORT = process.env.TRAVEL_PREVIEW_PORT || '4173'
+const PORT = process.env.TRAVEL_PREVIEW_PORT || '5174'
 const URL = `http://127.0.0.1:${PORT}/`
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -46,7 +47,28 @@ async function waitForServer(maxMs = 15000) {
 
 console.log('① 正在生成静态网页（npm run build）…')
 await run('npm', ['run', 'build'])
-console.log('\n✓ 已生成到 dist/ 目录，可直接上传部署。\n')
+const dist = path.join(root, 'dist')
+const readme = path.join(dist, '如何打开.txt')
+fs.writeFileSync(
+  readme,
+  `全球中文旅行文旅 — 打开方式
+
+1) 像 http://localhost:5174/ 一样（推荐）
+   在项目根目录终端：npm run travel:serve
+   会自动打开浏览器，地址固定为 http://localhost:5174/
+
+2) 不启动服务、直接双击
+   用浏览器打开本文件夹里的 index.html
+   地址栏会是 file:// 开头，功能相同（Hash 路由）。
+
+3) 开发改代码
+   npm run travel
+`,
+  'utf8',
+)
+console.log('\n✓ 已生成到 dist/ 目录')
+console.log('  · 固定本地地址：npm run travel:serve → http://localhost:5174/')
+console.log('  · 或双击 dist/index.html 直接用浏览器打开\n')
 
 console.log('② 启动本地预览…')
 const preview = spawn(
