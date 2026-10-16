@@ -2187,6 +2187,205 @@ textarea {
   line-height: 1.55;
 }
 
+/* —— 文旅官网单页 / —— */
+.portal-page {
+  min-height: 100dvh;
+  background: linear-gradient(165deg, #0f3554 0%, #1a4f7a 38%, #f4f8fc 38%);
+  color: #1a2a35;
+}
+
+.portal-header {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.25rem 1.25rem 0;
+  color: #fff;
+}
+
+.portal-logo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.portal-tag {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  opacity: 0.88;
+}
+
+.portal-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.85rem;
+  font-size: 0.88rem;
+}
+
+.portal-nav a {
+  color: #fff;
+  text-decoration: none;
+  opacity: 0.92;
+}
+
+.portal-nav a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.portal-hero {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 2rem;
+  color: #fff;
+}
+
+.portal-hero h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 5vw, 2.45rem);
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.portal-hero-accent {
+  color: #a8e6ff;
+}
+
+.portal-lead {
+  max-width: 36rem;
+  margin: 1rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  opacity: 0.92;
+}
+
+.portal-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1.5rem;
+}
+
+.portal-btn {
+  display: inline-block;
+  padding: 0.65rem 1.15rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+
+.portal-btn-primary {
+  background: #fff;
+  color: #1a4f7a;
+}
+
+.portal-btn-ghost {
+  border-color: rgba(255, 255, 255, 0.55);
+  color: #fff;
+}
+
+.portal-section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem;
+  background: #f4f8fc;
+  border-radius: 20px 20px 0 0;
+}
+
+.portal-section h2 {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+  color: #1a4f7a;
+}
+
+.portal-list {
+  margin: 0;
+  padding-left: 1.15rem;
+  line-height: 1.65;
+  font-size: 0.9rem;
+}
+
+.portal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.65rem;
+}
+
+.portal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.75rem;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  font-size: 0.78rem;
+}
+
+.portal-card strong {
+  font-size: 0.82rem;
+  color: #1a4f7a;
+}
+
+.portal-card-emoji {
+  font-size: 1.35rem;
+}
+
+.portal-pricing {
+  background: #eef4fa;
+}
+
+.portal-price-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.portal-price-row article {
+  background: #fff;
+  border-radius: 12px;
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+}
+
+.portal-price-row h3 {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.portal-price {
+  margin: 0.35rem 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1a4f7a;
+}
+
+.portal-footer {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem 1.25rem 2rem;
+  background: #eef4fa;
+}
+
+.portal-footer .travel-disclaimer {
+  margin: 0;
+}
+
+.portal-meta {
+  margin: 0.75rem 0 0;
+  font-size: 0.82rem;
+}
+
+.portal-meta a {
+  color: #1a4f7a;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
