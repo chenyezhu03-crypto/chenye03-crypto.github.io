@@ -11,6 +11,7 @@ const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const distIndex = path.join(root, 'dist', 'index.html')
 const outDir = path.join(root, 'release')
 const outFile = path.join(outDir, '全球中文旅行文旅-双击打开.html')
+const outFileAscii = path.join(outDir, 'travel-open.html')
 
 function run(cmd, args) {
   return new Promise((resolve, reject) => {
@@ -29,9 +30,11 @@ if (!fs.existsSync(distIndex)) {
 
 fs.mkdirSync(outDir, { recursive: true })
 fs.copyFileSync(distIndex, outFile)
+fs.copyFileSync(distIndex, outFileAscii)
 
 console.log('\n✓ 完成！请用浏览器双击打开：\n')
 console.log(outFile)
+console.log('（英文名副本：）', outFileAscii)
 console.log('\n无需 localhost，无需终端。Safari / Chrome 均可。\n')
 
 if (process.platform === 'darwin') {
