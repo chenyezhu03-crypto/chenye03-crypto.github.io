@@ -13,13 +13,13 @@ export function MainShell() {
     <div className="app-shell">
       <Nav />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/toujian" element={<Home />} />
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/gwy/guide" element={<GwyGuide />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/apply" element={<Apply />} />
         <Route path="/applications" element={<Applications />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/toujian" replace />} />
       </Routes>
       <Footer />
     </div>

@@ -7,10 +7,10 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/pick/*" element={<PickApp />} />
+        <Route path="/" element={<Navigate to="/travel" replace />} />
         <Route path="/travel/*" element={<TravelApp />} />
+        <Route path="/pick/*" element={<PickApp />} />
         <Route path="/*" element={<MainShell />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   )

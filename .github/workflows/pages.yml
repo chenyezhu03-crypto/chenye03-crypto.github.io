@@ -26,6 +26,15 @@ jobs:
       - name: Install and build
         run: npm ci && npm run build
 
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium
+
+      - name: Smoke test travel app
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4173 &
+          sleep 3
+          BASE_URL=http://127.0.0.1:4173 npm run test:e2e:travel
+
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
         with:

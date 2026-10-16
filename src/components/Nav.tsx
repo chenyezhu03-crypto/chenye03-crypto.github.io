@@ -12,7 +12,7 @@ const links = [
 export function Nav() {
   return (
     <header className="site-nav">
-      <NavLink to="/" className="brand" end>
+      <NavLink to="/toujian" className="brand" end>
         投简
       </NavLink>
       <nav className="nav-links" aria-label="主导航">

@@ -58,6 +58,9 @@ export function TravelMine() {
         <Link className="btn btn-primary travel-btn-block" to="/travel/hub">
           全部功能入口
         </Link>
+        <Link className="travel-foot-link" to="/toujian">
+          投简 · 求职投递（同站另一产品）
+        </Link>
       </section>
     </main>
   )

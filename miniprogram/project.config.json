@@ -1,0 +1,13 @@
+{
+  "description": "全球中文旅行文旅 · WebView 壳",
+  "packOptions": { "ignore": [] },
+  "setting": {
+    "urlCheck": true,
+    "es6": true,
+    "minified": true
+  },
+  "compileType": "miniprogram",
+  "appid": "tourist-placeholder",
+  "projectname": "global-chinese-travel",
+  "miniprogramRoot": "./"
+}
