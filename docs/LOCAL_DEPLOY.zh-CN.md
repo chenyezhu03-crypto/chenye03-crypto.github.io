@@ -2,6 +2,19 @@
 
 产品**不在 GitHub 上对外发布**。代码可以私有托管，站点由你自己部署。
 
+## 一键打开（Mac 可双击）
+
+- **`启动全球中文旅行文旅.command`** — 开发模式，自动打开浏览器  
+- **`生成旅行网页.command`** — **直接生成** `dist/` 静态站并预览  
+
+或终端：
+
+```bash
+npm install
+npm run travel          # 开发，热更新
+npm run travel:build    # 生成 dist/ + 预览（= 直接生成网页文件）
+```
+
 ## 本地开发
 
 ```bash
