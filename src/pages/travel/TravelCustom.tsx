@@ -7,12 +7,18 @@ import { buildCustomTripGuide } from '../../lib/customTripGuide'
 import {
   formatGuidePrice,
   GUIDE_PACKAGES,
-  MAX_GUIDE_PRICE_CNY,
+  GUIDE_PRICE_BASIC_CNY,
+  GUIDE_PRICE_PREMIUM_CNY,
   quotePrice,
   TEMPLATE_MODULES,
   type GuidePackageId,
   type TemplateModuleId,
 } from '../../lib/guideTemplateCatalog'
+import {
+  hasPaidUnlock,
+  markPaidUnlock,
+  unlockPriceLabel,
+} from '../../lib/guidePaywall'
 import {
   CUSTOM_BRIEF_STORAGE_KEY,
   formatDateRange,
@@ -53,6 +59,13 @@ export function TravelCustom() {
   useEffect(() => {
     saveTravelPlanMode('has_plan')
   }, [])
+
+  useEffect(() => {
+    const pkg = search.get('pkg') as GuidePackageId | null
+    if (pkg && GUIDE_PACKAGES.some((p) => p.id === pkg)) {
+      setPackageId(pkg)
+    }
+  }, [search])
 
   useEffect(() => {
     const one = search.get('dest')
@@ -140,16 +153,27 @@ export function TravelCustom() {
     navigate('/travel/guide/custom')
   }
 
-  async function downloadWord() {
+  async function downloadWord(simulatePay = false) {
     const err = validate()
     if (err) {
       setError(err)
       return
     }
+    const brief = buildBrief()
+    const q = quotePrice(brief.packageId, brief.customModules)
+    if (q.priceCny > 0 && !hasPaidUnlock(brief)) {
+      if (!simulatePay) {
+        setError(
+          `当前套餐 ${unlockPriceLabel(brief)}，请先预览页模拟支付，或点下方「模拟支付并下载」。`,
+        )
+        return
+      }
+      markPaidUnlock(brief)
+    }
     setBusy(true)
     setError('')
     try {
-      const doc = await buildCustomTripGuide(buildBrief())
+      const doc = await buildCustomTripGuide(brief)
       await downloadGuideDocx(doc)
     } catch {
       setError('生成 Word 失败，请稍后重试')
@@ -167,10 +191,13 @@ export function TravelCustom() {
           ← 回第一步：是否要用大转盘？
         </Link>
         <p className="travel-lead">
-          不必使用大转盘——顾客只要说清日期、去哪、预算即可。豆包等模型写游记
-          <strong>几乎免费</strong>，所以本站
-          <strong> 简版攻略免费</strong>，只对「完整 Word 模版实稿（含逐日详程）」象征性收
-          <strong> ¥{MAX_GUIDE_PRICE_CNY}</strong>——卖的是<strong>固定版式 + 已整理实稿</strong>，不是让 AI 现编。
+          不必使用大转盘——顾客只要说清日期、去哪、预算即可。
+          <strong>免费</strong>：预览 + 出发前标准章节；
+          <strong> {formatGuidePrice(GUIDE_PRICE_BASIC_CNY)}</strong>：完整逐日 Word 实稿；
+          <strong> {formatGuidePrice(GUIDE_PRICE_PREMIUM_CNY)}</strong>：再加预算拆解、行李、避坑与 B 版行程。
+          <Link className="travel-foot-link" to="/travel/pricing">
+            查看定价说明 →
+          </Link>
         </p>
         <ul className="travel-bullets travel-vs-ai">
           <li>免费 AI：每次格式不同，要自己排版、核对信息</li>
@@ -222,7 +249,8 @@ export function TravelCustom() {
           </button>
         </div>
 
-        {(packageId === 'custom' || packageId !== 'full') && (
+        {(packageId === 'custom' ||
+          (packageId !== 'full' && packageId !== 'premium')) && (
           <div className="travel-module-pick">
             <p className="field-label">
               {packageId === 'custom'
@@ -264,7 +292,8 @@ export function TravelCustom() {
           当前报价：<strong>{formatGuidePrice(quote.priceCny)}</strong>
           <span className="travel-meta">
             {' '}
-            · 含逐日实稿时最高 {formatGuidePrice(MAX_GUIDE_PRICE_CNY)}
+            · 完整版 {formatGuidePrice(GUIDE_PRICE_BASIC_CNY)} · 进阶{' '}
+            {formatGuidePrice(GUIDE_PRICE_PREMIUM_CNY)}
           </span>
         </p>
       </section>
@@ -403,21 +432,45 @@ export function TravelCustom() {
         {error && <p className="travel-warn">{error}</p>}
 
         <div className="travel-actions">
-          <button
-            type="button"
-            className="btn btn-primary travel-btn-block"
-            onClick={() => void downloadWord()}
-            disabled={busy}
-          >
-            {busy ? '正在生成 Word…' : '直接下载 Word 攻略'}
-          </button>
-          <button
-            type="button"
-            className="btn btn-ghost travel-btn-block"
-            onClick={() => void goPreview()}
-          >
-            先预览再导出
-          </button>
+          {quote.priceCny > 0 ? (
+            <>
+              <button
+                type="button"
+                className="btn btn-primary travel-btn-block"
+                onClick={() => void downloadWord(true)}
+                disabled={busy}
+              >
+                {busy
+                  ? '正在生成 Word…'
+                  : `模拟支付 ${formatGuidePrice(quote.priceCny)} 并下载 Word`}
+              </button>
+              <button
+                type="button"
+                className="btn btn-ghost travel-btn-block"
+                onClick={() => void goPreview()}
+              >
+                先免费预览（付费章节隐藏）
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                className="btn btn-primary travel-btn-block"
+                onClick={() => void downloadWord()}
+                disabled={busy}
+              >
+                {busy ? '正在生成 Word…' : '免费下载 Word 攻略'}
+              </button>
+              <button
+                type="button"
+                className="btn btn-ghost travel-btn-block"
+                onClick={() => void goPreview()}
+              >
+                先预览再导出
+              </button>
+            </>
+          )}
         </div>
       </section>
     </main>

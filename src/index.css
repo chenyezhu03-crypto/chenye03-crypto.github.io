@@ -1865,6 +1865,52 @@ textarea {
   }
 }
 
+.travel-pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  padding: 0 0.85rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .travel-pricing-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.travel-pricing-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 1rem 1.05rem;
+}
+
+.travel-pricing-amount {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #1a4f7a;
+  margin: 0.25rem 0 0.65rem;
+}
+
+.travel-paywall-banner {
+  border-color: rgba(26, 79, 122, 0.35);
+  background: linear-gradient(180deg, #f0f6fc 0%, var(--card) 100%);
+}
+
+.travel-paywall-title {
+  font-weight: 700;
+  margin: 0 0 0.35rem;
+}
+
+.travel-paywall-fade {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-radius: 10px;
+  background: #f3f6f9;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -98,6 +98,9 @@ export function TravelHome() {
         <p className="travel-note">
           底部 Tab「做攻略」= 第二步；「地区 / 三选一」主要在「还没想好」时使用。
         </p>
+        <Link className="btn btn-ghost travel-btn-block" to="/travel/pricing">
+          免费 + ¥9.9 / ¥19.9 / 年卡定价
+        </Link>
       </section>
     </main>
   )

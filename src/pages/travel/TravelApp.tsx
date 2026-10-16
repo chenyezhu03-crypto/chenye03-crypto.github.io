@@ -7,6 +7,7 @@ import { TravelPlace } from './TravelPlace'
 import { TravelPicks } from './TravelPicks'
 import { TravelPrefs } from './TravelPrefs'
 import { TravelRegion } from './TravelRegion'
+import { TravelPricing } from './TravelPricing'
 import { TravelSpin } from './TravelSpin'
 
 export function TravelApp() {
@@ -21,6 +22,7 @@ export function TravelApp() {
         <Route path="spin" element={<TravelSpin />} />
         <Route path="place/:id" element={<TravelPlace />} />
         <Route path="guide/:guideId" element={<TravelGuide />} />
+        <Route path="pricing" element={<TravelPricing />} />
         <Route path="*" element={<Navigate to="/travel" replace />} />
       </Route>
     </Routes>

@@ -1,7 +1,9 @@
 import {
   formatGuidePrice,
   GUIDE_PACKAGES,
-  MAX_GUIDE_PRICE_CNY,
+  GUIDE_PRICE_BASIC_CNY,
+  GUIDE_PRICE_PREMIUM_CNY,
+  freePreviewModuleIds,
   moduleById,
   quotePrice,
   type TemplateModuleId,
@@ -130,7 +132,7 @@ function quoteHeaderLines(brief: CustomTripBrief): string[] {
     '【服务报价单 · 演示定价】',
     `套餐  ${pkgLabel}`,
     `含模块  ${moduleLabels}`,
-    `参考价  ${q.priceCny <= 0 ? '免费' : `¥${q.priceCny.toFixed(1)} / 份`}（不含机票酒店；完整逐日实稿最高 ${formatGuidePrice(MAX_GUIDE_PRICE_CNY)}）`,
+    `参考价  ${q.priceCny <= 0 ? '免费' : `¥${q.priceCny.toFixed(1)} / 份`}（不含机票酒店；标准完整 ${formatGuidePrice(GUIDE_PRICE_BASIC_CNY)} · 进阶 ${formatGuidePrice(GUIDE_PRICE_PREMIUM_CNY)}）`,
     `和免费 AI 的差别  豆包等是对话现写；本站导出的是固定 Word 模版结构 + 已整理新加坡实稿切片，方便直接交付客户。`,
     `模版说明  正文结构对齐《新加坡5晚6天_完整版》；未选模块不会写入导出文件。`,
   ]
@@ -151,6 +153,10 @@ function genericModuleBlocks(
     daily_detail: [],
     budget_final: [],
     official_menu: [],
+    budget_breakdown: [],
+    luggage_checklist: [],
+    pitfalls: [],
+    alt_itinerary: [],
   })
   const map = empty()
   const pick = new Set(moduleIds)
@@ -249,6 +255,47 @@ function genericModuleBlocks(
       '请粘贴航司、酒店、景区官网与地图链接（导出后可在 Word 中编辑）。',
     )
   }
+  if (pick.has('budget_breakdown')) {
+    const names = stops.map((s) => s.name).join('、') || brief.customPlaces.join('、') || '本趟'
+    map.budget_breakdown.push(
+      '预算拆解表',
+      `目的地  ${names}`,
+      '大项  国际/国内机票 · 住宿 · 当地交通 · 餐饮 · 门票/体验 · 购物 · 应急备用',
+      '说明  下表为人均区间，热门季上浮 10–20%；付款前核对票种与汇率。',
+      ...budgetGuideText(brief.budget),
+      '分项参考  住宿 35% · 交通 20% · 餐饮 25% · 门票 20% · 备用 5%（可按客户预算档位微调）',
+    )
+  }
+  if (pick.has('luggage_checklist')) {
+    map.luggage_checklist.push(
+      '行李清单（可打印勾选）',
+      '证件  身份证/护照 · 签证/入境码 · 订单与酒店英文地址离线保存',
+      '电子  手机 · 充电器 · 转接头 · 移动电源 · 离线地图',
+      '衣物  分层穿搭 · 舒适鞋 · 雨具/防晒 · 泳装（如需要）',
+      '药品  常用药 · 创可贴 · 晕车/肠胃药 · 个人处方',
+      '其他  少量现金 · 防水袋 · 折叠伞 · 洗衣袋',
+    )
+  }
+  if (pick.has('pitfalls')) {
+    const tips = stops.flatMap((s) => s.tips).slice(0, 6)
+    map.pitfalls.push(
+      '避坑指南',
+      '预约  热门项目提前 7–14 天抢票；取消政策以订单为准。',
+      '支付  优先官方渠道；警惕「低价代订」与私下转账。',
+      '交通  核对上下车点与末班车时间；打车核对车牌与平台订单。',
+      ...(tips.length ? ['目的地提示', ...tips] : []),
+      '维权  保留订单截图与聊天记录；争议先联系平台/12315 咨询。',
+    )
+  }
+  if (pick.has('alt_itinerary')) {
+    map.alt_itinerary.push(
+      '备选行程 B 版（节奏更松）',
+      '说明  与主行程二选一：减少跨区移动，增加缓冲与自由活动时间。',
+      ...buildDayPlan(brief, stops, days).map((l) =>
+        l.startsWith('DAY ') ? `${l} · B版：可改为半日轻松游或周边散步` : l,
+      ),
+    )
+  }
   return map
 }
 
@@ -270,8 +317,14 @@ function injectCustomerDaysIntoOverview(
   return [...overview.slice(0, start), ...dayLines, ...overview.slice(end)]
 }
 
+export type BuildCustomGuideOptions = {
+  /** 未付费时仅合并免费预览模块 */
+  previewOnly?: boolean
+}
+
 export async function buildCustomTripGuide(
   brief: CustomTripBrief,
+  options: BuildCustomGuideOptions = {},
 ): Promise<TravelGuideDoc> {
   const stops = brief.destinationIds
     .map((id) => getDestinationById(id))
@@ -289,7 +342,12 @@ export async function buildCustomTripGuide(
     ? `${client} · 出发 ${formatCnDate(brief.startDate)}，返程 ${formatCnDate(brief.endDate)}`
     : `出发 ${formatCnDate(brief.startDate)}，返程 ${formatCnDate(brief.endDate)} · 出发前以机票/酒店订单复核`
 
-  const moduleIds = quotePrice(brief.packageId, brief.customModules).moduleIds
+  let moduleIds = quotePrice(brief.packageId, brief.customModules).moduleIds
+  if (options.previewOnly) {
+    const free = new Set(freePreviewModuleIds())
+    moduleIds = moduleIds.filter((id) => free.has(id))
+    if (moduleIds.length === 0) moduleIds = freePreviewModuleIds()
+  }
   const dayLines = buildDayPlan(brief, stops, days)
 
   const onlySg =
@@ -315,7 +373,22 @@ export async function buildCustomTripGuide(
         parts.overview.push('客户需求摘要', brief.notes.trim())
       }
     }
-    bodyLines = mergeTemplateModules(parts, moduleIds)
+    const premiumSet = new Set<TemplateModuleId>([
+      'budget_breakdown',
+      'luggage_checklist',
+      'pitfalls',
+      'alt_itinerary',
+    ])
+    const premiumIds = moduleIds.filter((id) => premiumSet.has(id))
+    const coreIds = moduleIds.filter((id) => !premiumSet.has(id))
+    bodyLines = mergeTemplateModules(parts, coreIds)
+    if (premiumIds.length) {
+      const extra = genericModuleBlocks(premiumIds, brief, stops, days)
+      const extraLines = mergeTemplateModules(extra, premiumIds)
+      if (extraLines.length) {
+        bodyLines.push('---', ...extraLines)
+      }
+    }
   } else {
     const generic = genericModuleBlocks(moduleIds, brief, stops, days)
     bodyLines = mergeTemplateModules(generic, moduleIds)

@@ -20,6 +20,10 @@ export function splitSingaporeTemplate(lines: string[]): Record<TemplateModuleId
     daily_detail: [],
     budget_final: [],
     official_menu: [],
+    budget_breakdown: [],
+    luggage_checklist: [],
+    pitfalls: [],
+    alt_itinerary: [],
   })
   const map = empty()
   let current: TemplateModuleId = 'overview'
@@ -50,6 +54,10 @@ export function mergeTemplateModules(
     'daily_detail',
     'budget_final',
     'official_menu',
+    'budget_breakdown',
+    'luggage_checklist',
+    'pitfalls',
+    'alt_itinerary',
   ]
   const pick = new Set(moduleIds)
   const out: string[] = []
