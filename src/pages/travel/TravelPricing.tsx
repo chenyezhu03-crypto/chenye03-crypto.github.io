@@ -1,24 +1,26 @@
 import { Link } from 'react-router-dom'
 import {
   formatGuidePrice,
-  GUIDE_PRICE_BASIC_CNY,
-  GUIDE_PRICE_PREMIUM_CNY,
+  GUIDE_PRICE_ASSESSMENT_CNY,
+  GUIDE_PRICE_WORD_CNY,
   MEMBERSHIP_YEAR_CNY,
   PRICING_SKUS,
 } from '../../lib/guideTemplateCatalog'
 import { travelCustomPath } from '../../lib/travelCustomLink'
+import { PlatformDisclaimer } from '../../components/travel/PlatformDisclaimer'
+import { refundPolicyLines } from '../../platform/refundRules'
 
 export function TravelPricing() {
   return (
     <main className="travel-page">
       <section className="travel-card">
-        <h1 className="travel-h1">定价 · 免费 + 单次 + 会员</h1>
+        <h1 className="travel-h1">V1 定价 · 免费 + 单次 + 会员</h1>
         <p className="travel-lead">
-          转盘与简略预览<strong>永久免费</strong>；完整 Word 实稿与进阶附录按次付费；重度用户可开年卡。
-          当前为<strong>演示站</strong>，付费按钮为模拟解锁，接入支付后同一套 SKU 不变。
+          先预览、后付费。免费 AI 对话可写游记，本站卖的是<strong>中国护照视角知识库</strong>
+          + 固定 Word 结构 + 测评逻辑。
         </p>
-        <Link className="travel-foot-link" to="/travel">
-          ← 回第一步
+        <Link className="travel-foot-link" to="/travel/roadmap">
+          完整开发路线图 →
         </Link>
       </section>
 
@@ -37,20 +39,17 @@ export function TravelPricing() {
                 免费抽签
               </Link>
             )}
-            {sku.id === 'basic' && (
-              <Link
-                className="btn btn-primary travel-btn-block"
-                to={travelCustomPath({ package: 'full' })}
-              >
-                选完整版 {formatGuidePrice(GUIDE_PRICE_BASIC_CNY)}
+            {sku.id === 'assessment' && (
+              <Link className="btn btn-primary travel-btn-block" to="/travel/assessment">
+                适配测评 {formatGuidePrice(GUIDE_PRICE_ASSESSMENT_CNY)}
               </Link>
             )}
-            {sku.id === 'premium' && (
+            {sku.id === 'word' && (
               <Link
                 className="btn btn-primary travel-btn-block"
                 to={travelCustomPath({ package: 'premium' })}
               >
-                选进阶版 {formatGuidePrice(GUIDE_PRICE_PREMIUM_CNY)}
+                Word 攻略 {formatGuidePrice(GUIDE_PRICE_WORD_CNY)}
               </Link>
             )}
             {sku.id === 'member' && (
@@ -63,15 +62,13 @@ export function TravelPricing() {
       </section>
 
       <section className="travel-card">
-        <h2 className="travel-h2">和免费 AI 的差别</h2>
-        <ul className="travel-bullets travel-vs-ai">
-          <li>豆包等：对话现写，每次格式不同，需自己排版核对</li>
-          <li>
-            本站：固定 Word 模版 + 新加坡实稿切片；标准{' '}
-            {formatGuidePrice(GUIDE_PRICE_BASIC_CNY)} / 进阶{' '}
-            {formatGuidePrice(GUIDE_PRICE_PREMIUM_CNY)}
-          </li>
+        <h2 className="travel-h2">退款与重生成</h2>
+        <ul className="travel-bullets">
+          {refundPolicyLines().map((l) => (
+            <li key={l}>{l}</li>
+          ))}
         </ul>
+        <PlatformDisclaimer variant="full" />
       </section>
     </main>
   )

@@ -1,8 +1,8 @@
 import {
   formatGuidePrice,
   GUIDE_PACKAGES,
-  GUIDE_PRICE_BASIC_CNY,
-  GUIDE_PRICE_PREMIUM_CNY,
+  GUIDE_PRICE_ASSESSMENT_CNY,
+  GUIDE_PRICE_WORD_CNY,
   freePreviewModuleIds,
   moduleById,
   quotePrice,
@@ -132,7 +132,7 @@ function quoteHeaderLines(brief: CustomTripBrief): string[] {
     '【服务报价单 · 演示定价】',
     `套餐  ${pkgLabel}`,
     `含模块  ${moduleLabels}`,
-    `参考价  ${q.priceCny <= 0 ? '免费' : `¥${q.priceCny.toFixed(1)} / 份`}（不含机票酒店；标准完整 ${formatGuidePrice(GUIDE_PRICE_BASIC_CNY)} · 进阶 ${formatGuidePrice(GUIDE_PRICE_PREMIUM_CNY)}）`,
+    `参考价  ${q.priceCny <= 0 ? '免费' : `¥${q.priceCny.toFixed(2)} / 份`}（不含机票酒店；测评 ${formatGuidePrice(GUIDE_PRICE_ASSESSMENT_CNY)} · Word ${formatGuidePrice(GUIDE_PRICE_WORD_CNY)}）`,
     `和免费 AI 的差别  豆包等是对话现写；本站导出的是固定 Word 模版结构 + 已整理新加坡实稿切片，方便直接交付客户。`,
     `模版说明  正文结构对齐《新加坡5晚6天_完整版》；未选模块不会写入导出文件。`,
   ]

@@ -40,7 +40,10 @@ export function TravelSpin() {
   return (
     <main className="travel-page travel-spin-page">
       <section className="travel-card travel-spin-intro">
-        <h1 className="travel-h1">目的地大转盘</h1>
+        <h1 className="travel-h1">全球盲盒 · 大转盘</h1>
+        <p className="travel-lead travel-spin-record-hint">
+          页面简洁，适合录短视频：转停 → 展示国家/城市标签 → 进详情。
+        </p>
         <p className="travel-lead">
           {formatGeoBreadcrumb(prefs.geo)
             ? `范围：${formatGeoBreadcrumb(prefs.geo)} · `

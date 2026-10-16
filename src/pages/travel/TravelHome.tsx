@@ -6,6 +6,7 @@ import {
   clearTravelPlanMode,
 } from '../../lib/travelPlanMode'
 import { travelCustomPath } from '../../lib/travelCustomLink'
+import { HOME_ADVANTAGES, PLATFORM } from '../../platform/manifest'
 
 export function TravelHome() {
   const navigate = useNavigate()
@@ -25,11 +26,11 @@ export function TravelHome() {
     <main className="travel-page">
       <section className="travel-card travel-hero-card">
         <p className="travel-path-step">第一步</p>
-        <h1>顾客是否已有出行计划？</h1>
+        <h1>{PLATFORM.name}</h1>
         <p className="travel-lead">
-          先问清楚这一点，再决定要不要上大转盘。{' '}
-          <strong>有计划</strong> 就进第二步做 Word；{' '}
-          <strong>没想好</strong> 再用地区分级和大转盘帮选。
+          仅中文 · 中国护照视角。先问：顾客是否已有出行计划？{' '}
+          <strong>有计划</strong> → 行程/Word/测评；{' '}
+          <strong>没想好</strong> → 全球盲盒大转盘帮选。
         </p>
 
         {current && (
@@ -99,11 +100,23 @@ export function TravelHome() {
           底部 Tab「做攻略」= 第二步；「地区 / 三选一」主要在「还没想好」时使用。
         </p>
         <Link className="btn btn-ghost travel-btn-block" to="/travel/pricing">
-          免费 + ¥9.9 / ¥19.9 / 年卡定价
+          V1 定价：免费 + ¥5.99 测评 + ¥19.99 Word
         </Link>
         <Link className="btn btn-primary travel-btn-block" to="/travel/community">
           旅友社区 · 设状态 / 找同期出行
         </Link>
+        <Link className="travel-foot-link" to="/travel/roadmap">
+          完整产品路线图（V1–V6）→
+        </Link>
+      </section>
+
+      <section className="travel-card">
+        <h2 className="travel-h2">平台定位（长期）</h2>
+        <ul className="travel-bullets">
+          {HOME_ADVANTAGES.map((a) => (
+            <li key={a}>{a}</li>
+          ))}
+        </ul>
       </section>
     </main>
   )

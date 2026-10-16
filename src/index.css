@@ -2085,6 +2085,32 @@ textarea {
   line-height: 1.55;
 }
 
+.travel-disclaimer,
+.travel-disclaimer-bar {
+  font-size: 0.68rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+  margin: 0.75rem 1rem 0.5rem;
+  padding: 0.45rem 0.55rem;
+  background: #f0f3f6;
+  border-radius: 8px;
+}
+
+.travel-roadmap-now {
+  color: #2e6b3e;
+  font-size: 0.78rem;
+}
+
+.travel-spin-record-hint {
+  font-size: 0.82rem;
+  opacity: 0.92;
+}
+
+.travel-assessment-body {
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -1,4 +1,5 @@
 /** 与 Word 模版《新加坡5晚6天_完整版》对应的可售模块与套餐定价 */
+import { V1_PRICING } from '../platform/manifest'
 
 export type TemplateModuleId =
   | 'overview'
@@ -22,17 +23,23 @@ export type GuidePackageId =
   | 'premium'
   | 'custom'
 
-/** 单次付费 · 标准完整版（含逐日详程 Word 实稿） */
-export const GUIDE_PRICE_BASIC_CNY = 9.9
+/** V1 · 目的地适配测评（独立产品，见 /travel/assessment） */
+export const GUIDE_PRICE_ASSESSMENT_CNY = V1_PRICING.assessmentReportCny
 
-/** 单次付费 · 进阶版（双版本行程 + 预算拆解 + 行李 + 避坑） */
-export const GUIDE_PRICE_PREMIUM_CNY = 19.9
+/** V1 · 完整结构化 Word 攻略（含逐日、预算、行李、避坑等） */
+export const GUIDE_PRICE_WORD_CNY = V1_PRICING.wordExportCny
 
-/** 年会员 · 无限基础生成等（演示价，支付接入后生效） */
-export const MEMBERSHIP_YEAR_CNY = 99
+/** @deprecated 使用 GUIDE_PRICE_WORD_CNY */
+export const GUIDE_PRICE_PREMIUM_CNY = GUIDE_PRICE_WORD_CNY
+
+/** @deprecated 使用 GUIDE_PRICE_WORD_CNY */
+export const GUIDE_PRICE_BASIC_CNY = GUIDE_PRICE_WORD_CNY
+
+export const MEMBERSHIP_YEAR_CNY = V1_PRICING.membershipYearCny
+export const MEMBERSHIP_MONTH_CNY = V1_PRICING.membershipMonthCny
 
 /** 自定义组合累加上限 */
-export const MAX_GUIDE_PRICE_CNY = GUIDE_PRICE_PREMIUM_CNY
+export const MAX_GUIDE_PRICE_CNY = GUIDE_PRICE_WORD_CNY
 
 export type TemplateModuleDef = {
   id: TemplateModuleId
@@ -170,20 +177,12 @@ export const GUIDE_PACKAGES: {
     badge: '免费',
   },
   {
-    id: 'full',
-    label: '完整版 · 单次',
-    desc: '含逐日详程整本模版实稿 + 标准 Word 导出',
-    moduleIds: 'all',
-    priceCny: GUIDE_PRICE_BASIC_CNY,
-    badge: `¥${GUIDE_PRICE_BASIC_CNY}`,
-  },
-  {
     id: 'premium',
-    label: '进阶版 · 单次',
-    desc: '完整版 + 预算拆解 + 行李清单 + 避坑 + 行程 B 版',
+    label: '完整 Word 攻略',
+    desc: '每日行程、交通、预算表、美食景点、避坑、行李清单（V1 ¥19.99）',
     moduleIds: 'all_premium',
-    priceCny: GUIDE_PRICE_PREMIUM_CNY,
-    badge: `¥${GUIDE_PRICE_PREMIUM_CNY}`,
+    priceCny: GUIDE_PRICE_WORD_CNY,
+    badge: `¥${GUIDE_PRICE_WORD_CNY}`,
   },
 ]
 
@@ -192,25 +191,25 @@ export const PRICING_SKUS = [
     id: 'free',
     title: '免费体验',
     priceLabel: '¥0',
-    highlights: ['四级转盘抽签', '简略行程预览', '标准出发前章节 Word（不含逐日实稿）'],
+    highlights: ['全球盲盒抽签', '行程大纲网页预览（不可下载完整稿）', '出发前免费章节'],
   },
   {
-    id: 'basic',
-    title: '标准单次',
-    priceLabel: `¥${GUIDE_PRICE_BASIC_CNY}`,
-    highlights: ['完整逐日详程', '新加坡同款 Word 结构', '可打印 PDF'],
+    id: 'assessment',
+    title: '适配测评',
+    priceLabel: `¥${GUIDE_PRICE_ASSESSMENT_CNY}`,
+    highlights: ['适配分数', '是否适合', '风险与出行建议', '中国护照视角'],
   },
   {
-    id: 'premium',
-    title: '进阶单次',
-    priceLabel: `¥${GUIDE_PRICE_PREMIUM_CNY}`,
-    highlights: ['标准单次全部内容', '预算拆解 + 行李清单', '避坑 + 双版本行程 B'],
+    id: 'word',
+    title: 'Word 攻略',
+    priceLabel: `¥${GUIDE_PRICE_WORD_CNY}`,
+    highlights: ['逐日行程', '交通预算美食景点', '避坑 + 行李清单', '结构化 Word 导出'],
   },
   {
     id: 'member',
-    title: '年会员',
+    title: '会员',
     priceLabel: `¥${MEMBERSHIP_YEAR_CNY}/年`,
-    highlights: ['无限基础生成', '高级筛选与批量抽签', '美化排版（即将上线）'],
+    highlights: ['免费测评/导出权益（接入后）', '次数加成', '专属徽章（规划中）'],
   },
 ] as const
 
@@ -269,7 +268,12 @@ export function resolveModuleIds(
     return [...new Set(customModules)]
   }
   const pkg = GUIDE_PACKAGES.find((p) => p.id === packageId)
-  if (!pkg) return ['overview', 'budget_final']
+  if (!pkg) {
+    if (packageId === 'full') {
+      return [...CORE_MODULE_IDS, ...PREMIUM_EXTRA]
+    }
+    return ['overview', 'budget_final']
+  }
   if (pkg.moduleIds === 'all') {
     return [...CORE_MODULE_IDS]
   }
@@ -289,6 +293,13 @@ export function quotePrice(
       packageId,
       moduleIds,
       priceCny: priceForModules(moduleIds),
+    }
+  }
+  if (packageId === 'full') {
+    return {
+      packageId,
+      moduleIds,
+      priceCny: GUIDE_PRICE_WORD_CNY,
     }
   }
   const pkg = GUIDE_PACKAGES.find((p) => p.id === packageId)!

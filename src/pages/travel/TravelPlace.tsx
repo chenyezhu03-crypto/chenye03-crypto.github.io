@@ -5,6 +5,10 @@ import { guidesForDestination } from '../../lib/travelGuideCatalog'
 import { getDestinationGeo } from '../../data/destinationGeo'
 import { getGeoNode } from '../../data/travelGeo'
 import { getDestinationById } from '../../lib/travelMatch'
+import {
+  difficultyLabel,
+  getDestinationKnowledge,
+} from '../../lib/destinationKnowledge'
 
 export function TravelPlace() {
   const { id } = useParams()
@@ -39,6 +43,7 @@ export function TravelPlace() {
   const months = place.bestMonths.map((m) => MONTH_LABELS[m - 1]).join('、')
   const budgets = place.budget.map((b) => BUDGET_LABELS[b].split('（')[0]).join(' / ')
   const vibes = place.vibes.map((v) => VIBE_LABELS[v]).join(' · ')
+  const knowledge = getDestinationKnowledge(place.id)
 
   return (
     <main className="travel-page travel-place-page">
@@ -53,8 +58,65 @@ export function TravelPlace() {
           <li>
             建议 {place.daysIdeal[0]}–{place.daysIdeal[1]} 天
           </li>
+          {knowledge && (
+            <>
+              <li>难度 {difficultyLabel(knowledge.difficultyLevel)}</li>
+              <li>{knowledge.budgetRangeCny}</li>
+            </>
+          )}
         </ul>
       </section>
+
+      {knowledge && (
+        <section className="travel-card">
+          <h2 className="travel-h2">中国护照视角 · 知识库</h2>
+          <p className="travel-meta">{knowledge.updatedNote}</p>
+          <dl className="travel-dl">
+            <div>
+              <dt>签证/证件</dt>
+              <dd>{knowledge.visaForMainland}</dd>
+            </div>
+            <div>
+              <dt>入境要求</dt>
+              <dd>{knowledge.entryRequirements}</dd>
+            </div>
+            <div>
+              <dt>禁忌与安全</dt>
+              <dd>{knowledge.taboosAndSafety}</dd>
+            </div>
+            <div>
+              <dt>货币物价</dt>
+              <dd>{knowledge.currencyAndPrices}</dd>
+            </div>
+            <div>
+              <dt>最佳季节</dt>
+              <dd>{knowledge.bestSeason}</dd>
+            </div>
+            <div>
+              <dt>热门打卡</dt>
+              <dd>{knowledge.hotspots.join('、')}</dd>
+            </div>
+            <div>
+              <dt>当地美食</dt>
+              <dd>{knowledge.localFood.join('、')}</dd>
+            </div>
+            <div>
+              <dt>节日文化</dt>
+              <dd>{knowledge.festivalsAndCulture}</dd>
+            </div>
+            <div>
+              <dt>避坑</dt>
+              <dd>{knowledge.pitfalls}</dd>
+            </div>
+          </dl>
+          <Link
+            className="btn btn-ghost travel-btn-block"
+            to={`/travel/assessment?dest=${place.id}`}
+          >
+            ¥5.99 适配测评（可先预览）
+          </Link>
+        </section>
+      )}
 
       <section className="travel-card">
         <h2 className="travel-h2">为什么值得去</h2>

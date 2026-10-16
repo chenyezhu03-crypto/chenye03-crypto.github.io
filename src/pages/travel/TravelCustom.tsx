@@ -7,8 +7,8 @@ import { buildCustomTripGuide } from '../../lib/customTripGuide'
 import {
   formatGuidePrice,
   GUIDE_PACKAGES,
-  GUIDE_PRICE_BASIC_CNY,
-  GUIDE_PRICE_PREMIUM_CNY,
+  GUIDE_PRICE_ASSESSMENT_CNY,
+  GUIDE_PRICE_WORD_CNY,
   quotePrice,
   TEMPLATE_MODULES,
   type GuidePackageId,
@@ -51,7 +51,7 @@ export function TravelCustom() {
   const [budget, setBudget] = useState<CustomTripBrief['budget']>('mid')
   const [notes, setNotes] = useState('')
   const [clientLabel, setClientLabel] = useState('')
-  const [packageId, setPackageId] = useState<GuidePackageId>('standard')
+  const [packageId, setPackageId] = useState<GuidePackageId>('preview')
   const [customModules, setCustomModules] = useState<TemplateModuleId[]>([])
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -193,8 +193,8 @@ export function TravelCustom() {
         <p className="travel-lead">
           不必使用大转盘——顾客只要说清日期、去哪、预算即可。
           <strong>免费</strong>：预览 + 出发前标准章节；
-          <strong> {formatGuidePrice(GUIDE_PRICE_BASIC_CNY)}</strong>：完整逐日 Word 实稿；
-          <strong> {formatGuidePrice(GUIDE_PRICE_PREMIUM_CNY)}</strong>：再加预算拆解、行李、避坑与 B 版行程。
+          <strong> {formatGuidePrice(GUIDE_PRICE_ASSESSMENT_CNY)}</strong>：适配测评；
+          <strong> {formatGuidePrice(GUIDE_PRICE_WORD_CNY)}</strong>：完整 Word（逐日+预算+避坑+行李）。
           <Link className="travel-foot-link" to="/travel/pricing">
             查看定价说明 →
           </Link>
@@ -250,7 +250,7 @@ export function TravelCustom() {
         </div>
 
         {(packageId === 'custom' ||
-          (packageId !== 'full' && packageId !== 'premium')) && (
+          packageId !== 'premium' && packageId !== 'full') && (
           <div className="travel-module-pick">
             <p className="field-label">
               {packageId === 'custom'
@@ -292,8 +292,7 @@ export function TravelCustom() {
           当前报价：<strong>{formatGuidePrice(quote.priceCny)}</strong>
           <span className="travel-meta">
             {' '}
-            · 完整版 {formatGuidePrice(GUIDE_PRICE_BASIC_CNY)} · 进阶{' '}
-            {formatGuidePrice(GUIDE_PRICE_PREMIUM_CNY)}
+            · Word 完整稿 {formatGuidePrice(GUIDE_PRICE_WORD_CNY)}
           </span>
         </p>
       </section>

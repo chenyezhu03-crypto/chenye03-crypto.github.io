@@ -35,5 +35,9 @@ export function markPaidUnlock(brief: CustomTripBrief): void {
 
 export function unlockPriceLabel(brief: CustomTripBrief): string {
   const q = quotePrice(brief.packageId, brief.customModules)
-  return q.priceCny <= 0 ? '免费' : `¥${q.priceCny.toFixed(1)}`
+  return q.priceCny <= 0 ? '免费' : `¥${q.priceCny.toFixed(2)}`
+}
+
+export function paidOrderKey(brief: CustomTripBrief): string {
+  return unlockKey(brief)
 }

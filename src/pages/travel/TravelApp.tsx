@@ -1,5 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
+import { TravelAssessment } from './TravelAssessment'
 import { TravelCommunity } from './TravelCommunity'
+import { TravelRoadmap } from './TravelRoadmap'
 import { TravelCustom } from './TravelCustom'
 import { TravelGuide } from './TravelGuide'
 import { TravelHome } from './TravelHome'
@@ -25,6 +27,8 @@ export function TravelApp() {
         <Route path="guide/:guideId" element={<TravelGuide />} />
         <Route path="pricing" element={<TravelPricing />} />
         <Route path="community" element={<TravelCommunity />} />
+        <Route path="assessment" element={<TravelAssessment />} />
+        <Route path="roadmap" element={<TravelRoadmap />} />
         <Route path="*" element={<Navigate to="/travel" replace />} />
       </Route>
     </Routes>

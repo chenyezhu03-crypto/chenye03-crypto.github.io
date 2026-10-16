@@ -1,4 +1,6 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { PlatformDisclaimer } from '../../components/travel/PlatformDisclaimer'
+import { PLATFORM } from '../../platform/manifest'
 
 const tabs = [
   { to: '/travel', label: '首页', end: true },
@@ -17,7 +19,7 @@ export function TravelLayout() {
   return (
     <div className="travel-app">
       <header className="travel-header">
-        <p className="travel-brand">去哪玩</p>
+        <p className="travel-brand">{PLATFORM.name}</p>
         <p className="travel-sub">
           {onGuide
             ? '图文攻略 · 可导出 Word / PDF'
@@ -40,6 +42,9 @@ export function TravelLayout() {
       </header>
       <div className="travel-body">
         <Outlet />
+        {!hideTab && (
+          <PlatformDisclaimer className="travel-disclaimer-bar" />
+        )}
       </div>
       {!hideTab && (
         <nav className="travel-tabbar" aria-label="去哪玩导航">
