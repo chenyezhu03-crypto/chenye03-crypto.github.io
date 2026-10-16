@@ -1,18 +1,10 @@
-# 在线打开（和本地 http://127.0.0.1:4173/jobs 一样）
+# GitHub Pages 已停用
 
-部署成功后，在浏览器直接访问（**无需 npm**）：
+应产品要求，**不再通过 GitHub Pages 对外发布**。
 
-| 页面 | 地址 |
-|------|------|
-| 选岗助手 | **https://chenyezhu03-crypto.github.io/pick** |
-| 岗位雷达 | **https://chenyezhu03-crypto.github.io/jobs** |
-| 首页 | **https://chenyezhu03-crypto.github.io/** |
+- 已删除自动部署 workflow（原 `Deploy GitHub Pages`）。
+- CI 仅做 `npm run build` 与 travel 冒烟测试（`.github/workflows/ci.yml`）。
 
-## 首次若显示 404（只需设置一次）
+本地或自建部署见 [docs/LOCAL_DEPLOY.zh-CN.md](./docs/LOCAL_DEPLOY.zh-CN.md)。
 
-1. 打开仓库 **Settings → Pages**
-2. **Build and deployment → Source** 选 **Deploy from a branch**
-3. **Branch** 选 **`gh-pages`**，文件夹 **`/ (root)`**，保存
-4. 等 1～3 分钟再刷新上面的链接
-
-推送 `main` 后，Actions 会自动把网站发布到 `gh-pages` 分支。
+若站点此前已上线，可在仓库 **Settings → Pages** 中将 Source 设为 **None**，避免继续对外提供旧版 gh-pages 内容。
