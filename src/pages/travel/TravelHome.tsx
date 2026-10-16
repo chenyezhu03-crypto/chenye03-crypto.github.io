@@ -101,6 +101,9 @@ export function TravelHome() {
         <Link className="btn btn-ghost travel-btn-block" to="/travel/pricing">
           免费 + ¥9.9 / ¥19.9 / 年卡定价
         </Link>
+        <Link className="btn btn-primary travel-btn-block" to="/travel/community">
+          旅友社区 · 设状态 / 找同期出行
+        </Link>
       </section>
     </main>
   )

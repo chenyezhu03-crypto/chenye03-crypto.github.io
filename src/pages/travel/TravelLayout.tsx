@@ -1,8 +1,9 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 
 const tabs = [
-  { to: '/travel', label: '第一步', end: true },
-  { to: '/travel/custom', label: '第二步', end: false },
+  { to: '/travel', label: '首页', end: true },
+  { to: '/travel/custom', label: '攻略', end: false },
+  { to: '/travel/community', label: '社区', end: false },
   { to: '/travel/region', label: '帮选', end: false },
   { to: '/travel/picks', label: '三选一', end: false },
 ]
@@ -28,6 +29,8 @@ export function TravelLayout() {
                 ? '一次给你 3 个备选'
                 : loc.pathname.includes('/spin')
                   ? '帮选 · 大转盘'
+                  : loc.pathname.includes('/community')
+                    ? '旅友社区 · 状态与同期出行'
                   : loc.pathname.includes('/custom')
                     ? '第二步 · Word 模版攻略'
                     : loc.pathname === '/travel' || loc.pathname === '/travel/'
