@@ -1,4 +1,16 @@
-# 投简 · 条件透视的智能简历代投
+# 全球中文旅行文旅（主站）+ 投简
+
+**主产品 · 文旅小程序 Web 版**：盲盒抽签、中国护照知识库、行程/Word/测评、社区与 V1–V6 模块原型。
+
+| 入口 | 链接 |
+|------|------|
+| **文旅首页** | https://chenyezhu03-crypto.github.io/travel |
+| 全部功能 | https://chenyezhu03-crypto.github.io/travel/hub |
+| 微信小程序壳 | 见 [`miniprogram/README.md`](./miniprogram/README.md) |
+
+---
+
+## 投简 · 条件透视的智能简历代投
 
 投简不是「黑盒海投机器人」，而是把岗位条件看清楚、把投递材料写对位的前端工作台。
 
@@ -17,8 +29,9 @@
 
 | 页面 | 链接 |
 |------|------|
+| 全球中文旅行文旅 | https://chenyezhu03-crypto.github.io/travel |
+| 投简工作台 | https://chenyezhu03-crypto.github.io/toujian |
 | 选岗助手 | https://chenyezhu03-crypto.github.io/pick |
-| 去哪玩（旅游转盘） | https://chenyezhu03-crypto.github.io/travel |
 | 岗位雷达 | https://chenyezhu03-crypto.github.io/jobs |
 
 若 404，请按 [ENABLE_PAGES.md](./ENABLE_PAGES.md) 在 GitHub 仓库 **Settings → Pages** 选择 **`gh-pages`** 分支（只需一次）。
