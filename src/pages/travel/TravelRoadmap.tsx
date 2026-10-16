@@ -44,6 +44,9 @@ export function TravelRoadmap() {
               <strong>
                 {p.id} · {p.title}
               </strong>
+              {p.status === 'prototype' && (
+                <span className="travel-roadmap-now"> 可点演示</span>
+              )}
               {p.status === 'in_progress' && (
                 <span className="travel-roadmap-now"> 进行中</span>
               )}
